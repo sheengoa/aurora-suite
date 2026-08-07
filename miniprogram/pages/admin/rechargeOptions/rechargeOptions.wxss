@@ -1,0 +1,504 @@
+page {
+  min-height: 100%;
+  background: #f5f6f7;
+  color: #262626;
+}
+
+.page,
+.page view,
+.page input {
+  box-sizing: border-box;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 24rpx 24rpx calc(36rpx + env(safe-area-inset-bottom));
+}
+
+.page-tools {
+  min-height: 112rpx;
+  padding: 12rpx 12rpx 12rpx 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1rpx solid #ececed;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 24rpx rgba(46, 35, 34, 0.06);
+}
+
+.tools-title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  color: #242424;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.tools-icon {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #d94335;
+  font-size: 30rpx;
+  background: #fff1ef;
+  border-radius: 12rpx;
+}
+
+.add-btn {
+  min-width: 190rpx;
+  height: 88rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  flex-shrink: 0;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 700;
+  background: #d94335;
+  border: 1rpx solid #d94335;
+  border-radius: 12rpx;
+  box-shadow: 0 8rpx 18rpx rgba(217, 67, 53, 0.18);
+}
+
+.add-btn .cuIcon-add {
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.option-list {
+  padding-top: 20rpx;
+}
+
+.option-ticket {
+  position: relative;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1rpx solid #ececed;
+  border-radius: 16rpx;
+  box-shadow: 0 10rpx 28rpx rgba(46, 35, 34, 0.07);
+}
+
+.option-ticket::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 6rpx;
+  z-index: 2;
+  background: #d94335;
+}
+
+.option-ticket.is-disabled::before {
+  background: #b9b9bd;
+}
+
+.ticket-main {
+  position: relative;
+  min-height: 176rpx;
+  padding: 28rpx 24rpx 26rpx 30rpx;
+  display: flex;
+  align-items: center;
+  gap: 26rpx;
+}
+
+.ticket-main::before,
+.ticket-main::after {
+  content: "";
+  position: absolute;
+  bottom: -13rpx;
+  width: 26rpx;
+  height: 26rpx;
+  z-index: 3;
+  background: #f5f6f7;
+  border-radius: 50%;
+}
+
+.ticket-main::before {
+  left: -13rpx;
+}
+
+.ticket-main::after {
+  right: -13rpx;
+}
+
+.amount-block {
+  width: 210rpx;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.amount-label {
+  display: block;
+  margin-bottom: 6rpx;
+  color: #8b8b90;
+  font-size: 23rpx;
+  line-height: 1.4;
+}
+
+.amount-line {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  color: #d94335;
+  line-height: 1;
+}
+
+.currency {
+  margin-right: 4rpx;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.amount-value {
+  max-width: 168rpx;
+  overflow: hidden;
+  font-size: 54rpx;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.benefit-block {
+  min-width: 0;
+  flex: 1;
+  padding-left: 24rpx;
+  border-left: 1rpx solid #eeeeef;
+}
+
+.benefit-label {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  color: #77777c;
+  font-size: 23rpx;
+  line-height: 1.4;
+}
+
+.benefit-label .cuIcon-presentfill,
+.benefit-label .cuIcon-recharge {
+  color: #d94335;
+  font-size: 24rpx;
+}
+
+.benefit-value {
+  margin-top: 5rpx;
+  overflow: hidden;
+  color: #2f2f32;
+  font-size: 34rpx;
+  font-weight: 750;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.total-value {
+  margin-top: 4rpx;
+  color: #b33b32;
+  font-size: 23rpx;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.ticket-badges {
+  min-width: 122rpx;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14rpx;
+}
+
+.recommend-badge,
+.status-badge {
+  min-height: 42rpx;
+  padding: 0 14rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7rpx;
+  border-radius: 8rpx;
+  font-size: 21rpx;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.recommend-badge {
+  color: #ffffff;
+  background: #303033;
+}
+
+.recommend-badge .cuIcon-likefill {
+  font-size: 20rpx;
+}
+
+.status-badge {
+  color: #277256;
+  background: #edf7f2;
+  border: 1rpx solid #dceee7;
+}
+
+.status-badge.disabled {
+  color: #7e7e83;
+  background: #f1f1f2;
+  border-color: #e7e7e8;
+}
+
+.status-dot {
+  width: 10rpx;
+  height: 10rpx;
+  flex-shrink: 0;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+.ticket-footer {
+  min-height: 112rpx;
+  margin: 0 18rpx 0 24rpx;
+  padding-left: 6rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  border-top: 2rpx dashed #eadfdd;
+}
+
+.ticket-desc {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9rpx;
+  flex: 1;
+  color: #78787d;
+  font-size: 23rpx;
+}
+
+.ticket-desc .cuIcon-tag {
+  flex-shrink: 0;
+  color: #d94335;
+  font-size: 24rpx;
+}
+
+.desc-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ticket-actions {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  min-width: 106rpx;
+  height: 88rpx;
+  padding: 0 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+  font-weight: 650;
+}
+
+.action-btn.edit {
+  color: #343438;
+  background: #f3f3f4;
+}
+
+.action-btn.delete {
+  color: #c83d33;
+  background: #fff1ef;
+}
+
+.action-btn text:first-child {
+  font-size: 23rpx;
+}
+
+.option-ticket.is-disabled .amount-line,
+.option-ticket.is-disabled .benefit-label .cuIcon-presentfill,
+.option-ticket.is-disabled .benefit-label .cuIcon-recharge,
+.option-ticket.is-disabled .ticket-desc .cuIcon-tag {
+  color: #848489;
+}
+
+.control-pressed {
+  opacity: 0.72;
+}
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  padding: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(25, 22, 22, 0.56);
+}
+
+.modal-dialog {
+  width: 686rpx;
+  max-height: calc(100vh - 64rpx);
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: 16rpx;
+  box-shadow: 0 24rpx 72rpx rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  height: 106rpx;
+  padding: 0 20rpx 0 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1rpx solid #eeeeef;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  color: #242426;
+  font-size: 32rpx;
+  font-weight: 750;
+}
+
+.modal-title .cuIcon-rechargefill {
+  color: #d94335;
+  font-size: 32rpx;
+}
+
+.modal-close {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #85858a;
+  font-size: 30rpx;
+}
+
+.modal-content {
+  max-height: calc(100vh - 280rpx);
+  overflow-y: auto;
+  padding: 26rpx 28rpx 12rpx;
+}
+
+.form-item {
+  margin-bottom: 22rpx;
+}
+
+.form-label {
+  margin-bottom: 12rpx;
+  color: #39393d;
+  font-size: 25rpx;
+  font-weight: 650;
+}
+
+.required {
+  color: #d94335;
+}
+
+.input-shell {
+  position: relative;
+}
+
+.input-prefix {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 24rpx;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  color: #d94335;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.form-input {
+  width: 100%;
+  height: 88rpx;
+  padding: 0 24rpx;
+  color: #29292c;
+  font-size: 27rpx;
+  background: #f7f7f8;
+  border: 1rpx solid #e7e7e9;
+  border-radius: 12rpx;
+}
+
+.form-input.has-prefix {
+  padding-left: 56rpx;
+}
+
+.setting-row {
+  min-height: 92rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1rpx solid #eeeeef;
+}
+
+.setting-copy {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  color: #39393d;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.setting-icon {
+  color: #d94335;
+  font-size: 26rpx;
+}
+
+.setting-row switch {
+  transform: scale(0.86);
+  transform-origin: right center;
+}
+
+.modal-footer {
+  padding: 18rpx 28rpx calc(18rpx + env(safe-area-inset-bottom));
+  display: flex;
+  gap: 16rpx;
+  border-top: 1rpx solid #eeeeef;
+}
+
+.modal-btn {
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.modal-btn.cancel {
+  color: #4f4f53;
+  background: #f3f3f4;
+}
+
+.modal-btn.confirm {
+  color: #ffffff;
+  background: #d94335;
+  box-shadow: 0 8rpx 18rpx rgba(217, 67, 53, 0.18);
+}

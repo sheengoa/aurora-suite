@@ -1,0 +1,142 @@
+<view class="page">
+  <view class="page-tools">
+    <view class="tools-title">
+      <text class="tools-icon cuIcon-ticket"></text>
+      <text>充值方案</text>
+    </view>
+    <view class="add-btn" bindtap="showAddModal" hover-class="control-pressed">
+      <text class="cuIcon-add"></text>
+      <text>添加方案</text>
+    </view>
+  </view>
+
+  <view class="option-list">
+    <view class="option-ticket {{item.status === 1 ? 'is-enabled' : 'is-disabled'}}" wx:for="{{options}}" wx:key="_id">
+      <view class="ticket-main">
+        <view class="amount-block">
+          <text class="amount-label">充值金额</text>
+          <view class="amount-line">
+            <text class="currency">¥</text>
+            <text class="amount-value">{{item.amount}}</text>
+          </view>
+        </view>
+
+        <view class="benefit-block">
+          <view class="benefit-label">
+            <text class="{{item.giveAmount > 0 ? 'cuIcon-presentfill' : 'cuIcon-recharge'}}"></text>
+            <text>{{item.giveAmount > 0 ? '赠送额度' : '到账金额'}}</text>
+          </view>
+          <view class="benefit-value">
+            {{item.giveAmount > 0 ? '+¥' + item.giveAmount : '¥' + item.amount}}
+          </view>
+          <view class="total-value" wx:if="{{item.giveAmount > 0}}">
+            实得 ¥{{item.amount + item.giveAmount}}
+          </view>
+        </view>
+
+        <view class="ticket-badges">
+          <view class="recommend-badge" wx:if="{{item.isRecommend}}">
+            <text class="cuIcon-likefill"></text>
+            <text>推荐</text>
+          </view>
+          <view class="status-badge {{item.status === 1 ? 'enabled' : 'disabled'}}">
+            <text class="status-dot"></text>
+            <text>{{item.status === 1 ? '已启用' : '已停用'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="ticket-footer">
+        <view class="ticket-desc">
+          <text class="cuIcon-tag"></text>
+          <text class="desc-text">{{item.description || '充值后余额即时到账'}}</text>
+        </view>
+        <view class="ticket-actions">
+          <view class="action-btn edit" bindtap="showEditModal" data-option="{{item}}" hover-class="control-pressed">
+            <text class="cuIcon-edit"></text>
+            <text>编辑</text>
+          </view>
+          <view class="action-btn delete" bindtap="deleteOption" data-option="{{item}}" hover-class="control-pressed">
+            <text class="cuIcon-delete"></text>
+            <text>删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <van-empty wx:if="{{options.length === 0}}" description="暂无充值方案" />
+  </view>
+
+  <view class="modal-mask" wx:if="{{showModal}}" catchtap="closeModal">
+    <view class="modal-dialog" catchtap="stopPropagation">
+      <view class="modal-header">
+        <view class="modal-title">
+          <text class="cuIcon-rechargefill"></text>
+          <text>{{editMode ? '编辑充值方案' : '添加充值方案'}}</text>
+        </view>
+        <view class="modal-close cuIcon-close" bindtap="closeModal" hover-class="control-pressed"></view>
+      </view>
+
+      <view class="modal-content">
+        <view class="form-item">
+          <view class="form-label">充值金额 <text class="required">*</text></view>
+          <view class="input-shell">
+            <text class="input-prefix">¥</text>
+            <input
+              class="form-input has-prefix"
+              type="digit"
+              placeholder="请输入充值金额"
+              value="{{currentOption.amount}}"
+              bindinput="onAmountInput"
+            />
+          </view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">赠送金额</view>
+          <view class="input-shell">
+            <text class="input-prefix">¥</text>
+            <input
+              class="form-input has-prefix"
+              type="digit"
+              placeholder="不赠送可填写 0"
+              value="{{currentOption.giveAmount}}"
+              bindinput="onGiveAmountInput"
+            />
+          </view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">方案说明</view>
+          <input
+            class="form-input"
+            placeholder="选填，如：会员专享"
+            value="{{currentOption.description}}"
+            bindinput="onDescriptionInput"
+          />
+        </view>
+
+        <view class="setting-row">
+          <view class="setting-copy">
+            <text class="setting-icon cuIcon-like"></text>
+            <text>设为推荐</text>
+          </view>
+          <switch checked="{{currentOption.isRecommend}}" bindchange="toggleRecommend" color="#d94335"/>
+        </view>
+
+        <view class="setting-row">
+          <view class="setting-copy">
+            <text class="setting-icon cuIcon-roundcheck"></text>
+            <text>启用方案</text>
+          </view>
+          <switch checked="{{currentOption.status === 1}}" bindchange="toggleStatus" color="#d94335"/>
+        </view>
+      </view>
+
+      <view class="modal-footer">
+        <view class="modal-btn cancel" bindtap="closeModal" hover-class="control-pressed">取消</view>
+        <view class="modal-btn confirm" bindtap="saveOption" hover-class="control-pressed">保存</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,280 @@
+/* pages/admin/dishCategory/dishCategory.wxss */
+.page {
+  min-height: 100vh;
+  background: #f7f7f7;
+  padding: 20rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 添加按钮 */
+.add-btn {
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+  background: linear-gradient(135deg, #d94335 0%, #f36a5d 100%);
+  color: white;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: bold;
+  box-shadow: 0 8rpx 24rpx rgba(229, 77, 66, 0.18);
+}
+
+.add-icon {
+  font-size: 40rpx;
+  margin-right: 10rpx;
+}
+
+/* 分类列表 */
+.category-list {
+  background: white;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+
+.category-item {
+  padding: 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2rpx solid #f5f5f5;
+}
+
+.category-item:last-child {
+  border-bottom: none;
+}
+
+.category-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.category-icon {
+  font-size: 56rpx;
+  margin-right: 20rpx;
+}
+
+.category-detail {
+  flex: 1;
+}
+
+.category-name {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.category-sort {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.category-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  padding: 12rpx 30rpx;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+}
+
+.action-btn.edit {
+  background: #d94335;
+  color: white;
+}
+
+.action-btn.delete {
+  background: #f56c6c;
+  color: white;
+}
+
+.empty-tip {
+  padding: 100rpx 0;
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 弹窗样式 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-dialog {
+  width: 600rpx;
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.modal-title {
+  padding: 40rpx 30rpx 20rpx;
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-content {
+  padding: 20rpx 30rpx 40rpx;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e5e5e5;
+  border-radius: 10rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 2rpx solid #e5e5e5;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+}
+
+.modal-btn.cancel {
+  color: #999;
+  border-right: 2rpx solid #e5e5e5;
+}
+
+.modal-btn.confirm {
+  color: #d94335;
+  font-weight: bold;
+}
+
+/* 高级版视觉覆盖 */
+.page {
+  background: linear-gradient(180deg, #fff7f3 0%, #f6f7f9 240rpx, #f6f7f9 100%);
+  padding: 24rpx;
+  padding-bottom: 48rpx;
+}
+
+.add-btn {
+  border-radius: 16rpx;
+  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
+  box-shadow: 0 18rpx 38rpx rgba(217, 67, 53, 0.22);
+}
+
+.category-list {
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(34, 37, 43, 0.05);
+  box-shadow: 0 14rpx 34rpx rgba(27, 36, 48, 0.07);
+}
+
+.category-item {
+  border-bottom-color: #ebeef3;
+}
+
+.category-icon {
+  width: 74rpx;
+  height: 74rpx;
+  border-radius: 16rpx;
+  background: #fff4f0;
+  color: #d94335;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+}
+
+.category-name {
+  color: #22252b;
+}
+
+.category-sort {
+  color: #9aa1ad;
+}
+
+.action-btn {
+  border-radius: 999rpx;
+}
+
+.action-btn.edit {
+  background: #edf8f5;
+  color: #1f9d8a;
+}
+
+.action-btn.delete {
+  background: #fff1ef;
+  color: #d94335;
+}
+
+.modal-mask {
+  background: rgba(19, 24, 33, 0.58);
+  backdrop-filter: blur(8rpx);
+}
+
+.modal-dialog {
+  width: 620rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 30rpx 90rpx rgba(19, 24, 33, 0.24);
+}
+
+.modal-title {
+  color: #22252b;
+  font-size: 34rpx;
+}
+
+.form-label {
+  color: #69707d;
+  font-weight: 600;
+}
+
+.form-input {
+  height: 88rpx;
+  border-color: #e6e9ef;
+  background: #fbfcfd;
+}
+
+.modal-footer {
+  border-top-color: #ebeef3;
+}
+
+.modal-btn.cancel {
+  border-right-color: #ebeef3;
+}
+
+.modal-btn.confirm {
+  color: #d94335;
+}
+

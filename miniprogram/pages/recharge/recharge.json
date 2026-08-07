@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "会员充值",
+  "navigationBarBackgroundColor": "#c93b32",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#c93b32",
+  "usingComponents": {
+    "avatar-nickname-modal": "/components/avatarNicknameModal/avatarNicknameModal"
+  }
+}
+
+

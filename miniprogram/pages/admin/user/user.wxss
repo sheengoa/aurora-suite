@@ -1,0 +1,395 @@
+/* pages/admin/user/user.wxss */
+.page {
+  min-height: 100vh;
+  background: #f7f7f7;
+  padding: 20rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 搜索栏 */
+.search-bar {
+  display: flex;
+  margin-bottom: 20rpx;
+  gap: 15rpx;
+}
+
+.search-input {
+  flex: 1;
+  height: 70rpx;
+  background: white;
+  border-radius: 10rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+}
+
+.search-btn,
+.clear-btn {
+  padding: 0 30rpx;
+  height: 70rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  color: white;
+}
+
+.search-btn {
+  background: linear-gradient(135deg, #d94335 0%, #f36a5d 100%);
+}
+
+.clear-btn {
+  background: #999;
+}
+
+/* 用户列表 */
+.user-list {
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.04);
+}
+
+.user-item {
+  padding: 30rpx;
+  display: flex;
+  align-items: center;
+  border-bottom: 2rpx solid #f5f5f5;
+}
+
+.user-item:last-child {
+  border-bottom: none;
+}
+
+.user-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.user-avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+.default-avatar {
+  width: 100%;
+  height: 100%;
+  background: #fff3f0;
+  color: #d94335;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  display: flex;
+  align-items: center;
+}
+
+.member-badge {
+  font-size: 28rpx;
+  margin-left: 10rpx;
+}
+
+.user-detail {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 5rpx;
+}
+
+.user-detail:last-child {
+  margin-bottom: 0;
+}
+
+.user-arrow {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.user-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  margin-left: 20rpx;
+}
+
+.action-btn {
+  padding: 8rpx 20rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.balance-btn {
+  background: #38b2ac;
+  color: white;
+}
+
+.empty-tip {
+  padding: 100rpx 0;
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 弹窗样式 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-dialog {
+  width: 600rpx;
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.modal-title {
+  padding: 40rpx 30rpx 20rpx;
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-content {
+  padding: 20rpx 30rpx 40rpx;
+}
+
+.user-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding-bottom: 30rpx;
+  border-bottom: 2rpx solid #f5f5f5;
+}
+
+.preview-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.preview-avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+.preview-name {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e5e5e5;
+  border-radius: 10rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.balance-edit {
+  display: flex;
+  gap: 15rpx;
+}
+
+.balance-edit .form-input {
+  flex: 1;
+}
+
+.recharge-btn {
+  padding: 0 30rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #67c23a;
+  color: white;
+  border-radius: 10rpx;
+  font-size: 26rpx;
+  white-space: nowrap;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 2rpx solid #e5e5e5;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+}
+
+.modal-btn.cancel {
+  color: #999;
+  border-right: 2rpx solid #e5e5e5;
+}
+
+.modal-btn.confirm {
+  color: #d94335;
+  font-weight: bold;
+}
+
+/* 高级版视觉覆盖 */
+.page {
+  background: linear-gradient(180deg, #fff7f3 0%, #f6f7f9 240rpx, #f6f7f9 100%);
+  padding: 24rpx;
+  padding-bottom: 48rpx;
+}
+
+.search-bar {
+  gap: 14rpx;
+  margin-bottom: 24rpx;
+}
+
+.search-input {
+  height: 78rpx;
+  border: 1rpx solid rgba(34, 37, 43, 0.06);
+  border-radius: 16rpx;
+  box-shadow: 0 10rpx 26rpx rgba(27, 36, 48, 0.05);
+}
+
+.search-btn,
+.clear-btn {
+  height: 78rpx;
+  border-radius: 16rpx;
+}
+
+.search-btn {
+  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
+  box-shadow: 0 10rpx 22rpx rgba(217, 67, 53, 0.18);
+}
+
+.clear-btn {
+  background: #eef1f5;
+  color: #69707d;
+}
+
+.user-list {
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(34, 37, 43, 0.05);
+  box-shadow: 0 14rpx 34rpx rgba(27, 36, 48, 0.07);
+}
+
+.user-item {
+  border-bottom-color: #ebeef3;
+}
+
+.user-avatar {
+  border: 4rpx solid #ffffff;
+  box-shadow: 0 8rpx 18rpx rgba(27, 36, 48, 0.08);
+}
+
+.default-avatar {
+  background: #fff4f0;
+  color: #d94335;
+}
+
+.user-name,
+.preview-name {
+  color: #22252b;
+}
+
+.user-detail {
+  color: #9aa1ad;
+}
+
+.action-btn {
+  border-radius: 999rpx;
+}
+
+.balance-btn {
+  background: #edf8f5;
+  color: #1f9d8a;
+}
+
+.modal-mask {
+  background: rgba(19, 24, 33, 0.58);
+  backdrop-filter: blur(8rpx);
+}
+
+.modal-dialog {
+  width: 620rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 30rpx 90rpx rgba(19, 24, 33, 0.24);
+}
+
+.modal-title {
+  color: #22252b;
+  font-size: 34rpx;
+}
+
+.user-preview {
+  border-bottom-color: #ebeef3;
+}
+
+.form-label {
+  color: #69707d;
+  font-weight: 600;
+}
+
+.form-input {
+  height: 88rpx;
+  border-color: #e6e9ef;
+  background: #fbfcfd;
+}
+
+.modal-footer {
+  border-top-color: #ebeef3;
+}
+
+.modal-btn.cancel {
+  border-right-color: #ebeef3;
+}
+
+.modal-btn.confirm {
+  color: #d94335;
+}

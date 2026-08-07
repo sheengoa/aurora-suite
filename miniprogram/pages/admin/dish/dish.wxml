@@ -1,0 +1,549 @@
+<!-- pages/admin/dish/dish.wxml -->
+<view class="page">
+  <view class="workspace-header">
+    <view class="workspace-copy">
+      <view class="workspace-kicker">MENU ADMIN</view>
+      <view class="workspace-title-row">
+        <view class="workspace-title">菜品管理</view>
+        <view class="workspace-total">{{categories.length}} 类</view>
+      </view>
+      <view class="workspace-meta">左侧选择分类，右侧维护菜品</view>
+    </view>
+
+    <view
+      class="add-dish-btn"
+      wx:if="{{currentCategoryId}}"
+      bindtap="showAddDishModal"
+      hover-class="control-pressed"
+      hover-stay-time="120"
+      aria-role="button"
+      aria-label="新建菜品">
+      <text class="cuIcon-add control-icon" aria-hidden="true"></text>
+      <text>添加菜品</text>
+    </view>
+  </view>
+
+  <view class="management-layout">
+    <view class="category-pane">
+      <view class="category-pane-head">
+        <view
+          class="category-add-button"
+          bindtap="showAddCategoryModal"
+          hover-class="soft-control-pressed"
+          hover-stay-time="120"
+          aria-role="button"
+          aria-label="添加分类">
+          <text class="cuIcon-add" aria-hidden="true"></text>
+          <text>添加分类</text>
+        </view>
+      </view>
+
+      <scroll-view
+        class="category-list"
+        scroll-y
+        enhanced="{{true}}"
+        bounces="{{false}}"
+        show-scrollbar="{{false}}"
+        scroll-with-animation="{{true}}">
+        <view
+          class="category-item {{currentCategoryId === item._id ? 'active' : ''}}"
+          wx:for="{{categories}}"
+          wx:key="_id"
+          bindtap="switchCategory"
+          data-id="{{item._id}}"
+          hover-class="category-item-pressed"
+          hover-stay-time="120"
+          aria-role="button"
+          aria-label="选择分类 {{item.name}}">
+          <view class="category-indicator" wx:if="{{currentCategoryId === item._id}}"></view>
+          <text class="category-name">{{item.name}}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="dish-content">
+      <view class="dish-header">
+        <view class="dish-heading">
+          <view class="header-title">
+            <block wx:if="{{currentCategoryId}}">
+              <block wx:for="{{categories}}" wx:key="_id">
+                <text wx:if="{{currentCategoryId === item._id}}">{{item.name}}</text>
+              </block>
+            </block>
+            <text wx:else>菜品列表</text>
+          </view>
+          <view class="header-note" wx:if="{{currentCategoryId}}">
+            已加载 {{dishes.length}} 道菜
+          </view>
+          <view class="header-note" wx:else>请先选择分类</view>
+        </view>
+
+        <view class="category-controls" wx:if="{{currentCategoryId}}">
+          <block wx:for="{{categories}}" wx:key="_id" wx:for-item="category">
+            <block wx:if="{{currentCategoryId === category._id}}">
+              <view
+                class="category-control cuIcon-edit"
+                bindtap="showEditCategoryModal"
+                data-category="{{category}}"
+                hover-class="soft-control-pressed"
+                hover-stay-time="120"
+                aria-role="button"
+                aria-label="编辑分类 {{category.name}}"></view>
+              <view
+                class="category-control danger cuIcon-delete"
+                bindtap="deleteCategory"
+                data-category="{{category}}"
+                hover-class="soft-control-pressed"
+                hover-stay-time="120"
+                aria-role="button"
+                aria-label="删除分类 {{category.name}}"></view>
+            </block>
+          </block>
+        </view>
+      </view>
+
+      <scroll-view
+        class="dish-list"
+        scroll-y
+        wx:if="{{currentCategoryId}}"
+        enhanced="{{true}}"
+        bounces="{{false}}"
+        show-scrollbar="{{false}}"
+        lower-threshold="80"
+        bindscrolltolower="onDishScrollToLower">
+        <view class="dish-item {{item.status === 1 ? 'is-online' : 'is-offline'}}" wx:for="{{dishes}}" wx:key="_id">
+          <view class="dish-core">
+            <view class="dish-image">
+              <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}" aria-label="{{item.name}} 菜品图片"></image>
+              <view wx:else class="no-image">
+                <text class="cuIcon-pic no-image-icon" aria-hidden="true"></text>
+                <text>待上传</text>
+              </view>
+            </view>
+
+            <view class="dish-info">
+              <view class="dish-title-row">
+                <view class="dish-name">{{item.name}}</view>
+              </view>
+              <view class="dish-desc">{{item.description || '还没有填写菜品描述'}}</view>
+              <view class="sku-summary" wx:if="{{item.skuSummary}}">
+                <text class="cuIcon-tag meta-icon" aria-hidden="true"></text>
+                <text>{{item.skuSummary}}</text>
+              </view>
+              <view class="dish-meta-row">
+                <view class="dish-status {{item.status === 1 ? 'online' : 'offline'}}">
+                  <view class="status-dot"></view>
+                  <text>{{item.status === 1 ? '售卖中' : '已下架'}}</text>
+                </view>
+                <view class="dish-price">
+                  <text class="price-symbol">¥</text>
+                  <text class="price-current">{{item.price}}</text>
+                  <text class="price-prefix" wx:if="{{item.skus && item.skus.length > 1}}">起</text>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <view class="dish-actions">
+            <view
+              class="action-btn status"
+              bindtap="toggleDishStatus"
+              data-dish="{{item}}"
+              hover-class="action-btn-pressed"
+              hover-stay-time="120"
+              aria-role="button"
+              aria-label="{{item.status === 1 ? '下架' : '上架'}} {{item.name}}">
+              <text class="{{item.status === 1 ? 'cuIcon-roundclose' : 'cuIcon-roundcheck'}} action-icon" aria-hidden="true"></text>
+              <text>{{item.status === 1 ? '下架' : '上架'}}</text>
+            </view>
+            <view
+              class="action-btn edit"
+              bindtap="showEditDishModal"
+              data-dish="{{item}}"
+              hover-class="action-btn-pressed"
+              hover-stay-time="120"
+              aria-role="button"
+              aria-label="编辑菜品 {{item.name}}">
+              <text class="cuIcon-edit action-icon" aria-hidden="true"></text>
+              <text>编辑</text>
+            </view>
+            <view
+              class="action-btn delete"
+              bindtap="deleteDish"
+              data-dish="{{item}}"
+              hover-class="action-btn-pressed"
+              hover-stay-time="120"
+              aria-role="button"
+              aria-label="删除菜品 {{item.name}}">
+              <text class="cuIcon-delete action-icon" aria-hidden="true"></text>
+              <text>删除</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="initial-loading" wx:if="{{loadingDishes && dishes.length === 0}}">
+          <text class="cuIcon-loading iconfont-spin loading-icon" aria-hidden="true"></text>
+          <text>正在加载菜品</text>
+        </view>
+
+        <view class="empty-state" wx:if="{{!loadingDishes && dishes.length === 0}}">
+          <view class="empty-dish-icon cuIcon-pic" aria-hidden="true"></view>
+          <view class="empty-title">这个分类还没有菜品</view>
+          <view class="empty-copy">添加第一道菜，再设置图片、规格和口味。</view>
+          <view
+            class="empty-action"
+            bindtap="showAddDishModal"
+            hover-class="control-pressed"
+            hover-stay-time="120"
+            aria-role="button"
+            aria-label="添加第一道菜">
+            <text class="cuIcon-add" aria-hidden="true"></text>
+            <text>添加第一道菜</text>
+          </view>
+        </view>
+
+        <view class="list-loading" wx:if="{{loadingDishes && dishes.length > 0}}">
+          <text class="cuIcon-loading iconfont-spin" aria-hidden="true"></text>
+          <text>继续加载</text>
+        </view>
+        <view class="list-end" wx:if="{{!dishHasMore && dishes.length > 0}}">
+          <view class="end-line"></view>
+          <text>已经到底了</text>
+          <view class="end-line"></view>
+        </view>
+      </scroll-view>
+
+      <view class="empty-category" wx:if="{{!currentCategoryId}}">
+        <view class="empty-dish-icon category-empty-icon cuIcon-form" aria-hidden="true"></view>
+        <view class="empty-title">先建立菜单分类</view>
+        <view class="empty-copy">分类建好后，就可以继续录入菜品和规格。</view>
+        <view
+          class="empty-action"
+          bindtap="showAddCategoryModal"
+          hover-class="control-pressed"
+          hover-stay-time="120"
+          aria-role="button"
+          aria-label="添加菜单分类">
+          <text class="cuIcon-add" aria-hidden="true"></text>
+          <text>添加菜单分类</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类编辑面板 -->
+  <view class="modal-mask" wx:if="{{showCategoryModal}}" catchtap="closeCategoryModal">
+    <view class="modal-dialog category-modal" catchtap="stopPropagation">
+      <view class="sheet-handle"></view>
+      <view class="modal-head">
+        <view class="modal-title">{{editCategoryMode ? '编辑分类' : '添加分类'}}</view>
+      </view>
+      <view class="modal-content">
+        <view class="form-item">
+          <view class="form-label">分类名称</view>
+          <input
+            class="form-input"
+            placeholder="例如：招牌菜"
+            value="{{currentCategory.name}}"
+            bindinput="onCategoryNameInput"
+            cursor-spacing="24"
+            aria-label="分类名称"
+          />
+        </view>
+        <view class="form-item">
+          <view class="form-label">菜单顺序</view>
+          <input
+            class="form-input"
+            type="number"
+            placeholder="数字越小越靠前"
+            value="{{currentCategory.sort}}"
+            bindinput="onCategorySortInput"
+            cursor-spacing="24"
+            aria-label="分类菜单顺序"
+          />
+        </view>
+      </view>
+      <view class="modal-footer">
+        <view class="modal-btn cancel" bindtap="closeCategoryModal" hover-class="soft-control-pressed">取消</view>
+        <view class="modal-btn confirm" bindtap="saveCategory" hover-class="control-pressed">保存</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 菜品编辑面板 -->
+  <view class="modal-mask" wx:if="{{showDishModal}}" catchtap="closeDishModal">
+    <view class="modal-dialog large" catchtap="stopPropagation">
+      <view class="sheet-handle"></view>
+      <view class="modal-head">
+        <view class="modal-title">{{editDishMode ? '编辑菜品' : '添加菜品'}}</view>
+      </view>
+      <scroll-view
+        class="modal-content dish-modal-content"
+        scroll-y
+        enhanced="{{true}}"
+        bounces="{{false}}"
+        show-scrollbar="{{false}}">
+        <view class="form-item">
+          <view class="form-label">菜品名称<text class="required-mark">*</text></view>
+          <input
+            class="form-input"
+            placeholder="输入菜品名称"
+            maxlength="24"
+            value="{{currentDish.name}}"
+            bindinput="onDishNameInput"
+            cursor-spacing="24"
+            aria-label="菜品名称"
+          />
+        </view>
+        <view class="form-item">
+          <view class="form-label image-label">
+            <view>菜品图片<text class="required-mark">*</text></view>
+            <text class="image-count">{{currentDish.images.length}}/9</text>
+          </view>
+          <view class="dish-image-grid">
+            <view
+              class="dish-image-item"
+              wx:for="{{currentDish.images}}"
+              wx:key="*this"
+              wx:for-item="image"
+              bindtap="previewDishImage"
+              data-src="{{image}}"
+              aria-role="button"
+              aria-label="预览菜品图片 {{index + 1}}">
+              <image class="dish-image-thumb" src="{{image}}" mode="aspectFill"></image>
+              <view
+                class="dish-image-remove"
+                catchtap="removeDishImage"
+                data-index="{{index}}"
+                hover-class="soft-control-pressed"
+                aria-role="button"
+                aria-label="删除菜品图片 {{index + 1}}">
+                <text class="cuIcon-close" aria-hidden="true"></text>
+              </view>
+            </view>
+            <view
+              class="dish-image-add"
+              wx:if="{{currentDish.images.length < 9}}"
+              bindtap="chooseDishImage"
+              hover-class="upload-pressed"
+              aria-role="button"
+              aria-label="添加菜品图片">
+              <text class="cuIcon-cameraadd upload-icon" aria-hidden="true"></text>
+              <text class="upload-title">添加图片</text>
+            </view>
+          </view>
+        </view>
+        <view class="form-item sku-form-item">
+          <view class="form-label">
+            规格与价格<text class="required-mark">*</text>
+          </view>
+          <view class="sku-list">
+            <view class="sku-card" wx:for="{{currentDish.skus}}" wx:key="id">
+              <view class="sku-card-header">
+                <view class="sku-title-wrap">
+                  <text class="sku-title">规格 {{index + 1}}</text>
+                </view>
+                <view class="sku-actions">
+                  <view class="sku-delete" bindtap="deleteSku" data-index="{{index}}" hover-class="soft-control-pressed">
+                    <text class="cuIcon-delete" aria-hidden="true"></text>
+                    <text>删除</text>
+                  </view>
+                </view>
+              </view>
+              <view class="sku-grid">
+                <view class="sku-field">
+                  <view class="sku-label">{{currentDish.skus.length === 1 ? '名称（可不填）' : '名称'}}</view>
+                  <input
+                    class="form-input compact"
+                    placeholder="如：小份"
+                    value="{{item.name}}"
+                    bindinput="onSkuNameInput"
+                    data-index="{{index}}"
+                    aria-label="规格 {{index + 1}} 名称"
+                  />
+                </view>
+                <view class="sku-field">
+                  <view class="sku-label">售价</view>
+                  <input
+                    class="form-input compact"
+                    type="digit"
+                    placeholder="0-10000"
+                    value="{{item.price}}"
+                    bindinput="onSkuPriceInput"
+                    data-index="{{index}}"
+                    aria-label="规格 {{index + 1}} 售价"
+                  />
+                </view>
+                <view class="sku-field">
+                  <view class="sku-label">排序</view>
+                  <input
+                    class="form-input compact"
+                    type="number"
+                    placeholder="0"
+                    value="{{item.sort}}"
+                    bindinput="onSkuSortInput"
+                    data-index="{{index}}"
+                    aria-label="规格 {{index + 1}} 排序"
+                  />
+                </view>
+              </view>
+              <view class="sku-status-row">
+                <view class="sku-status-text">{{item.status === 1 ? '启用' : '停用'}}</view>
+                <switch checked="{{item.status === 1}}" bindchange="onSkuStatusChange" data-index="{{index}}" color="#c93b32" aria-label="{{item.status === 1 ? '停用' : '启用'}}规格 {{index + 1}}"/>
+              </view>
+            </view>
+          </view>
+          <view class="add-sku-btn" bindtap="addSku" hover-class="soft-control-pressed">
+            <text class="cuIcon-add" aria-hidden="true"></text>
+            <text>添加规格</text>
+          </view>
+        </view>
+        <view class="form-item">
+          <view class="form-label">菜品描述</view>
+          <textarea
+            class="form-textarea"
+            placeholder="口味、食材或份量（最多80字）"
+            maxlength="80"
+            value="{{currentDish.description}}"
+            bindinput="onDishDescriptionInput"
+            cursor-spacing="24"
+            aria-label="菜品描述"
+          />
+        </view>
+        <view class="form-item">
+          <view class="form-label">排序</view>
+          <input
+            class="form-input"
+            type="number"
+            placeholder="数字越小越靠前"
+            value="{{currentDish.sort}}"
+            bindinput="onDishSortInput"
+            cursor-spacing="24"
+            aria-label="菜品菜单顺序"
+          />
+        </view>
+        <view class="form-item">
+          <view class="form-label">口味与做法</view>
+          <view class="tags-management">
+            <view class="tag-list" wx:if="{{currentDish.tags.length > 0}}">
+              <view class="tag-card" wx:for="{{currentDish.tags}}" wx:key="id">
+                <view class="tag-card-header">
+                  <view class="tag-card-title">
+                    <text class="tag-name">{{item.name}}</text>
+                    <text class="tag-type">{{item.type === 'single' ? '单选' : '多选'}}</text>
+                    <text class="tag-required" wx:if="{{item.required}}">必选</text>
+                  </view>
+                  <view class="tag-card-actions">
+                    <view class="tag-action-btn edit" bindtap="showEditTagModal" data-index="{{index}}" hover-class="soft-control-pressed" aria-role="button" aria-label="编辑 {{item.name}}">
+                      <text class="cuIcon-edit" aria-hidden="true"></text>
+                    </view>
+                    <view class="tag-action-btn delete" bindtap="deleteTag" data-index="{{index}}" hover-class="soft-control-pressed" aria-role="button" aria-label="删除 {{item.name}}">
+                      <text class="cuIcon-delete" aria-hidden="true"></text>
+                    </view>
+                  </view>
+                </view>
+                <view class="tag-options">
+                  <text class="option-item" wx:for="{{item.options}}" wx:key="*this" wx:for-item="option">{{option}}</text>
+                </view>
+              </view>
+            </view>
+            <view class="add-tag-btn" bindtap="showAddTagModal" hover-class="soft-control-pressed">
+              <text class="cuIcon-add" aria-hidden="true"></text>
+              <text>添加选项</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <view class="modal-btn cancel" bindtap="closeDishModal" hover-class="soft-control-pressed">取消</view>
+        <view class="modal-btn confirm" bindtap="saveDish" hover-class="control-pressed">保存</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 口味/做法编辑面板 -->
+  <view class="modal-mask nested-mask" wx:if="{{showTagModal}}" catchtap="closeTagModal">
+    <view class="modal-dialog tag-modal" catchtap="stopPropagation">
+      <view class="sheet-handle"></view>
+      <view class="modal-head">
+        <view class="modal-title">{{editingTagIndex === -1 ? '添加口味/做法' : '编辑口味/做法'}}</view>
+      </view>
+      <scroll-view
+        class="modal-content tag-modal-content"
+        scroll-y
+        enhanced="{{true}}"
+        bounces="{{false}}"
+        show-scrollbar="{{false}}">
+        <view class="form-item">
+          <view class="form-label">名称</view>
+          <input
+            class="form-input"
+            placeholder="例如：辣度、配料"
+            value="{{currentTag.name}}"
+            bindinput="onTagNameInput"
+            cursor-spacing="24"
+            aria-label="口味或做法名称"
+          />
+        </view>
+        <view class="form-item">
+          <view class="form-label">选择方式</view>
+          <view class="type-selector">
+            <view
+              class="type-option {{currentTag.type === 'single' ? 'active' : ''}}"
+              bindtap="selectTagType"
+              data-type="single"
+              hover-class="soft-control-pressed">
+              <text class="cuIcon-roundcheck" aria-hidden="true"></text>
+              <text>单选</text>
+            </view>
+            <view
+              class="type-option {{currentTag.type === 'multiple' ? 'active' : ''}}"
+              bindtap="selectTagType"
+              data-type="multiple"
+              hover-class="soft-control-pressed">
+              <text class="cuIcon-squarecheck" aria-hidden="true"></text>
+              <text>多选</text>
+            </view>
+          </view>
+        </view>
+        <view class="form-item inline-form-item">
+          <view>
+            <view class="form-label">设为必选</view>
+            <view class="form-helper">开启后，顾客必须选择至少一项</view>
+          </view>
+          <switch checked="{{currentTag.required}}" bindchange="onTagRequiredChange" color="#c93b32" aria-label="设为必选"/>
+        </view>
+        <view class="form-item">
+          <view class="form-label">选项列表</view>
+          <view class="option-list">
+            <view class="option-item-row" wx:for="{{currentTag.options}}" wx:key="*this">
+              <view class="option-index">{{index + 1}}</view>
+              <text class="option-text">{{item}}</text>
+              <view class="option-delete" bindtap="deleteOption" data-index="{{index}}" hover-class="soft-control-pressed" aria-role="button" aria-label="删除选项 {{item}}">
+                <text class="cuIcon-delete" aria-hidden="true"></text>
+              </view>
+            </view>
+          </view>
+          <view class="add-option-row">
+            <input
+              class="option-input"
+              placeholder="输入选项内容"
+              value="{{newOption}}"
+              bindinput="onOptionInput"
+              cursor-spacing="24"
+              aria-label="新选项内容"
+            />
+            <view class="add-option-btn" bindtap="addOption" hover-class="control-pressed">
+              <text class="cuIcon-add" aria-hidden="true"></text>
+              <text>添加</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <view class="modal-btn cancel" bindtap="closeTagModal" hover-class="soft-control-pressed">取消</view>
+        <view class="modal-btn confirm" bindtap="saveTag" hover-class="control-pressed">保存</view>
+      </view>
+    </view>
+  </view>
+</view>

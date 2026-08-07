@@ -1,0 +1,25 @@
+/* ColorUI vertical navigation helpers */
+.VerticalNav.nav {
+  white-space: normal;
+}
+
+.VerticalNav.nav .cu-item {
+  width: 100%;
+  min-height: 98rpx;
+  height: auto;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 28rpx 18rpx;
+  box-sizing: border-box;
+}
+
+.VerticalNav.nav .cu-item.cur {
+  border-bottom: 0;
+}
+
+.VerticalMain {
+  min-width: 0;
+}

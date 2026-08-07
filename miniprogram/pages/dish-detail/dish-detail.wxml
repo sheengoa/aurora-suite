@@ -1,0 +1,184 @@
+<wxs module="tagHelper" src="../../utils/tagHelper.wxs"></wxs>
+
+<view class="detail-page">
+  <view class="detail-navigation" style="padding-top: {{statusBarHeight}}px;">
+    <view class="detail-navbar" style="height: {{navBarHeight}}px;">
+      <view
+        class="detail-back"
+        bindtap="goBack"
+        hover-class="detail-back-pressed"
+        hover-stay-time="120"
+        aria-role="button"
+        aria-label="返回上一页">
+        <van-icon name="arrow-left" size="38rpx" color="#202329"></van-icon>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="skeleton skeleton-hero"></view>
+    <view class="loading-content">
+      <view class="skeleton skeleton-title"></view>
+      <view class="skeleton skeleton-line"></view>
+      <view class="skeleton skeleton-line short"></view>
+    </view>
+  </view>
+
+  <view class="error-state" wx:elif="{{errorMessage}}">
+    <view class="error-icon">
+      <van-icon name="warning-o" size="56rpx"></van-icon>
+    </view>
+    <view class="error-title">{{errorMessage}}</view>
+    <view class="error-actions">
+      <button class="secondary-button" bindtap="goToMenu">返回点餐</button>
+      <button class="primary-button compact" bindtap="retryLoad" wx:if="{{dishId}}">重新加载</button>
+    </view>
+  </view>
+
+  <block wx:elif="{{dish}}">
+    <view class="hero">
+      <swiper
+        wx:if="{{dish.images && dish.images.length > 0}}"
+        class="hero-swiper"
+        circular="{{dish.images.length > 1}}"
+        indicator-dots="{{dish.images.length > 1}}"
+        indicator-color="rgba(255, 255, 255, 0.54)"
+        indicator-active-color="#ffffff">
+        <swiper-item wx:for="{{dish.images}}" wx:key="*this" wx:for-item="image">
+          <image
+            class="hero-image"
+            src="{{image}}"
+            mode="aspectFill"
+            data-src="{{image}}"
+            bindtap="previewImage"></image>
+        </swiper-item>
+      </swiper>
+      <view wx:else class="hero-placeholder">
+        <van-icon name="photo-o" size="66rpx"></van-icon>
+        <text>暂无菜品图片</text>
+      </view>
+    </view>
+
+    <view class="product-band">
+      <view class="product-heading">
+        <view class="product-name">{{dish.name}}</view>
+        <text class="category-label" wx:if="{{dish.categoryName}}">{{dish.categoryName}}</text>
+      </view>
+    </view>
+
+    <view class="selection-band">
+      <view class="selection-section" wx:if="{{dish.enabledSkus && dish.enabledSkus.length > 0}}">
+        <view class="section-heading">
+          <view>
+            <text class="section-title">选择规格</text>
+            <text class="required-mark">必选</text>
+          </view>
+        </view>
+        <view class="option-grid">
+          <view
+            class="sku-option {{selectedSkuId === sku.id ? 'selected' : ''}}"
+            wx:for="{{dish.enabledSkus}}"
+            wx:key="id"
+            wx:for-item="sku"
+            bindtap="selectSku"
+            data-id="{{sku.id}}">
+            <view class="option-check" wx:if="{{selectedSkuId === sku.id}}">
+              <van-icon name="success" size="20rpx"></van-icon>
+            </view>
+            <text class="sku-name">{{sku.name}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view
+        class="selection-section"
+        wx:for="{{dish.tags}}"
+        wx:key="id"
+        wx:for-item="tag">
+        <view class="section-heading">
+          <view>
+            <text class="section-title">{{tag.name}}</text>
+            <text class="required-mark" wx:if="{{tag.required}}">必选</text>
+          </view>
+          <text class="section-hint">{{tag.type === 'single' ? '单选' : '可多选'}}</text>
+        </view>
+
+        <view class="tag-options" wx:if="{{tag.type === 'single'}}">
+          <view
+            class="tag-option {{selectedTags[tag.id] === option ? 'selected' : ''}}"
+            wx:for="{{tag.options}}"
+            wx:key="index"
+            wx:for-item="option"
+            bindtap="selectSingleTag"
+            data-tag-id="{{tag.id}}"
+            data-option="{{option}}">
+            {{option}}
+          </view>
+        </view>
+
+        <view class="tag-options" wx:else>
+          <view
+            class="tag-option {{tagHelper.isTagOptionSelected(selectedTags, tag.id, option) ? 'selected' : ''}}"
+            wx:for="{{tag.options}}"
+            wx:key="index"
+            wx:for-item="option"
+            bindtap="toggleMultipleTag"
+            data-tag-id="{{tag.id}}"
+            data-option="{{option}}">
+            {{option}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="detail-band" wx:if="{{dish.description || dish.desc}}">
+      <view class="detail-title">商品详情</view>
+      <view class="product-description">{{dish.description || dish.desc}}</view>
+    </view>
+
+    <view class="page-spacer"></view>
+
+    <view class="action-bar">
+      <view class="action-summary">
+        <view class="bottom-price">
+          <text class="bottom-price-label">合计</text>
+          <text class="currency">¥</text>
+          <text class="bottom-price-value">{{totalPriceText}}</text>
+        </view>
+        <view class="stepper">
+          <view
+            class="stepper-button {{quantity <= 1 ? 'disabled' : ''}}"
+            bindtap="decreaseQuantity"
+            aria-label="减少数量">
+            <van-icon name="minus" size="26rpx"></van-icon>
+          </view>
+          <text class="quantity-value">{{quantity}}</text>
+          <view class="stepper-button primary" bindtap="increaseQuantity" aria-label="增加数量">
+            <van-icon name="plus" size="26rpx"></van-icon>
+          </view>
+        </view>
+      </view>
+
+      <view class="action-row">
+        <view class="action-slot share-slot">
+          <button class="share-action" open-type="share" aria-label="分享菜品"></button>
+          <view class="share-visual">
+            <van-icon name="share-o" size="34rpx" color="#30343a"></van-icon>
+            <text>分享</text>
+          </view>
+        </view>
+        <view class="action-slot buy-slot">
+          <button class="buy-button" bindtap="buyNow">立即购买</button>
+        </view>
+        <view class="action-slot add-slot">
+          <button
+            class="add-button {{dish.hasSaleSku ? '' : 'disabled'}}"
+            bindtap="addToCart"
+            disabled="{{!dish.hasSaleSku}}">
+            加入购物车
+          </button>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

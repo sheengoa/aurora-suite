@@ -1,0 +1,95 @@
+<!--pages/myhome/myhome.wxml-->
+<view class="page myhome-page">
+  <view class="member-hero">
+    <view class="hero-bg-mark one"></view>
+    <view class="hero-bg-mark two"></view>
+    <image class="hero-illustration" src="/images/shopping.png" mode="aspectFit"></image>
+
+    <view class="member-profile">
+      <view class="user-avatar profile-avatar">
+        <image src="{{userInfo && userInfo.avatarUrl ? userInfo.avatarUrl : '/images/tabBar/me.png'}}" mode="aspectFill"></image>
+      </view>
+      <view class="profile-info">
+        <view class="profile-kicker">{{userInfo && userInfo.nickName ? '门店会员' : '待授权'}}</view>
+        <view class="profile-name">{{userInfo && userInfo.nickName ? userInfo.nickName : '授权头像昵称'}}</view>
+        <view class="profile-sub" wx:if="{{userInfo && userInfo.phoneNumber}}">{{userInfo.phoneNumber}}</view>
+        <view class="profile-sub" wx:else>{{userInfo && userInfo.nickName ? '请先完善个人信息' : '点击完善，授权头像昵称'}}</view>
+      </view>
+      <view
+        class="profile-edit"
+        wx:if="{{!userInfo || !userInfo.phoneNumber}}"
+        bindtap="showAuthModal">
+        {{userInfo && userInfo.nickName ? '完善' : '授权'}}
+      </view>
+    </view>
+
+    <view class="hero-metrics">
+      <view class="metric-item">
+        <view class="metric-label">账户余额</view>
+        <view class="metric-value">¥{{userInfo.balance || 0}}</view>
+      </view>
+      <view class="metric-divider"></view>
+      <view class="metric-item" bindtap="goToOrder">
+        <view class="metric-label">订单记录</view>
+        <view class="metric-value small">查看</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="service-section">
+    <view class="section-heading">常用服务</view>
+    <view class="service-grid">
+      <view class="service-tile" bindtap="goToOrder">
+        <view class="service-icon-wrap red">
+          <image src="/images/tabBar/myOrder-active.png" mode="aspectFit"></image>
+        </view>
+        <view class="service-title">我的订单</view>
+        <view class="service-desc">消费记录</view>
+      </view>
+      <button class="service-tile contact-tile" open-type="contact">
+        <view class="service-icon-wrap amber">
+          <van-icon name="service-o" size="44rpx" color="#d94335" />
+        </view>
+        <view class="service-title">联系客服</view>
+        <view class="service-desc">问题反馈</view>
+      </button>
+    </view>
+  </view>
+
+  <!-- 管理员入口触发区域（隐藏在右下角） -->
+  <view class="admin-trigger" bindtap="onAdminTrigger"></view>
+
+  <!-- 密码输入弹窗 -->
+  <view class="modal-mask" wx:if="{{showPasswordModal}}" catchtap="noop">
+    <view class="modal-dialog" catchtap="stopPropagation">
+      <view class="modal-title">{{isFirstTime ? '设置管理员密码' : '管理员登录'}}</view>
+      <view class="modal-content">
+        <input 
+          class="password-input" 
+          type="password" 
+          placeholder="{{isFirstTime ? '请设置管理员密码（至少6位）' : '请输入管理员密码'}}" 
+          value="{{adminPassword}}"
+          bindinput="onPasswordInput"
+        />
+        <view class="password-hint" wx:if="{{isFirstTime}}">
+          首次设置，请设置一个安全的密码
+        </view>
+      </view>
+      <view class="modal-footer">
+        <view class="modal-btn cancel" bindtap="closePasswordModal">取消</view>
+        <view class="modal-btn confirm" bindtap="verifyPassword">{{isFirstTime ? '设置' : '登录'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 用户信息授权组件 -->
+  <avatar-nickname-modal 
+    showAvaModal="{{showAuthModal}}" 
+    bind:saved="onUserInfoSaved">
+  </avatar-nickname-modal>
+
+  <!-- 版本号显示 -->
+  <view class="version-info">
+    <text class="version-text">版本号：{{version}}</text>
+  </view>
+</view>

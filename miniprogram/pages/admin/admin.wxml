@@ -1,0 +1,165 @@
+<!--pages/admin/admin.wxml-->
+<view class="page">
+  <view class="admin-top" style="padding-top: {{statusBarHeight}}px;">
+    <view class="custom-navbar" style="height: {{navBarHeight}}px;">
+      <view
+        class="navbar-back"
+        style="width: {{navSideWidth}}px;"
+        bindtap="goBack"
+        hover-class="control-pressed"
+        hover-stay-time="120"
+        aria-role="button"
+        aria-label="返回上一页">
+        <text class="cuIcon-back navbar-back-icon" aria-hidden="true"></text>
+      </view>
+      <view
+        class="navbar-title"
+        style="left: {{navSideWidth}}px; right: {{navSideWidth}}px;">
+        管理员后台
+      </view>
+    </view>
+
+    <view class="header">
+      <view class="header-copy">
+        <view class="header-kicker">
+          <view class="header-kicker-dot"></view>
+          <text>店铺运营</text>
+        </view>
+        <view class="header-title">小店工作台</view>
+        <view class="header-subtitle">菜品、订单、会员与系统设置</view>
+      </view>
+
+      <view class="header-ticket" aria-hidden="true">
+        <view class="ticket-top">
+          <view class="ticket-mark"></view>
+          <view class="ticket-line ticket-line-strong"></view>
+        </view>
+        <view class="ticket-line"></view>
+        <view class="ticket-line ticket-line-short"></view>
+        <view class="ticket-footer">
+          <view class="ticket-status"></view>
+          <view class="ticket-mini-line"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 管理菜单 -->
+  <view class="menu-section">
+    <view class="section-title">数据管理</view>
+    <van-grid column-num="3" border="{{false}}" icon-size="56rpx" custom-class="menu-grid">
+      <van-grid-item 
+        icon="shop-o" 
+        icon-color="#d94335"
+        text="菜品管理" 
+        clickable
+        bind:click="goToDish"
+      />
+      <van-grid-item 
+        icon="friends-o" 
+        icon-color="#1989fa"
+        text="会员管理" 
+        clickable
+        bind:click="goToUser"
+      />
+      <van-grid-item 
+        icon="orders-o" 
+        icon-color="#07c160"
+        text="订单管理" 
+        clickable
+        bind:click="goToOrder"
+      />
+      <van-grid-item 
+        icon="credit-pay" 
+        icon-color="#ff976a"
+        text="充值选项管理" 
+        clickable
+        bind:click="goToRechargeOptions"
+      />
+      <van-grid-item 
+        icon="qr-invalid" 
+        icon-color="#38b2ac"
+        text="桌码管理" 
+        clickable
+        bind:click="goToTableCode"
+      />
+    </van-grid>
+  </view>
+
+  <!-- 系统设置 -->
+  <view class="menu-section">
+    <view class="section-title">系统设置</view>
+    <van-grid column-num="3" border="{{false}}" icon-size="56rpx" custom-class="menu-grid">
+      <van-grid-item
+        icon="setting-o"
+        icon-color="#d94335"
+        text="店铺设置"
+        clickable
+        bind:click="goToShopSettings"
+      />
+      <van-grid-item 
+        icon="lock" 
+        icon-color="#646566"
+        text="修改密码" 
+        clickable
+        bind:click="showChangePassword"
+      />
+      <van-grid-item 
+        icon="printer" 
+        icon-color="#ff9800"
+        text="打印机管理" 
+        clickable
+        bind:click="goToPrinter"
+      />
+    </van-grid>
+  </view>
+
+  <!-- 返回按钮 -->
+  <view
+    class="back-btn"
+    bindtap="goBack"
+    hover-class="soft-control-pressed"
+    hover-stay-time="120"
+    aria-role="button"
+    aria-label="返回上一页">
+    <text class="cuIcon-back back-icon" aria-hidden="true"></text>
+    <text>返回</text>
+  </view>
+
+  <!-- 修改密码弹窗 -->
+  <view class="modal-mask" wx:if="{{showPasswordModal}}" catchtap="closePasswordModal">
+    <view class="modal-dialog" catchtap="stopPropagation">
+      <view class="modal-title">修改密码</view>
+      <view class="modal-content">
+        <input 
+          class="password-input" 
+          type="password" 
+          placeholder="请输入原密码" 
+          value="{{oldPassword}}"
+          bindinput="onOldPasswordInput"
+          aria-label="原密码"
+        />
+        <input 
+          class="password-input" 
+          type="password" 
+          placeholder="请输入新密码（至少6位）" 
+          value="{{newPassword}}"
+          bindinput="onNewPasswordInput"
+          aria-label="新密码"
+        />
+        <input 
+          class="password-input" 
+          type="password" 
+          placeholder="请再次输入新密码" 
+          value="{{confirmPassword}}"
+          bindinput="onConfirmPasswordInput"
+          aria-label="确认新密码"
+        />
+      </view>
+      <view class="modal-footer">
+        <view class="modal-btn cancel" bindtap="closePasswordModal" hover-class="soft-control-pressed">取消</view>
+        <view class="modal-btn confirm" bindtap="confirmChangePassword" hover-class="control-pressed">确认修改</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,122 @@
+<view class="page">
+  <view class="campaign-hero">
+    <view class="hero-kicker">
+      <text class="cuIcon-crown"></text>
+      <text>会员储值计划</text>
+    </view>
+
+    <view class="merchant-pass">
+      <view class="merchant-mark cuIcon-shopfill"></view>
+      <view class="merchant-copy">
+        <view class="merchant-name">{{shopName}}</view>
+        <view class="merchant-caption">会员储值中心</view>
+      </view>
+      <view class="balance-panel">
+        <view class="balance-label">账户余额</view>
+        <view class="balance-amount">
+          <text class="balance-symbol">¥</text>
+          <text class="balance-num">{{balanceText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="trust-line">
+      <text class="cuIcon-safe"></text>
+      <text>充值金额将进入 {{shopName}} 会员账户</text>
+    </view>
+  </view>
+
+  <view class="recharge-section">
+    <view class="section-heading">
+      <view class="section-title-row">
+        <text class="section-icon cuIcon-moneybag"></text>
+        <text class="section-title">储值有礼</text>
+      </view>
+      <view class="section-subtitle">选择一个充值方案</view>
+    </view>
+
+    <view class="recharge-list">
+      <view
+        class="recharge-item {{selectedRechargeId === item._id ? 'selected' : ''}}"
+        wx:for="{{rechargeList}}"
+        wx:key="_id"
+        bindtap="selectRecharge"
+        data-recharge="{{item}}"
+        hover-class="plan-pressed">
+        <view class="recommend-badge" wx:if="{{item.isRecommend}}">推荐</view>
+        <view class="selected-mark" wx:if="{{selectedRechargeId === item._id}}">
+          <text class="cuIcon-check"></text>
+        </view>
+
+        <view class="plan-label">充值</view>
+        <view class="recharge-amount">
+          <text class="amount-symbol">¥</text>
+          <text class="amount-num">{{item.amount}}</text>
+        </view>
+
+        <view class="gift-line" wx:if="{{item.giveAmount > 0}}">
+          <text class="cuIcon-presentfill"></text>
+          <text>赠送 ¥{{item.giveAmount}}</text>
+        </view>
+        <view class="gift-line no-gift" wx:else>
+          <text class="cuIcon-card"></text>
+          <text>同额到账</text>
+        </view>
+
+        <view class="plan-divider"></view>
+        <view class="arrival-line">
+          <text>实际到账</text>
+          <text class="arrival-value">¥{{item.amount + item.giveAmount}}</text>
+        </view>
+        <view class="recharge-desc" wx:if="{{item.description}}">{{item.description}}</view>
+      </view>
+    </view>
+
+    <van-empty wx:if="{{rechargeList.length === 0}}" description="暂无充值方案" />
+  </view>
+
+  <view class="rules-section">
+    <view class="rules-heading">
+      <view class="rules-title">
+        <text class="cuIcon-notice"></text>
+        <text>储值须知</text>
+      </view>
+      <view class="rules-badge">请留意</view>
+    </view>
+
+    <view class="rule-item">
+      <view class="rule-icon cuIcon-rechargefill"></view>
+      <view class="rule-copy">
+        <view class="rule-title">即时到账</view>
+        <view class="rule-desc">支付成功后，充值金额与赠送额度进入会员余额。</view>
+      </view>
+    </view>
+    <view class="rule-item">
+      <view class="rule-icon cuIcon-service"></view>
+      <view class="rule-copy">
+        <view class="rule-title">仅限本店使用</view>
+        <view class="rule-desc">会员余额可用于本店点餐消费，不支持提现。</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="checkout-bar" wx:if="{{selectedRecharge}}">
+    <view class="checkout-summary">
+      <view class="checkout-label">本次支付</view>
+      <view class="checkout-price">
+        <text class="checkout-symbol">¥</text>
+        <text class="checkout-amount">{{selectedRecharge.amount}}</text>
+      </view>
+      <view class="checkout-arrival">到账 ¥{{selectedRecharge.amount + selectedRecharge.giveAmount}}</view>
+    </view>
+    <view class="checkout-btn" bindtap="confirmSelectedRecharge" hover-class="control-pressed">
+      <text>确认充值</text>
+      <text class="cuIcon-right"></text>
+    </view>
+  </view>
+
+  <avatar-nickname-modal
+    showAvaModal="{{showAuthModal}}"
+    bind:saved="handleUserAuth">
+  </avatar-nickname-modal>
+</view>

@@ -1,0 +1,396 @@
+/* pages/admin/printer/printer.wxss */
+.page {
+  min-height: 100vh;
+  background: #f7f7f7;
+  padding: 20rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 打印机信息卡片 */
+.printer-card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.printer-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.printer-status {
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.printer-status.online {
+  background: rgba(7, 193, 96, 0.1);
+  color: #07c160;
+}
+
+.printer-status.offline {
+  background: rgba(153, 153, 153, 0.1);
+  color: #999;
+}
+
+.card-content {
+  margin-bottom: 30rpx;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  font-size: 28rpx;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  color: #666;
+  min-width: 160rpx;
+}
+
+.info-value {
+  color: #333;
+  font-weight: 500;
+}
+
+.card-actions {
+  display: flex;
+  gap: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f5f5f5;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.action-btn.test {
+  background: linear-gradient(135deg, #07c160 0%, #39b54a 100%);
+  color: white;
+}
+
+.action-btn.query {
+  background: linear-gradient(135deg, #1989fa 0%, #2d8cf0 100%);
+  color: white;
+}
+
+.action-btn.delete {
+  background: rgba(245, 108, 108, 0.1);
+  color: #f56c6c;
+  border: 1rpx solid #f56c6c;
+}
+
+/* 空状态 */
+.empty-state {
+  background: white;
+  border-radius: 16rpx;
+  padding: 100rpx 40rpx;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  background: #fff3f0;
+  color: #d94335;
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+}
+
+.bind-btn {
+  display: inline-block;
+  padding: 24rpx 60rpx;
+  background: linear-gradient(135deg, #d94335 0%, #f36a5d 100%);
+  color: white;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+/* 设置区域 */
+.settings-section {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.setting-item {
+  margin-bottom: 40rpx;
+}
+
+.setting-item:last-child {
+  margin-bottom: 0;
+}
+
+.setting-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+  font-weight: 500;
+}
+
+.setting-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.option-btn {
+  padding: 16rpx 32rpx;
+  border: 2rpx solid #e5e5e5;
+  border-radius: 50rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: white;
+  transition: all 0.3s;
+}
+
+.option-btn.active {
+  background: linear-gradient(135deg, #d94335 0%, #f36a5d 100%);
+  color: white;
+  border-color: transparent;
+}
+
+/* 弹窗样式 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-dialog {
+  width: 600rpx;
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.modal-title {
+  padding: 40rpx 30rpx 20rpx;
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-content {
+  padding: 20rpx 30rpx 40rpx;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e5e5e5;
+  border-radius: 10rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 2rpx solid #e5e5e5;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+}
+
+.modal-btn.cancel {
+  color: #999;
+  border-right: 2rpx solid #e5e5e5;
+}
+
+.modal-btn.confirm {
+  color: #d94335;
+  font-weight: bold;
+}
+
+/* 高级版视觉覆盖 */
+.page {
+  background: linear-gradient(180deg, #fff7f3 0%, #f6f7f9 240rpx, #f6f7f9 100%);
+  padding: 24rpx;
+  padding-bottom: 48rpx;
+}
+
+.printer-card,
+.empty-state,
+.settings-section {
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(34, 37, 43, 0.05);
+  box-shadow: 0 14rpx 34rpx rgba(27, 36, 48, 0.07);
+}
+
+.card-header,
+.card-actions,
+.section-title {
+  border-color: #ebeef3;
+}
+
+.printer-name,
+.info-value,
+.section-title,
+.setting-label {
+  color: #22252b;
+}
+
+.info-label,
+.empty-text {
+  color: #9aa1ad;
+}
+
+.printer-status {
+  border-radius: 999rpx;
+}
+
+.printer-status.online {
+  background: #edf8f1;
+  color: #2f9e5b;
+}
+
+.empty-icon {
+  background: #fff4f0;
+  color: #d94335;
+}
+
+.bind-btn,
+.option-btn.active {
+  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
+  box-shadow: 0 12rpx 26rpx rgba(217, 67, 53, 0.2);
+}
+
+.action-btn {
+  border-radius: 999rpx;
+}
+
+.action-btn.test {
+  background: #edf8f1;
+  color: #2f9e5b;
+}
+
+.action-btn.query {
+  background: #edf8f5;
+  color: #1f9d8a;
+}
+
+.action-btn.delete {
+  background: #fff1ef;
+  color: #d94335;
+  border-color: rgba(217, 67, 53, 0.24);
+}
+
+.option-btn {
+  border-color: #e6e9ef;
+  color: #69707d;
+}
+
+.modal-mask {
+  background: rgba(19, 24, 33, 0.58);
+  backdrop-filter: blur(8rpx);
+}
+
+.modal-dialog {
+  width: 620rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 30rpx 90rpx rgba(19, 24, 33, 0.24);
+}
+
+.modal-title {
+  color: #22252b;
+  font-size: 34rpx;
+}
+
+.form-label {
+  color: #69707d;
+  font-weight: 600;
+}
+
+.form-input {
+  height: 88rpx;
+  border-color: #e6e9ef;
+  background: #fbfcfd;
+}
+
+.modal-footer {
+  border-top-color: #ebeef3;
+}
+
+.modal-btn.cancel {
+  border-right-color: #ebeef3;
+}
+
+.modal-btn.confirm {
+  color: #d94335;
+}
