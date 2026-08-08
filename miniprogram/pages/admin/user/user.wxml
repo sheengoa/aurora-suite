@@ -1,4 +1,5 @@
 <!--pages/admin/user/user.wxml-->
+<aurora-navbar id="page-navbar" title="会员管理"></aurora-navbar>
 <view class="page">
   <!-- 搜索栏 -->
   <view class="search-bar">
@@ -9,8 +10,8 @@
       bindinput="onSearchInput"
       bindconfirm="doSearch"
     />
-    <view class="search-btn" bindtap="doSearch">搜索</view>
-    <view class="clear-btn" wx:if="{{searchKeyword}}" bindtap="clearSearch">清空</view>
+    <view class="search-btn" bindtap="doSearch" hover-class="control-pressed">搜索</view>
+    <view class="clear-btn" wx:if="{{searchKeyword}}" bindtap="clearSearch" hover-class="soft-control-pressed">清空</view>
   </view>
 
   <!-- 用户列表 -->
@@ -32,7 +33,7 @@
         </view>
       </view>
       <view class="user-actions">
-        <view class="action-btn balance-btn" catchtap="showEditBalanceModal" data-user="{{item}}">修改余额</view>
+        <view class="action-btn balance-btn" catchtap="showEditBalanceModal" data-user="{{item}}" hover-class="control-pressed">修改余额</view>
       </view>
     </view>
 
@@ -64,8 +65,8 @@
         </view>
       </view>
       <view class="modal-footer">
-        <view class="modal-btn cancel" bindtap="closeBalanceModal">取消</view>
-        <view class="modal-btn confirm" bindtap="saveBalance">保存</view>
+        <view class="modal-btn cancel" bindtap="closeBalanceModal" hover-class="soft-control-pressed">取消</view>
+        <view class="modal-btn confirm" bindtap="saveBalance" hover-class="control-pressed">保存</view>
       </view>
     </view>
   </view>

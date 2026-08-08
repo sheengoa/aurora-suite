@@ -278,6 +278,36 @@
   font-weight: bold;
 }
 
+.action-btn {
+  min-height: 88rpx;
+  padding: 0 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: var(--control-radius);
+}
+
+.bind-btn {
+  min-height: 88rpx;
+  padding: 0 44rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: var(--control-radius);
+}
+
+.modal-btn {
+  height: 88rpx;
+  border-radius: var(--control-radius);
+}
+
+.modal-btn.cancel {
+  border-right: 0;
+  background: #f0f3f5;
+}
+
 /* 高级版视觉覆盖 */
 .page {
   background: linear-gradient(180deg, #fff7f3 0%, #f6f7f9 240rpx, #f6f7f9 100%);
@@ -393,4 +423,46 @@
 
 .modal-btn.confirm {
   color: #d94335;
+}
+
+/* 原型统一收束：打印机管理 */
+.printer-card,
+.empty-state,
+.settings-section {
+  border-radius: 20rpx;
+}
+
+.card-actions {
+  gap: 12rpx;
+}
+
+.action-btn,
+.bind-btn,
+.option-btn,
+.modal-btn {
+  min-height: 88rpx;
+  box-sizing: border-box;
+  border-radius: var(--control-radius) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-btn.confirm {
+  color: #ffffff;
+  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
+  box-shadow: 0 10rpx 22rpx rgba(217, 67, 53, 0.2);
+}
+
+.option-btn {
+  padding: 0 28rpx;
+}
+
+.form-input {
+  min-height: 88rpx;
+  border-radius: var(--field-radius) !important;
+}
+
+.modal-dialog {
+  border-radius: var(--modal-radius) !important;
 }

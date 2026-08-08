@@ -26,41 +26,6 @@
   color: #22252b;
 }
 
-.detail-navigation {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 30;
-  pointer-events: none;
-}
-
-.detail-navbar {
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-}
-
-.detail-back {
-  width: 88rpx;
-  height: 88rpx;
-  margin-left: 24rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  border: 1rpx solid rgba(32, 35, 41, 0.08);
-  border-radius: 50%;
-  color: #202329;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 8rpx 24rpx rgba(22, 27, 34, 0.14);
-  pointer-events: auto;
-}
-
-.detail-back-pressed {
-  background: #f1f2f4;
-}
-
 .hero {
   position: relative;
   width: 100%;
@@ -408,14 +373,14 @@
   width: 0;
   flex: 4 1 0%;
   margin-left: 16rpx;
-  border-radius: 16rpx;
+  border-radius: var(--control-radius);
 }
 
 .add-slot {
   width: 0;
   flex: 5 1 0%;
   margin-left: 16rpx;
-  border-radius: 16rpx;
+  border-radius: var(--control-radius);
 }
 
 .share-action,
@@ -466,7 +431,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16rpx;
+  border-radius: var(--control-radius);
   font-size: 27rpx;
   font-weight: 700;
 }
@@ -613,4 +578,92 @@
   .skeleton {
     animation: none;
   }
+}
+
+/* 原型统一收束：详情选择控件与底部操作区 */
+.category-label,
+.required-mark {
+  border-radius: var(--field-radius);
+}
+
+.sku-option,
+.tag-option {
+  min-height: 88rpx;
+  border-radius: var(--control-radius);
+}
+
+.stepper {
+  grid-template-columns: 88rpx 72rpx 88rpx;
+}
+
+.stepper-button {
+  width: 88rpx;
+  height: 88rpx;
+}
+
+.page-spacer {
+  height: 284rpx;
+}
+
+.action-bar {
+  right: 24rpx;
+  bottom: calc(16rpx + env(safe-area-inset-bottom));
+  left: 24rpx;
+  min-height: 220rpx;
+  padding: 16rpx;
+  border: 1rpx solid rgba(34, 37, 43, 0.06);
+  border-radius: 32rpx;
+  box-shadow: 0 18rpx 54rpx rgba(27, 36, 48, 0.16);
+}
+
+.share-slot,
+.buy-slot,
+.add-slot,
+.secondary-button,
+.primary-button {
+  border-radius: var(--control-radius);
+}
+
+.secondary-button,
+.primary-button {
+  height: 88rpx;
+}
+
+/* 步进器保留 88rpx 热区，视觉圆形与点餐页统一为 56rpx */
+.stepper-button {
+  position: relative;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.stepper-button::before {
+  content: '';
+  position: absolute;
+  left: 16rpx;
+  top: 16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.stepper-button:not(.primary)::before {
+  background: #eef1f5;
+  border: 1rpx solid #e1e5eb;
+}
+
+.stepper-button.primary::before {
+  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
+  box-shadow: 0 8rpx 18rpx rgba(217, 67, 53, 0.2);
+}
+
+.stepper-button.disabled::before {
+  background: #f4f5f6;
+  border-color: #e8ebef;
+}
+
+.stepper-button > van-icon {
+  position: relative;
+  z-index: 1;
 }

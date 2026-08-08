@@ -448,3 +448,56 @@ page {
   background: #d94335;
   box-shadow: 0 8rpx 18rpx rgba(217, 67, 53, 0.18);
 }
+
+.add-btn {
+  min-height: 88rpx;
+  border-radius: var(--control-radius);
+}
+
+.action-btn {
+  min-height: 88rpx;
+  border-radius: var(--control-radius);
+}
+
+.modal-btn {
+  height: 88rpx;
+  border-radius: var(--control-radius);
+}
+
+/* 原型统一收束：桌码管理 */
+.page-tools,
+.table-code-item {
+  border-radius: 20rpx;
+}
+
+.page-tools {
+  border-radius: var(--control-radius);
+}
+
+.tools-icon,
+.qr-shell {
+  border-radius: 18rpx;
+}
+
+.add-btn,
+.action-btn,
+.modal-btn {
+  min-height: 88rpx;
+  border-radius: var(--control-radius) !important;
+}
+
+.action-btn {
+  padding: 0 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-input {
+  min-height: 88rpx;
+  border-radius: var(--field-radius) !important;
+}
+
+.modal-dialog {
+  border-radius: var(--modal-radius) !important;
+}

@@ -398,7 +398,7 @@
   max-width: 240rpx;
   height: 88rpx;
   line-height: 88rpx;
-  border-radius: 44rpx;
+  border-radius: var(--control-radius);
   font-size: 32rpx;
   font-weight: 600;
   background-color: #d94335;
@@ -520,4 +520,57 @@
 .submit-btn {
   background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
   box-shadow: 0 12rpx 26rpx rgba(217, 67, 53, 0.22);
+}
+
+/* 原型统一收束：结算页改为浮动圆角提交栏 */
+.page {
+  padding-bottom: calc(172rpx + env(safe-area-inset-bottom));
+}
+
+.section {
+  border-radius: 20rpx;
+}
+
+.order-type-item {
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: var(--control-radius);
+}
+
+.remark-input,
+.pay-method-item {
+  border-radius: var(--field-radius);
+}
+
+.pay-method-item {
+  border-radius: var(--control-radius);
+}
+
+.edit-order-btn,
+.change-table-btn {
+  min-width: 88rpx;
+  min-height: 72rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: var(--control-radius);
+}
+
+.footer {
+  right: 24rpx;
+  bottom: calc(16rpx + env(safe-area-inset-bottom));
+  left: 24rpx;
+  min-height: 112rpx;
+  padding: 12rpx;
+  border: 1rpx solid rgba(34, 37, 43, 0.06);
+  border-radius: var(--floating-radius);
+  box-shadow: 0 18rpx 54rpx rgba(27, 36, 48, 0.18);
+}
+
+.submit-btn {
+  height: 88rpx;
+  line-height: 1.2;
+  border-radius: var(--control-radius);
 }

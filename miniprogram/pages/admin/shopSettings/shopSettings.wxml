@@ -1,3 +1,4 @@
+<aurora-navbar id="page-navbar" title="店铺设置"></aurora-navbar>
 <view class="page">
   <view class="preview-band">
     <view class="preview-label">

@@ -7,10 +7,10 @@
 /* 全局红色主题样式 */
 page {
   --theme-color: #d94335;
-  --theme-color-dark: #a82f28;
+  --theme-color-dark: #b9342b;
   --theme-color-light: #f36a5d;
-  --theme-soft: #fff4f0;
-  --theme-warm: #fff8f3;
+  --theme-soft: #fff0ed;
+  --theme-warm: #fff8f6;
   --accent-color: #1f9d8a;
   --warning-color: #c77a18;
   --success-color: #2f9e5b;
@@ -19,13 +19,37 @@ page {
   --text-muted: #9aa1ad;
   --line-color: #ebeef3;
   --card-bg: #ffffff;
-  --page-bg: #f6f7f9;
+  --page-bg: #f4f5f7;
   --card-shadow: 0 12rpx 34rpx rgba(27, 36, 48, 0.07);
   --soft-shadow: 0 8rpx 22rpx rgba(217, 67, 53, 0.16);
-  --theme-gradient: linear-gradient(135deg, #b9322a 0%, #d94335 56%, #f36a5d 100%);
+  --theme-gradient: linear-gradient(135deg, #d94335 0%, #c63b32 100%);
+  --space-1: 8rpx;
+  --space-2: 12rpx;
+  --space-3: 16rpx;
+  --space-4: 20rpx;
+  --space-5: 24rpx;
+  --space-6: 32rpx;
+  --field-radius: 14rpx;
+  --chip-radius: 999rpx;
+  --control-radius: 26rpx;
+  --card-radius: 16rpx;
+  --floating-radius: 40rpx;
+  --modal-radius: 24rpx;
+  --control-height: 88rpx;
+  --tabbar-height: 128rpx;
   background-color: #f6f7f9;
   color: #22252b;
   font-size: 28rpx;
+}
+
+button::after {
+  border: 0;
+}
+
+button,
+input,
+textarea {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
 .container {
@@ -34,26 +58,48 @@ page {
 
 /* 主题按钮 */
 .btn-theme {
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   background: var(--theme-gradient);
   color: white;
   border: none;
-  border-radius: 16rpx;
-  padding: 20rpx 40rpx;
+  border-radius: var(--control-radius);
+  padding: 0 40rpx;
   box-shadow: var(--soft-shadow);
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.btn-theme:active {
+  transform: scale(0.97);
+  opacity: 0.92;
 }
 
 .btn-theme-plain {
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   background: white;
   color: var(--theme-color);
   border: 2rpx solid rgba(217, 67, 53, 0.26);
-  border-radius: 16rpx;
-  padding: 20rpx 40rpx;
+  border-radius: var(--control-radius);
+  padding: 0 40rpx;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.btn-theme-plain:active {
+  transform: scale(0.97);
+  opacity: 0.92;
 }
 
 /* 卡片样式 */
 .card {
   background: white;
-  border-radius: 16rpx;
+  border-radius: var(--card-radius);
   padding: 30rpx;
   margin-bottom: 20rpx;
   box-shadow: var(--card-shadow);
@@ -126,7 +172,7 @@ textarea {
 }
 
 .modal-dialog {
-  border-radius: 16rpx !important;
+  border-radius: var(--modal-radius) !important;
   box-shadow: 0 30rpx 90rpx rgba(18, 24, 33, 0.22);
 }
 
@@ -136,12 +182,80 @@ textarea {
 .search-input,
 .option-input {
   border-color: #e6e9ef !important;
-  border-radius: 12rpx !important;
+  border-radius: var(--field-radius) !important;
   background: #fbfcfd;
+}
+
+.add-btn,
+.save-btn,
+.bind-btn,
+.refresh-btn,
+.modal-btn,
+.submit-btn,
+.recharge-btn,
+.cart-settle-btn,
+.settle-btn,
+.add-cart-btn,
+.checkout-btn,
+.primary-button,
+.secondary-button,
+.buy-button,
+.add-button,
+.empty-action {
+  min-height: var(--control-height);
+  box-sizing: border-box;
+  border-radius: var(--control-radius) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), opacity 160ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.add-btn:active,
+.save-btn:active,
+.bind-btn:active,
+.refresh-btn:active,
+.modal-btn:active,
+.submit-btn:active,
+.recharge-btn:active,
+.cart-settle-btn:active,
+.settle-btn:active,
+.add-cart-btn:active,
+.checkout-btn:active,
+.primary-button:active,
+.secondary-button:active,
+.buy-button:active,
+.add-button:active,
+.empty-action:active {
+  transform: scale(0.97);
+}
+
+.modal-btn.cancel,
+.secondary-button {
+  background: #f1f3f5;
+  color: var(--text-sub);
+  border: 1rpx solid #e5e8ec;
 }
 
 .section-title,
 .header-title,
 .modal-title {
   letter-spacing: 0;
+}
+
+/* 统一自定义导航下的滚动安全余量 */
+.tab-page-padding {
+  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+}
+
+/* 统一小程序自定义控件的按压反馈，避免出现系统默认方块遮罩 */
+.control-pressed {
+  opacity: 0.72;
+  transform: scale(0.98);
+}
+
+.soft-control-pressed {
+  opacity: 0.72;
+  background: #eef1f5 !important;
 }

@@ -1,0 +1,132 @@
+:host {
+  display: block;
+}
+
+.aurora-navbar {
+  position: relative;
+  z-index: 20;
+  box-sizing: border-box;
+  padding-right: 18rpx;
+  padding-left: 18rpx;
+  background: transparent;
+}
+
+.aurora-navbar--overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
+.aurora-navbar__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.aurora-navbar__back {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translateY(-50%);
+}
+
+.aurora-navbar__back::after {
+  display: none;
+}
+
+.aurora-navbar__pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 32px;
+  box-sizing: border-box;
+  border: 1rpx solid rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  color: #1f1f1f;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 4rpx 12rpx rgba(22, 27, 34, 0.1);
+}
+
+.aurora-navbar__icon {
+  position: relative;
+  display: grid;
+  width: 28rpx;
+  height: 28rpx;
+  flex: 0 0 28rpx;
+  place-items: center;
+}
+
+.aurora-navbar__line {
+  position: absolute;
+  top: 50%;
+  left: 5rpx;
+  width: 16rpx;
+  height: 4rpx;
+  border-radius: 999px;
+  background: currentColor;
+  transform-origin: left center;
+}
+
+.aurora-navbar__line--top {
+  transform: translateY(1rpx) rotate(-45deg);
+}
+
+.aurora-navbar__line--bottom {
+  transform: translateY(-1rpx) rotate(45deg);
+}
+
+.aurora-navbar__title {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  color: #202329;
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  pointer-events: none;
+}
+
+.aurora-navbar__title text {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aurora-navbar--brand .aurora-navbar__pill {
+  border-color: rgba(255, 255, 255, 0.62);
+  color: #b9322a;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 4rpx 12rpx rgba(104, 24, 20, 0.16);
+}
+
+.aurora-navbar--brand .aurora-navbar__title {
+  color: #ffffff;
+}
+
+.aurora-navbar__back--pressed {
+  opacity: 0.72;
+}
+
+@media (max-width: 360px) {
+  .aurora-navbar__pill {
+    width: 40px;
+  }
+}

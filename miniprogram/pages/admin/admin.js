@@ -6,10 +6,7 @@ Page({
     showPasswordModal: false,
     oldPassword: '',
     newPassword: '',
-    confirmPassword: '',
-    statusBarHeight: 0,
-    navBarHeight: 44,
-    navSideWidth: 52
+    confirmPassword: ''
   },
 
   onLoad(options) {
@@ -18,33 +15,6 @@ Page({
         wx.showToast({ title: '管理员登录已失效', icon: 'none' })
         setTimeout(() => wx.navigateBack(), 500)
       }
-    })
-
-    const windowInfo = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
-    const statusBarHeight = windowInfo.statusBarHeight || 20
-    let navBarHeight = 44
-    let navSideWidth = 52
-
-    try {
-      const menuButton = wx.getMenuButtonBoundingClientRect()
-      if (menuButton && menuButton.height) {
-        navBarHeight = Math.max(
-          44,
-          (menuButton.top - statusBarHeight) * 2 + menuButton.height
-        )
-        navSideWidth = Math.max(
-          52,
-          windowInfo.windowWidth - menuButton.left + 8
-        )
-      }
-    } catch (err) {
-      console.warn('获取胶囊位置失败，使用默认导航尺寸', err)
-    }
-
-    this.setData({
-      statusBarHeight,
-      navBarHeight,
-      navSideWidth
     })
 
     // 如果需要修改密码

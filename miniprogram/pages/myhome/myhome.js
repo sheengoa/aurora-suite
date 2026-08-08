@@ -31,6 +31,8 @@ Page({
   },
 
   onShow() {
+    const tabBar = this.getTabBar && this.getTabBar()
+    if (tabBar) tabBar.setData({ selected: 3 })
     if (app.globalData.userInfo) {
       this.applyUserInfo(app.globalData.userInfo)
     }

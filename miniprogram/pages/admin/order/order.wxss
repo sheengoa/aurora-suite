@@ -416,4 +416,55 @@
   color: #c77a18;
 }
 
+/* 统一后台操作控件 */
+.refresh-btn {
+  min-height: 72rpx;
+  padding: 0 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: var(--control-radius);
+}
 
+.user-avatar-placeholder {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #d94335;
+  background: #fff0ed;
+  font-size: 38rpx;
+}
+
+/* 原型统一收束：订单管理 */
+.filter-bar,
+.order-item {
+  border-radius: 20rpx;
+}
+
+.refresh-btn {
+  min-height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: var(--control-radius) !important;
+}
+
+.recharge-info,
+.goods-image,
+.tag-text {
+  border-radius: var(--field-radius);
+}
+
+.action-btn {
+  min-width: 112rpx;
+  min-height: 88rpx;
+  padding: 0 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--control-radius) !important;
+}

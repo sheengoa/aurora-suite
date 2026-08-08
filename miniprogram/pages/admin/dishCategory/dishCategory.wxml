@@ -1,7 +1,8 @@
 <!--pages/admin/dishCategory/dishCategory.wxml-->
+<aurora-navbar id="page-navbar" title="菜品分类管理"></aurora-navbar>
 <view class="page">
   <!-- 添加按钮 -->
-  <view class="add-btn" bindtap="showAddModal">
+  <view class="add-btn" bindtap="showAddModal" hover-class="control-pressed">
     <text class="add-icon">+</text>
     <text>添加分类</text>
   </view>
@@ -17,8 +18,8 @@
         </view>
       </view>
       <view class="category-actions">
-        <view class="action-btn edit" bindtap="showEditModal" data-category="{{item}}">编辑</view>
-        <view class="action-btn delete" bindtap="deleteCategory" data-category="{{item}}">删除</view>
+        <view class="action-btn edit" bindtap="showEditModal" data-category="{{item}}" hover-class="control-pressed">编辑</view>
+        <view class="action-btn delete" bindtap="deleteCategory" data-category="{{item}}" hover-class="control-pressed">删除</view>
       </view>
     </view>
 
@@ -60,10 +61,9 @@
         </view>
       </view>
       <view class="modal-footer">
-        <view class="modal-btn cancel" bindtap="closeModal">取消</view>
-        <view class="modal-btn confirm" bindtap="saveCategory">保存</view>
+        <view class="modal-btn cancel" bindtap="closeModal" hover-class="soft-control-pressed">取消</view>
+        <view class="modal-btn confirm" bindtap="saveCategory" hover-class="control-pressed">保存</view>
       </view>
     </view>
   </view>
 </view>
-

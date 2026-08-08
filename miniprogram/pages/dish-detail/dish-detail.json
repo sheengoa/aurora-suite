@@ -3,6 +3,7 @@
   "navigationBarTextStyle": "black",
   "backgroundColor": "#f6f7f9",
   "usingComponents": {
-    "van-icon": "/vant/icon/index"
+    "van-icon": "/vant/icon/index",
+    "aurora-navbar": "/components/aurora-navbar/index"
   }
 }

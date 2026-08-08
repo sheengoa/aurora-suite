@@ -1,0 +1,28 @@
+<view
+  class="aurora-navbar {{overlay ? 'aurora-navbar--overlay' : ''}} aurora-navbar--{{variant}}"
+  style="padding-top: {{statusBarHeight}}px;">
+  <view class="aurora-navbar__row" style="height: {{navBarHeight}}px;">
+    <button
+      class="aurora-navbar__back"
+      style="width: {{navSideWidth}}px;"
+      bindtap="handleBack"
+      hover-class="aurora-navbar__back--pressed"
+      hover-stay-time="120"
+      aria-role="button"
+      aria-label="返回上一页">
+      <view class="aurora-navbar__pill">
+        <view class="aurora-navbar__icon" aria-hidden="true">
+          <view class="aurora-navbar__line aurora-navbar__line--top"></view>
+          <view class="aurora-navbar__line aurora-navbar__line--bottom"></view>
+        </view>
+      </view>
+    </button>
+
+    <view
+      wx:if="{{title}}"
+      class="aurora-navbar__title"
+      style="left: {{navSideWidth}}px; right: {{titleRightSpace}}px;">
+      <text>{{title}}</text>
+    </view>
+  </view>
+</view>

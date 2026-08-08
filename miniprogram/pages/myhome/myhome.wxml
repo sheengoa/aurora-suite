@@ -7,7 +7,8 @@
 
     <view class="member-profile">
       <view class="user-avatar profile-avatar">
-        <image src="{{userInfo && userInfo.avatarUrl ? userInfo.avatarUrl : '/images/tabBar/me.png'}}" mode="aspectFill"></image>
+        <image wx:if="{{userInfo && userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+        <view wx:else class="profile-avatar-placeholder cuIcon-my" aria-label="未授权头像"></view>
       </view>
       <view class="profile-info">
         <view class="profile-kicker">{{userInfo && userInfo.nickName ? '门店会员' : '待授权'}}</view>

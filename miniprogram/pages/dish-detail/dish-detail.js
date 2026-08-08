@@ -28,14 +28,10 @@ Page({
     currentPriceText: '0.00',
     totalPriceText: '0.00',
     tableNumber: '',
-    shareImageUrl: '',
-    statusBarHeight: 20,
-    navBarHeight: 44
+    shareImageUrl: ''
   },
 
   onLoad(options) {
-    this.initNavigationLayout()
-
     const dishId = decodeURIComponent(options.id || options.dishId || '').trim()
     const tableNumber = normalizeTableNumber(options.tableNumber)
 
@@ -57,29 +53,6 @@ Page({
     }
 
     this.loadDish()
-  },
-
-  initNavigationLayout() {
-    const windowInfo = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
-    const statusBarHeight = windowInfo.statusBarHeight || 20
-    let navBarHeight = 44
-
-    try {
-      const menuButton = wx.getMenuButtonBoundingClientRect()
-      if (menuButton && menuButton.height) {
-        navBarHeight = Math.max(
-          44,
-          (menuButton.top - statusBarHeight) * 2 + menuButton.height
-        )
-      }
-    } catch (err) {
-      console.warn('获取胶囊位置失败，使用默认导航尺寸', err)
-    }
-
-    this.setData({
-      statusBarHeight,
-      navBarHeight
-    })
   },
 
   async loadDish() {

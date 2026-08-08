@@ -278,3 +278,82 @@
   color: #d94335;
 }
 
+/* 统一后台控件的尺寸与圆角 */
+.add-btn {
+  min-height: 88rpx;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+  border-radius: var(--control-radius);
+}
+
+.action-btn {
+  min-height: 88rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: var(--control-radius);
+}
+
+.modal-footer {
+  gap: 14rpx;
+  padding: 14rpx 20rpx calc(14rpx + env(safe-area-inset-bottom));
+  border-top-color: #ebeef3;
+}
+
+.modal-btn {
+  height: 88rpx;
+  border-radius: var(--control-radius);
+}
+
+.modal-btn.cancel {
+  border-right: 0;
+  color: #69707d;
+  background: #f0f3f5;
+}
+
+.modal-btn.confirm {
+  color: #ffffff;
+  background: #d94335;
+  box-shadow: 0 10rpx 22rpx rgba(217, 67, 53, 0.18);
+}
+
+/* 原型统一收束：分类管理 */
+.add-btn {
+  min-height: 88rpx;
+  padding: 0 30rpx;
+  border-radius: var(--control-radius) !important;
+}
+
+.category-list {
+  border-radius: 20rpx;
+}
+
+.category-item {
+  min-height: 128rpx;
+}
+
+.action-btn {
+  min-width: 106rpx;
+  min-height: 88rpx;
+  padding: 0 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--control-radius) !important;
+}
+
+.modal-dialog {
+  border-radius: var(--modal-radius) !important;
+}
+
+.form-input {
+  min-height: 88rpx;
+  border-radius: var(--field-radius) !important;
+}
+
+.modal-btn {
+  min-height: 88rpx;
+  border-radius: var(--control-radius) !important;
+}

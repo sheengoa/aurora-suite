@@ -1,23 +1,7 @@
 <!--pages/admin/admin.wxml-->
 <view class="page">
-  <view class="admin-top" style="padding-top: {{statusBarHeight}}px;">
-    <view class="custom-navbar" style="height: {{navBarHeight}}px;">
-      <view
-        class="navbar-back"
-        style="width: {{navSideWidth}}px;"
-        bindtap="goBack"
-        hover-class="control-pressed"
-        hover-stay-time="120"
-        aria-role="button"
-        aria-label="返回上一页">
-        <text class="cuIcon-back navbar-back-icon" aria-hidden="true"></text>
-      </view>
-      <view
-        class="navbar-title"
-        style="left: {{navSideWidth}}px; right: {{navSideWidth}}px;">
-        管理员后台
-      </view>
-    </view>
+  <view class="admin-top">
+    <aurora-navbar id="page-navbar" title="管理员后台" variant="brand"></aurora-navbar>
 
     <view class="header">
       <view class="header-copy">
@@ -47,71 +31,47 @@
   <!-- 管理菜单 -->
   <view class="menu-section">
     <view class="section-title">数据管理</view>
-    <van-grid column-num="3" border="{{false}}" icon-size="56rpx" custom-class="menu-grid">
-      <van-grid-item 
-        icon="shop-o" 
-        icon-color="#d94335"
-        text="菜品管理" 
-        clickable
-        bind:click="goToDish"
-      />
-      <van-grid-item 
-        icon="friends-o" 
-        icon-color="#1989fa"
-        text="会员管理" 
-        clickable
-        bind:click="goToUser"
-      />
-      <van-grid-item 
-        icon="orders-o" 
-        icon-color="#07c160"
-        text="订单管理" 
-        clickable
-        bind:click="goToOrder"
-      />
-      <van-grid-item 
-        icon="credit-pay" 
-        icon-color="#ff976a"
-        text="充值选项管理" 
-        clickable
-        bind:click="goToRechargeOptions"
-      />
-      <van-grid-item 
-        icon="qr-invalid" 
-        icon-color="#38b2ac"
-        text="桌码管理" 
-        clickable
-        bind:click="goToTableCode"
-      />
-    </van-grid>
+    <view class="menu-grid">
+      <view class="admin-item" bindtap="goToDish" hover-class="admin-item-pressed" aria-role="button" aria-label="菜品管理">
+        <view class="admin-icon tone-red cuIcon-shopfill" aria-hidden="true"></view>
+        <text>菜品管理</text>
+      </view>
+      <view class="admin-item" bindtap="goToUser" hover-class="admin-item-pressed" aria-role="button" aria-label="会员管理">
+        <view class="admin-icon tone-blue cuIcon-peoplefill" aria-hidden="true"></view>
+        <text>会员管理</text>
+      </view>
+      <view class="admin-item" bindtap="goToOrder" hover-class="admin-item-pressed" aria-role="button" aria-label="订单管理">
+        <view class="admin-icon tone-green cuIcon-formfill" aria-hidden="true"></view>
+        <text>订单管理</text>
+      </view>
+      <view class="admin-item" bindtap="goToRechargeOptions" hover-class="admin-item-pressed" aria-role="button" aria-label="充值选项管理">
+        <view class="admin-icon tone-orange cuIcon-moneybagfill" aria-hidden="true"></view>
+        <text>充值选项管理</text>
+      </view>
+      <view class="admin-item" bindtap="goToTableCode" hover-class="admin-item-pressed" aria-role="button" aria-label="桌码管理">
+        <view class="admin-icon tone-jade cuIcon-qr_code" aria-hidden="true"></view>
+        <text>桌码管理</text>
+      </view>
+    </view>
   </view>
 
   <!-- 系统设置 -->
   <view class="menu-section">
     <view class="section-title">系统设置</view>
-    <van-grid column-num="3" border="{{false}}" icon-size="56rpx" custom-class="menu-grid">
-      <van-grid-item
-        icon="setting-o"
-        icon-color="#d94335"
-        text="店铺设置"
-        clickable
-        bind:click="goToShopSettings"
-      />
-      <van-grid-item 
-        icon="lock" 
-        icon-color="#646566"
-        text="修改密码" 
-        clickable
-        bind:click="showChangePassword"
-      />
-      <van-grid-item 
-        icon="printer" 
-        icon-color="#ff9800"
-        text="打印机管理" 
-        clickable
-        bind:click="goToPrinter"
-      />
-    </van-grid>
+    <view class="menu-grid">
+      <view class="admin-item" bindtap="goToShopSettings" hover-class="admin-item-pressed" aria-role="button" aria-label="店铺设置">
+        <view class="admin-icon tone-red cuIcon-settingsfill" aria-hidden="true"></view>
+        <text>店铺设置</text>
+      </view>
+      <view class="admin-item" bindtap="showChangePassword" hover-class="admin-item-pressed" aria-role="button" aria-label="修改密码">
+        <view class="admin-icon tone-ink cuIcon-lock" aria-hidden="true"></view>
+        <text>修改密码</text>
+      </view>
+      <view class="admin-item" bindtap="goToPrinter" hover-class="admin-item-pressed" aria-role="button" aria-label="打印机管理">
+        <view class="admin-icon tone-amber cuIcon-file" aria-hidden="true"></view>
+        <text>打印机管理</text>
+      </view>
+    </view>
   </view>
 
   <!-- 返回按钮 -->

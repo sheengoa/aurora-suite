@@ -1,5 +1,6 @@
 <!--pages/settle/settle.wxml-->
 <wxs module="priceHelper" src="../../utils/priceHelper.wxs"></wxs>
+<aurora-navbar id="page-navbar" title="确认订单"></aurora-navbar>
 <view class="page">
   <!-- 订单类型选择 -->
   <view class="section">
@@ -7,13 +8,15 @@
       <view
         class="order-type-item {{orderType === 'dineIn' ? 'active' : ''}}"
         data-value="dineIn"
-        bind:tap="selectOrderType">
+        bind:tap="selectOrderType"
+        hover-class="soft-control-pressed">
         堂食
       </view>
       <view
         class="order-type-item {{orderType === 'takeOut' ? 'active' : ''}}"
         data-value="takeOut"
-        bind:tap="selectOrderType">
+        bind:tap="selectOrderType"
+        hover-class="soft-control-pressed">
         打包/自取
       </view>
     </view>
@@ -27,7 +30,7 @@
         <text class="table-code-value table-code-empty" wx:else>未绑定</text>
       </view>
       <view class="table-code-actions">
-        <view class="change-table-btn" bind:tap="scanTableCode">
+        <view class="change-table-btn" bind:tap="scanTableCode" hover-class="soft-control-pressed">
           {{tableNumber ? '换桌' : '扫码'}}
         </view>
       </view>
@@ -50,7 +53,7 @@
   <view class="section">
     <view class="section-title-wrapper">
       <text class="section-title">订单明细</text>
-      <view class="edit-order-btn" bind:tap="editOrder" data-table-number="{{tableNumber}}">
+      <view class="edit-order-btn" bind:tap="editOrder" data-table-number="{{tableNumber}}" hover-class="soft-control-pressed">
         修改
       </view>
     </view>
@@ -92,7 +95,8 @@
       <view
         class="pay-method-item {{payMethod === 'balance' ? 'active' : ''}}"
         data-value="balance"
-        bind:tap="selectPayMethod">
+        bind:tap="selectPayMethod"
+        hover-class="soft-control-pressed">
         <view class="pay-method-content">
           <view class="pay-method-left">
             <view class="pay-method-title">余额支付</view>
@@ -107,7 +111,8 @@
       <view
         class="pay-method-item {{payMethod === 'wechat' ? 'active' : ''}}"
         data-value="wechat"
-        bind:tap="selectPayMethod">
+        bind:tap="selectPayMethod"
+        hover-class="soft-control-pressed">
         <view class="pay-method-content">
           <view class="pay-method-left">
             <view class="pay-method-title">微信支付</view>
@@ -129,7 +134,8 @@
     </view>
     <view
       class="submit-btn {{submitting || !canSubmit ? 'disabled' : ''}}"
-      bind:tap="submitOrder">
+      bind:tap="submitOrder"
+      hover-class="control-pressed">
       <text wx:if="{{submitting}}">提交中...</text>
       <text wx:else>提交订单</text>
     </view>

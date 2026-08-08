@@ -3,7 +3,7 @@ const app = getApp()
 const db = wx.cloud.database()
 Page({
   data: {
-    tabs: ['全部', '点餐订单', '充值订单'],
+    tabs: ['全部', '进行中', '已完成'],
     currentTab: 0,
     orderList: [], // 订单列表
     // 分页相关
@@ -18,6 +18,8 @@ Page({
   },
 
   onShow() {
+    const tabBar = this.getTabBar && this.getTabBar()
+    if (tabBar) tabBar.setData({ selected: 2 })
     this.loadUserInfo()
     this.loadOrders()
   },
@@ -79,11 +81,19 @@ Page({
       
       // 根据标签筛选
       if (this.data.currentTab === 1) {
-        // 点餐订单
-        query.type = 'order'
+        query = _.and([
+          query,
+          { type: 'order' },
+          { status: _.nin([2, 3]) }
+        ])
       } else if (this.data.currentTab === 2) {
-        // 充值订单
-        query.type = 'recharge'
+        query = _.and([
+          query,
+          _.or([
+            { type: 'recharge' },
+            { status: _.in([2, 3]) }
+          ])
+        ])
       }
       
       const pageSize = this.data.orderPageSize
@@ -110,10 +120,46 @@ Page({
         return `${y}-${m}-${d} ${hh}:${mm}`
       }
 
-      const list = (res.data || []).map(order => ({
-        ...order,
-        createTimeText: order.createTime ? formatTime(order.createTime) : ''
-      }))
+      const formatMoney = (value) => Number(value || 0).toFixed(2)
+      const list = (res.data || []).map(order => {
+        const isRecharge = order.type === 'recharge'
+        const goods = Array.isArray(order.goods) ? order.goods : []
+        const firstGoods = goods[0] || {}
+        const totalCount = goods.reduce((sum, item) => sum + Number(item.count || 0), 0)
+        const orderCompleted = isRecharge || order.status === 2 || order.status === 3
+        const statusText = isRecharge
+          ? '已到账'
+          : order.status === 2
+            ? '已完成'
+            : order.status === 3
+              ? '已取消'
+              : '制作中'
+        const payText = order.payMethod === 'balance' ? '余额支付' : '微信支付'
+        const sceneText = order.orderType === 'takeOut'
+          ? '打包/自取'
+          : order.tableNumber
+            ? `${order.tableNumber} 号桌`
+            : '堂食'
+        const firstName = firstGoods.dishName || firstGoods.goodsName || '点餐商品'
+
+        return {
+          ...order,
+          displayOrderLabel: isRecharge ? '充值' : '订单',
+          displayOrderNo: order.orderNo || order._id || '',
+          statusText,
+          statusClass: orderCompleted ? 'success' : '',
+          statusIcon: orderCompleted ? 'cuIcon-roundcheck' : 'cuIcon-time',
+          goodsSummary: isRecharge
+            ? `会员储值 ¥${formatMoney(order.amount)}`
+            : `${firstName}${totalCount > 1 ? `等 ${totalCount} 件商品` : ''}`,
+          goodsMeta: isRecharge
+            ? `赠送 ¥${formatMoney(order.giveAmount)} · 到账 ¥${formatMoney(order.totalGet || Number(order.amount || 0) + Number(order.giveAmount || 0))}`
+            : `${sceneText} · ${payText}`,
+          primaryGoodsImage: isRecharge ? '' : (firstGoods.dishImage || firstGoods.image || ''),
+          amountText: formatMoney(isRecharge ? order.amount : (order.finalPrice || order.totalPrice)),
+          createTimeText: order.createTime ? formatTime(order.createTime) : ''
+        }
+      })
       
       const newList = append ? this.data.orderList.concat(list) : list
       const hasMore = list.length === pageSize

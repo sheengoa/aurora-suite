@@ -1,4 +1,5 @@
 <!--pages/admin/order/order.wxml-->
+<aurora-navbar id="page-navbar" title="订单管理"></aurora-navbar>
 <view class="page">
   <!-- 筛选栏 -->
   <view class="filter-bar">
@@ -8,7 +9,7 @@
       <van-tab title="点餐订单" />
     </van-tabs>
     <view class="refresh-bar">
-      <view class="refresh-btn" bindtap="refreshOrders">刷新</view>
+      <view class="refresh-btn" bindtap="refreshOrders" hover-class="control-pressed">刷新</view>
       <text class="refresh-tip">每 10 秒自动刷新</text>
     </view>
   </view>
@@ -18,8 +19,9 @@
     <view class="order-item" wx:for="{{orders}}" wx:key="_id">
       <!-- 订单头部 -->
       <view class="order-header">
-        <view class="order-user-info" wx:if="{{item.userAvatar}}">
-          <image class="user-avatar" src="{{item.userAvatar || '/images/my.png'}}" mode="aspectFill"></image>
+        <view class="order-user-info" wx:if="{{item.userAvatar || item.userNickName || item.userPhone}}">
+          <image wx:if="{{item.userAvatar}}" class="user-avatar" src="{{item.userAvatar}}" mode="aspectFill"></image>
+          <view wx:else class="user-avatar-placeholder cuIcon-my" aria-label="未授权头像"></view>
           <view class="user-info-text">
             <view class="user-name">{{item.userNickName || '未设置昵称'}}</view>
             <view class="user-phone" wx:if="{{item.userPhone}}">{{item.userPhone}}</view>
@@ -110,4 +112,3 @@
   </view>
 
 </view>
-

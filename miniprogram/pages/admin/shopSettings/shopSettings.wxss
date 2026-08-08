@@ -207,3 +207,30 @@ page {
 .control-pressed {
   opacity: 0.72;
 }
+
+.save-btn {
+  border-radius: var(--control-radius);
+}
+
+/* 原型统一收束：店铺设置 */
+.form-section,
+.store-preview {
+  border-radius: 20rpx;
+}
+
+.form-input,
+.form-textarea {
+  min-height: 88rpx;
+  border-radius: var(--field-radius) !important;
+}
+
+.save-bar {
+  padding: 12rpx 24rpx calc(12rpx + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.98);
+  border-top-color: #ebeef3;
+}
+
+.save-btn {
+  height: 88rpx;
+  border-radius: var(--control-radius) !important;
+}

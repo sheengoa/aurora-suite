@@ -1,6 +1,7 @@
 <!-- pages/admin/dish/dish.wxml -->
 <view class="page">
   <view class="workspace-header">
+    <aurora-navbar id="page-navbar" class="workspace-navbar" title="菜品管理" variant="brand"></aurora-navbar>
     <view class="workspace-copy">
       <view class="workspace-kicker">MENU ADMIN</view>
       <view class="workspace-title-row">

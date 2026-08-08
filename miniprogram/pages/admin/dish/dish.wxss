@@ -38,16 +38,6 @@
   box-shadow: inset 0 -2rpx 0 rgba(128, 26, 20, 0.12);
 }
 
-.workspace-header::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 34rpx;
-  width: 42rpx;
-  height: 10rpx;
-  background: rgba(255, 255, 255, 0.9);
-}
-
 .workspace-copy {
   min-width: 0;
 }
@@ -167,7 +157,7 @@
   color: var(--menu-ink);
   background: rgba(255, 255, 255, 0.72);
   border: 2rpx solid #e1e2e5;
-  border-radius: 10rpx;
+  border-radius: var(--control-radius);
   font-size: 26rpx;
 }
 
@@ -1433,6 +1423,18 @@
 
 /* Split menu management layout */
 .workspace-header {
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+
+.workspace-navbar {
+  width: calc(100% + 48rpx);
+  margin-right: -24rpx;
+  margin-left: -24rpx;
+  flex: 0 0 calc(100% + 48rpx);
+}
+
+.workspace-header {
   min-height: 132rpx;
   padding: 20rpx 24rpx 18rpx;
   background: var(--menu-brand-header);
@@ -1520,7 +1522,7 @@
   color: var(--menu-brand-dark);
   background: #ffffff;
   border: 2rpx solid var(--menu-brand-pale);
-  border-radius: 9rpx;
+  border-radius: var(--control-radius);
   font-size: 21rpx;
   font-weight: 700;
   white-space: nowrap;
@@ -1646,7 +1648,7 @@
   justify-content: center;
   color: var(--menu-ink);
   background: var(--menu-neutral);
-  border-radius: 8rpx;
+  border-radius: var(--control-radius);
   font-size: 25rpx;
 }
 
@@ -1667,7 +1669,7 @@
   max-width: none;
   margin: 0 0 14rpx;
   border: 2rpx solid #e7e7e9;
-  border-left: 5rpx solid var(--menu-brand);
+  border-left-color: #e7e7e9;
   border-radius: 12rpx;
   box-shadow: 0 6rpx 14rpx rgba(41, 41, 45, 0.05);
 }
@@ -1750,6 +1752,7 @@
 
 .action-btn {
   gap: 6rpx;
+  border-radius: var(--control-radius);
   font-size: 21rpx;
 }
 
@@ -1803,7 +1806,12 @@
   min-height: 88rpx;
   margin-top: 22rpx;
   padding: 0 18rpx;
+  border-radius: var(--control-radius);
   font-size: 23rpx;
+}
+
+.modal-btn {
+  border-radius: var(--control-radius);
 }
 
 .initial-loading {
@@ -1841,4 +1849,82 @@
     width: 154rpx;
     height: 154rpx;
   }
+}
+
+/* 原型统一收束：菜品工作台 */
+.workspace-header,
+.category-pane,
+.dish-content,
+.empty-state,
+.empty-category {
+  border-radius: 20rpx;
+}
+
+.admin-icon,
+.category-icon,
+.tools-icon,
+.empty-dish-icon,
+.category-control,
+.sku-delete,
+.tag-action-btn,
+.dish-image-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.category-control,
+.tag-action-btn {
+  width: 88rpx;
+  height: 88rpx;
+  box-sizing: border-box;
+  border-radius: var(--control-radius);
+}
+
+.sku-delete {
+  width: auto;
+  min-width: 112rpx;
+  min-height: 88rpx;
+  padding: 0 14rpx;
+  box-sizing: border-box;
+  border-radius: var(--control-radius);
+  white-space: nowrap;
+}
+
+.add-dish-btn,
+.category-add-button,
+.empty-action,
+.add-sku-btn,
+.add-tag-btn,
+.modal-btn {
+  min-height: 88rpx;
+  border-radius: var(--control-radius) !important;
+}
+
+.action-btn {
+  min-width: 96rpx;
+  min-height: 88rpx;
+  padding: 0 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  box-sizing: border-box;
+  border-radius: var(--control-radius) !important;
+}
+
+.form-input,
+.form-textarea,
+.sku-card,
+.tag-card {
+  border-radius: var(--field-radius) !important;
+}
+
+.form-input {
+  min-height: 88rpx;
+}
+
+.modal-dialog {
+  border-radius: var(--modal-radius) !important;
 }

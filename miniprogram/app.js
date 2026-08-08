@@ -50,19 +50,19 @@ App({
         try {
           // 等待openid获取完成
           await that.checkOpenid();
-          wx.hideLoading();
-          
-          // 调用原来的onLoad
-          if (originalOnLoad) {
-            originalOnLoad.call(this, options);
-          }
         } catch (error) {
           console.error('获取用户信息失败', error);
-          wx.hideLoading();
           wx.showToast({
             title: '加载失败，请重试',
             icon: 'none'
           });
+        } finally {
+          wx.hideLoading();
+
+          // 云初始化失败时也继续渲染页面，让页面自身显示空态或错误态。
+          if (originalOnLoad) {
+            originalOnLoad.call(this, options);
+          }
         }
       }
       

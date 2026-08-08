@@ -18,75 +18,58 @@ page {
 
 .campaign-hero {
   position: relative;
-  padding: 26rpx 24rpx 30rpx;
+  padding: 20rpx 24rpx 26rpx;
   overflow: hidden;
   background: #c93b32;
-}
-
-.campaign-hero::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: -120rpx;
-  width: 460rpx;
-  height: 100%;
-  opacity: 0.12;
-  background: repeating-linear-gradient(
-    135deg,
-    #ffffff 0,
-    #ffffff 2rpx,
-    transparent 2rpx,
-    transparent 24rpx
-  );
-}
-
-.hero-kicker {
-  position: relative;
-  z-index: 1;
-  margin-bottom: 16rpx;
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
-  color: #ffffff;
-  font-size: 24rpx;
-  font-weight: 700;
-}
-
-.hero-kicker .cuIcon-crown {
-  font-size: 26rpx;
 }
 
 .merchant-pass {
   position: relative;
   z-index: 1;
-  min-height: 146rpx;
-  padding: 26rpx 24rpx;
+  min-height: 128rpx;
+  padding: 18rpx 20rpx;
   overflow: hidden;
   display: flex;
   align-items: center;
   gap: 18rpx;
   background: #ffffff;
-  border: 1rpx solid rgba(255, 255, 255, 0.76);
-  border-radius: 16rpx;
-  box-shadow: 0 18rpx 40rpx rgba(103, 25, 20, 0.24);
+  border-radius: var(--card-radius);
+  box-shadow: 0 12rpx 30rpx rgba(91, 25, 21, 0.12);
 }
 
-.merchant-pass::after {
-  content: "";
+.merchant-ornament {
   position: absolute;
-  top: -60rpx;
-  right: 150rpx;
-  width: 200rpx;
-  height: 300rpx;
-  opacity: 0.07;
-  transform: rotate(24deg);
-  background: repeating-linear-gradient(
-    90deg,
-    #d94335 0,
-    #d94335 2rpx,
-    transparent 2rpx,
-    transparent 12rpx
-  );
+  top: -92rpx;
+  right: 168rpx;
+  width: 252rpx;
+  height: 312rpx;
+  transform: rotate(-18deg);
+}
+
+.merchant-ornament-arc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 2rpx solid rgba(217, 67, 53, 0.12);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ornament-arc-one {
+  width: 252rpx;
+  height: 312rpx;
+}
+
+.ornament-arc-two {
+  width: 184rpx;
+  height: 238rpx;
+  border-color: rgba(217, 67, 53, 0.1);
+}
+
+.ornament-arc-three {
+  width: 120rpx;
+  height: 166rpx;
+  border-color: rgba(217, 67, 53, 0.08);
 }
 
 .merchant-mark {
@@ -101,7 +84,7 @@ page {
   color: #ffffff;
   font-size: 37rpx;
   background: #d94335;
-  border-radius: 12rpx;
+  border-radius: var(--field-radius);
 }
 
 .merchant-copy {
@@ -119,14 +102,14 @@ page {
 }
 
 .merchant-name {
-  color: #2a292b;
+  color: #22252b;
   font-size: 31rpx;
   font-weight: 800;
 }
 
 .merchant-caption {
   margin-top: 9rpx;
-  color: #85858a;
+  color: #69707d;
   font-size: 22rpx;
   font-weight: 600;
 }
@@ -135,14 +118,14 @@ page {
   position: relative;
   z-index: 1;
   max-width: 236rpx;
-  padding-left: 20rpx;
+  padding-left: 18rpx;
   flex-shrink: 0;
   text-align: right;
-  border-left: 1rpx solid #efd9d6;
+  border-left: 1rpx solid #ebeef3;
 }
 
 .balance-label {
-  color: #8b898e;
+  color: #9aa1ad;
   font-size: 21rpx;
   font-weight: 600;
 }
@@ -189,7 +172,7 @@ page {
 }
 
 .recharge-section {
-  padding: 30rpx 24rpx 34rpx;
+  padding: 28rpx 24rpx 34rpx;
   background: #ffffff;
 }
 
@@ -199,26 +182,6 @@ page {
   align-items: flex-end;
   justify-content: space-between;
   gap: 18rpx;
-}
-
-.section-title-row {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 11rpx;
-}
-
-.section-icon {
-  width: 46rpx;
-  height: 46rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: #ffffff;
-  font-size: 25rpx;
-  background: #d94335;
-  border-radius: 10rpx;
 }
 
 .section-title {
@@ -236,19 +199,19 @@ page {
 .recharge-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18rpx;
+  gap: 16rpx;
 }
 
 .recharge-item {
   position: relative;
   width: 100%;
   min-width: 0;
-  min-height: 296rpx;
-  padding: 38rpx 22rpx 22rpx;
+  min-height: 252rpx;
+  padding: 32rpx 20rpx 18rpx;
   overflow: hidden;
   background: #ffffff;
-  border: 2rpx solid #e8e8eb;
-  border-radius: 16rpx;
+  border: 2rpx solid #dfe2e7;
+  border-radius: 28rpx;
   box-shadow: 0 10rpx 24rpx rgba(48, 39, 39, 0.06);
 }
 
@@ -256,21 +219,6 @@ page {
   background: #fff3f1;
   border-color: #d94335;
   box-shadow: 0 14rpx 30rpx rgba(217, 67, 53, 0.16);
-}
-
-.recommend-badge {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-height: 42rpx;
-  padding: 0 15rpx;
-  display: flex;
-  align-items: center;
-  color: #ffffff;
-  font-size: 21rpx;
-  font-weight: 750;
-  background: #d94335;
-  border-radius: 0 0 10rpx 0;
 }
 
 .selected-mark {
@@ -285,7 +233,7 @@ page {
   color: #ffffff;
   font-size: 22rpx;
   background: #d94335;
-  border-radius: 0 0 0 12rpx;
+  border-radius: 0 0 0 16rpx;
 }
 
 .plan-label {
@@ -319,22 +267,21 @@ page {
 }
 
 .gift-line {
-  min-height: 42rpx;
-  margin-top: 15rpx;
-  padding: 0 13rpx;
+  min-height: 34rpx;
+  margin-top: 13rpx;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   gap: 7rpx;
-  color: #c6372e;
+  color: #168576;
   font-size: 22rpx;
   font-weight: 700;
-  background: #fff0ed;
-  border-radius: 8rpx;
+  background: transparent;
 }
 
 .gift-line.no-gift {
   color: #77767b;
-  background: #f2f2f4;
+  background: transparent;
 }
 
 .gift-line text:first-child {
@@ -342,8 +289,8 @@ page {
 }
 
 .plan-divider {
-  margin: 20rpx 0 15rpx;
-  border-top: 1rpx dashed #dfd8cf;
+  margin: 14rpx 0 12rpx;
+  border-top: 1rpx solid #e8eaee;
 }
 
 .arrival-line {
@@ -458,35 +405,52 @@ page {
   line-height: 1.55;
 }
 
-.checkout-bar {
+.checkout-wrapper {
   position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  right: 24rpx;
+  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 16rpx);
+  left: 24rpx;
   z-index: 30;
-  min-height: 136rpx;
-  padding: 14rpx 20rpx calc(14rpx + env(safe-area-inset-bottom));
+}
+
+.checkout-bar {
+  padding: 12rpx;
   display: flex;
   align-items: center;
-  gap: 18rpx;
+  justify-content: space-between;
+  gap: 14rpx;
   background: #ffffff;
-  border-top: 1rpx solid #e7e7ea;
-  box-shadow: 0 -12rpx 34rpx rgba(47, 39, 39, 0.12);
+  border-radius: 40rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.15);
+}
+
+.checkout-left {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.checkout-icon {
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+  color: #d94335;
+  font-size: 42rpx;
+  border-radius: 30rpx;
+  background: #fff0ed;
 }
 
 .checkout-summary {
-  position: relative;
   min-width: 0;
   flex: 1;
 }
 
-.checkout-label {
-  color: #929196;
-  font-size: 20rpx;
-}
-
 .checkout-price {
-  margin-top: 3rpx;
   display: flex;
   align-items: baseline;
   color: #d94335;
@@ -500,7 +464,7 @@ page {
 }
 
 .checkout-amount {
-  max-width: 210rpx;
+  max-width: 220rpx;
   overflow: hidden;
   font-size: 38rpx;
   font-weight: 850;
@@ -509,21 +473,23 @@ page {
 }
 
 .checkout-arrival {
-  position: absolute;
-  right: 0;
-  bottom: 2rpx;
-  max-width: 170rpx;
+  margin-top: 4rpx;
+  max-width: 220rpx;
   overflow: hidden;
-  color: #b6372f;
+  color: #85858a;
   font-size: 20rpx;
-  font-weight: 650;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.checkout-right {
+  flex-shrink: 0;
+}
+
 .checkout-btn {
-  width: 284rpx;
-  height: 92rpx;
+  min-width: 240rpx;
+  height: 88rpx;
+  padding: 0 32rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -533,10 +499,44 @@ page {
   font-size: 29rpx;
   font-weight: 800;
   background: #d94335;
-  border-radius: 12rpx;
-  box-shadow: 0 10rpx 22rpx rgba(217, 67, 53, 0.24);
+  border-radius: 26rpx;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.checkout-btn:active {
+  transform: scale(0.97);
 }
 
 .checkout-btn .cuIcon-right {
   font-size: 22rpx;
+}
+
+/* 原型统一收束：储值方案与点餐操作栏同构 */
+.page {
+  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 160rpx);
+}
+
+.recharge-item {
+  border-radius: 28rpx;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.plan-pressed {
+  transform: scale(0.98);
+}
+
+.rules-badge,
+.rule-icon {
+  border-radius: var(--field-radius);
+}
+
+.checkout-bar {
+  min-height: 112rpx;
+  border: 1rpx solid rgba(34, 37, 43, 0.06);
+  border-radius: var(--floating-radius);
+  box-shadow: 0 18rpx 54rpx rgba(27, 36, 48, 0.18);
+}
+
+.checkout-btn {
+  border-radius: var(--control-radius);
 }

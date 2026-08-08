@@ -1,8 +1,10 @@
 {
+  "navigationStyle": "custom",
   "navigationBarTitleText": "打印机管理",
-  "usingComponents": {}
+  "usingComponents": {
+    "aurora-navbar": "/components/aurora-navbar/index"
+  }
 }
-
 
 
 

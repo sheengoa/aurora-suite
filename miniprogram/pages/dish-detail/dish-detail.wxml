@@ -1,19 +1,7 @@
 <wxs module="tagHelper" src="../../utils/tagHelper.wxs"></wxs>
 
 <view class="detail-page">
-  <view class="detail-navigation" style="padding-top: {{statusBarHeight}}px;">
-    <view class="detail-navbar" style="height: {{navBarHeight}}px;">
-      <view
-        class="detail-back"
-        bindtap="goBack"
-        hover-class="detail-back-pressed"
-        hover-stay-time="120"
-        aria-role="button"
-        aria-label="返回上一页">
-        <van-icon name="arrow-left" size="38rpx" color="#202329"></van-icon>
-      </view>
-    </view>
-  </view>
+  <aurora-navbar id="page-navbar" overlay="{{true}}"></aurora-navbar>
 
   <view class="loading-state" wx:if="{{loading}}">
     <view class="skeleton skeleton-hero"></view>
@@ -38,7 +26,7 @@
   <block wx:elif="{{dish}}">
     <view class="hero">
       <swiper
-        wx:if="{{dish.images && dish.images.length > 0}}"
+        wx:if="{{dish.images[0]}}"
         class="hero-swiper"
         circular="{{dish.images.length > 1}}"
         indicator-dots="{{dish.images.length > 1}}"
@@ -81,6 +69,7 @@
             wx:key="id"
             wx:for-item="sku"
             bindtap="selectSku"
+            hover-class="soft-control-pressed"
             data-id="{{sku.id}}">
             <view class="option-check" wx:if="{{selectedSkuId === sku.id}}">
               <van-icon name="success" size="20rpx"></van-icon>
@@ -111,7 +100,8 @@
             wx:for-item="option"
             bindtap="selectSingleTag"
             data-tag-id="{{tag.id}}"
-            data-option="{{option}}">
+            data-option="{{option}}"
+            hover-class="soft-control-pressed">
             {{option}}
           </view>
         </view>
@@ -124,7 +114,8 @@
             wx:for-item="option"
             bindtap="toggleMultipleTag"
             data-tag-id="{{tag.id}}"
-            data-option="{{option}}">
+            data-option="{{option}}"
+            hover-class="soft-control-pressed">
             {{option}}
           </view>
         </view>
@@ -149,11 +140,12 @@
           <view
             class="stepper-button {{quantity <= 1 ? 'disabled' : ''}}"
             bindtap="decreaseQuantity"
+            hover-class="soft-control-pressed"
             aria-label="减少数量">
             <van-icon name="minus" size="26rpx"></van-icon>
           </view>
           <text class="quantity-value">{{quantity}}</text>
-          <view class="stepper-button primary" bindtap="increaseQuantity" aria-label="增加数量">
+          <view class="stepper-button primary" bindtap="increaseQuantity" hover-class="control-pressed" aria-label="增加数量">
             <van-icon name="plus" size="26rpx"></van-icon>
           </view>
         </view>
@@ -168,12 +160,13 @@
           </view>
         </view>
         <view class="action-slot buy-slot">
-          <button class="buy-button" bindtap="buyNow">立即购买</button>
+          <button class="buy-button" bindtap="buyNow" hover-class="control-pressed">立即购买</button>
         </view>
         <view class="action-slot add-slot">
           <button
             class="add-button {{dish.hasSaleSku ? '' : 'disabled'}}"
             bindtap="addToCart"
+            hover-class="control-pressed"
             disabled="{{!dish.hasSaleSku}}">
             加入购物车
           </button>

@@ -1,6 +1,10 @@
 {
+  "navigationStyle": "custom",
   "navigationBarTitleText": "订单结算",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
   "usingComponents": {
+    "aurora-navbar": "/components/aurora-navbar/index",
     "van-cell": "/vant/cell/index",
     "van-cell-group": "/vant/cell-group/index",
     "van-radio-group": "/vant/radio-group/index",
@@ -11,6 +15,4 @@
     "avatar-nickname-modal": "/components/avatarNicknameModal/avatarNicknameModal"
   }
 }
-
-
 

@@ -1,11 +1,11 @@
 <view class="page">
   <view class="campaign-hero">
-    <view class="hero-kicker">
-      <text class="cuIcon-crown"></text>
-      <text>会员储值计划</text>
-    </view>
-
     <view class="merchant-pass">
+      <view class="merchant-ornament">
+        <view class="merchant-ornament-arc ornament-arc-one"></view>
+        <view class="merchant-ornament-arc ornament-arc-two"></view>
+        <view class="merchant-ornament-arc ornament-arc-three"></view>
+      </view>
       <view class="merchant-mark cuIcon-shopfill"></view>
       <view class="merchant-copy">
         <view class="merchant-name">{{shopName}}</view>
@@ -28,11 +28,8 @@
 
   <view class="recharge-section">
     <view class="section-heading">
-      <view class="section-title-row">
-        <text class="section-icon cuIcon-moneybag"></text>
-        <text class="section-title">储值有礼</text>
-      </view>
-      <view class="section-subtitle">选择一个充值方案</view>
+      <text class="section-title">储值有礼</text>
+      <text class="section-subtitle">选择充值方案</text>
     </view>
 
     <view class="recharge-list">
@@ -43,12 +40,11 @@
         bindtap="selectRecharge"
         data-recharge="{{item}}"
         hover-class="plan-pressed">
-        <view class="recommend-badge" wx:if="{{item.isRecommend}}">推荐</view>
         <view class="selected-mark" wx:if="{{selectedRechargeId === item._id}}">
           <text class="cuIcon-check"></text>
         </view>
 
-        <view class="plan-label">充值</view>
+        <view class="plan-label">充值金额</view>
         <view class="recharge-amount">
           <text class="amount-symbol">¥</text>
           <text class="amount-num">{{item.amount}}</text>
@@ -100,18 +96,24 @@
     </view>
   </view>
 
-  <view class="checkout-bar" wx:if="{{selectedRecharge}}">
-    <view class="checkout-summary">
-      <view class="checkout-label">本次支付</view>
-      <view class="checkout-price">
-        <text class="checkout-symbol">¥</text>
-        <text class="checkout-amount">{{selectedRecharge.amount}}</text>
+  <view class="checkout-wrapper" wx:if="{{selectedRecharge}}">
+    <view class="checkout-bar">
+      <view class="checkout-left">
+        <view class="checkout-icon cuIcon-moneybag"></view>
+        <view class="checkout-summary">
+          <view class="checkout-price">
+            <text class="checkout-symbol">¥</text>
+            <text class="checkout-amount">{{selectedRecharge.amount}}</text>
+          </view>
+          <view class="checkout-arrival">到账 ¥{{selectedRecharge.amount + selectedRecharge.giveAmount}}</view>
+        </view>
       </view>
-      <view class="checkout-arrival">到账 ¥{{selectedRecharge.amount + selectedRecharge.giveAmount}}</view>
-    </view>
-    <view class="checkout-btn" bindtap="confirmSelectedRecharge" hover-class="control-pressed">
-      <text>确认充值</text>
-      <text class="cuIcon-right"></text>
+      <view class="checkout-right">
+        <view class="checkout-btn" bindtap="confirmSelectedRecharge" hover-class="control-pressed">
+          <text>确认充值</text>
+          <text class="cuIcon-right"></text>
+        </view>
+      </view>
     </view>
   </view>
 

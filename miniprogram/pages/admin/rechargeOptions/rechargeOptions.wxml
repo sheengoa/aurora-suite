@@ -1,3 +1,4 @@
+<aurora-navbar id="page-navbar" title="充值选项管理"></aurora-navbar>
 <view class="page">
   <view class="page-tools">
     <view class="tools-title">

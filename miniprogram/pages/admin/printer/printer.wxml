@@ -1,4 +1,5 @@
 <!--pages/admin/printer/printer.wxml-->
+<aurora-navbar id="page-navbar" title="打印机管理"></aurora-navbar>
 <view class="page">
   <!-- 打印机信息卡片 -->
   <view class="printer-card" wx:if="{{printerInfo}}">
@@ -31,9 +32,9 @@
       </view>
     </view>
     <view class="card-actions">
-      <view class="action-btn test" bindtap="testPrint">测试打印</view>
-      <view class="action-btn query" bindtap="queryStatus">查询状态</view>
-      <view class="action-btn delete" bindtap="unbindPrinter">解绑</view>
+      <view class="action-btn test" bindtap="testPrint" hover-class="control-pressed">测试打印</view>
+      <view class="action-btn query" bindtap="queryStatus" hover-class="control-pressed">查询状态</view>
+      <view class="action-btn delete" bindtap="unbindPrinter" hover-class="soft-control-pressed">解绑</view>
     </view>
   </view>
 
@@ -41,7 +42,7 @@
   <view class="empty-state" wx:else>
     <view class="empty-icon">打印机</view>
     <view class="empty-text">未绑定打印机</view>
-    <view class="bind-btn" bindtap="showBindModal">绑定打印机</view>
+    <view class="bind-btn" bindtap="showBindModal" hover-class="control-pressed">绑定打印机</view>
   </view>
 
   <!-- 设置区域 -->
@@ -55,24 +56,28 @@
         <view 
           class="option-btn {{printerInfo.density === 4 ? 'active' : ''}}"
           bindtap="setDensity"
+          hover-class="soft-control-pressed"
           data-value="4">
           较淡
         </view>
         <view 
           class="option-btn {{printerInfo.density === 5 ? 'active' : ''}}"
           bindtap="setDensity"
+          hover-class="soft-control-pressed"
           data-value="5">
           普通
         </view>
         <view 
           class="option-btn {{printerInfo.density === 6 || !printerInfo.density ? 'active' : ''}}"
           bindtap="setDensity"
+          hover-class="soft-control-pressed"
           data-value="6">
           较浓
         </view>
         <view 
           class="option-btn {{printerInfo.density === 7 ? 'active' : ''}}"
           bindtap="setDensity"
+          hover-class="soft-control-pressed"
           data-value="7">
           浓
         </view>
@@ -86,18 +91,21 @@
         <view 
           class="option-btn {{printerInfo.printSpeed === 1 ? 'active' : ''}}"
           bindtap="setPrintSpeed"
+          hover-class="soft-control-pressed"
           data-value="1">
           慢
         </view>
         <view 
           class="option-btn {{printerInfo.printSpeed === 2 ? 'active' : ''}}"
           bindtap="setPrintSpeed"
+          hover-class="soft-control-pressed"
           data-value="2">
           中
         </view>
         <view 
           class="option-btn {{printerInfo.printSpeed === 3 ? 'active' : ''}}"
           bindtap="setPrintSpeed"
+          hover-class="soft-control-pressed"
           data-value="3">
           快
         </view>
@@ -111,36 +119,42 @@
         <view 
           class="option-btn {{printerInfo.volume === 0 ? 'active' : ''}}"
           bindtap="setVolume"
+          hover-class="soft-control-pressed"
           data-value="0">
           静音
         </view>
         <view 
           class="option-btn {{printerInfo.volume === 1 ? 'active' : ''}}"
           bindtap="setVolume"
+          hover-class="soft-control-pressed"
           data-value="1">
           1
         </view>
         <view 
           class="option-btn {{printerInfo.volume === 2 ? 'active' : ''}}"
           bindtap="setVolume"
+          hover-class="soft-control-pressed"
           data-value="2">
           2
         </view>
         <view 
           class="option-btn {{printerInfo.volume === 3 ? 'active' : ''}}"
           bindtap="setVolume"
+          hover-class="soft-control-pressed"
           data-value="3">
           3
         </view>
         <view 
           class="option-btn {{printerInfo.volume === 4 ? 'active' : ''}}"
           bindtap="setVolume"
+          hover-class="soft-control-pressed"
           data-value="4">
           4
         </view>
         <view 
           class="option-btn {{printerInfo.volume === 5 ? 'active' : ''}}"
           bindtap="setVolume"
+          hover-class="soft-control-pressed"
           data-value="5">
           5
         </view>
@@ -182,8 +196,8 @@
         </view>
       </view>
       <view class="modal-footer">
-        <view class="modal-btn cancel" bindtap="closeBindModal">取消</view>
-        <view class="modal-btn confirm" bindtap="confirmBind">确认</view>
+        <view class="modal-btn cancel" bindtap="closeBindModal" hover-class="soft-control-pressed">取消</view>
+        <view class="modal-btn confirm" bindtap="confirmBind" hover-class="control-pressed">确认</view>
       </view>
     </view>
   </view>

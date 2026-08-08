@@ -63,7 +63,7 @@
           <view
             class="goods-section"
             id="{{section.anchorId}}"
-            wx:if="{{!section.hidden && (section.goods.length > 0 || (section.loading && !section.prefetching))}}">
+            wx:if="{{!section.hidden}}">
             <view class="goods-section-title">
               <text>{{section.categoryName}}</text>
             </view>
@@ -93,11 +93,11 @@
                     <text class="price-prefix" wx:if="{{item.hasMultipleSkus}}">起</text>
                   </view>
                   <view class="goods-actions" catchtap="stopPropagation">
-                    <view class="action-btn reduce" wx:if="{{item.cartCount > 0}}" catchtap="reduceDishFromCart" data-goods="{{item}}">
+                    <view class="action-btn reduce" wx:if="{{item.cartCount > 0}}" catchtap="reduceDishFromCart" data-goods="{{item}}" hover-class="control-pressed">
                       <text>-</text>
                     </view>
                     <view class="goods-count" wx:if="{{item.cartCount > 0}}">{{item.cartCount}}</view>
-                    <view class="action-btn add" catchtap="addDishToCartDirect" data-goods="{{item}}">
+                    <view class="action-btn add" catchtap="addDishToCartDirect" data-goods="{{item}}" hover-class="control-pressed">
                       <text>+</text>
                     </view>
                   </view>
@@ -141,7 +141,7 @@
         </view>
       </view>
       <view class="cart-right">
-        <view class="settle-btn {{cartCount > 0 ? 'active' : ''}}" bindtap="goToSettle">
+        <view class="settle-btn {{cartCount > 0 ? 'active' : ''}}" bindtap="goToSettle" hover-class="control-pressed">
           去结算
         </view>
       </view>
@@ -171,11 +171,11 @@
           </view>
         </view>
         <view class="cart-goods-actions">
-          <view class="action-btn reduce" bindtap="reduceFromCart" data-id="{{index}}">
+          <view class="action-btn reduce" bindtap="reduceFromCart" data-id="{{index}}" hover-class="control-pressed">
             <text>-</text>
           </view>
           <view class="cart-count">{{item.count}}</view>
-          <view class="action-btn add" bindtap="addToCartFromCart" data-id="{{index}}">
+          <view class="action-btn add" bindtap="addToCartFromCart" data-id="{{index}}" hover-class="control-pressed">
             <text>+</text>
           </view>
         </view>
@@ -194,7 +194,7 @@
         </view>
       </view>
       <view class="cart-footer-right">
-        <view class="cart-settle-btn" bindtap="goToSettle">去结算</view>
+        <view class="cart-settle-btn" bindtap="goToSettle" hover-class="control-pressed">去结算</view>
       </view>
     </view>
   </view>
@@ -294,7 +294,7 @@
           <text class="price-symbol">¥</text>
           <text class="price-num">{{modalTotalPrice}}</text>
         </view>
-        <view class="add-cart-btn" bindtap="confirmAddToCart">加入购物车</view>
+        <view class="add-cart-btn" bindtap="confirmAddToCart" hover-class="control-pressed">加入购物车</view>
       </view>
     </view>
   </view>
