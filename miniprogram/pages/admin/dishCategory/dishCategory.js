@@ -14,10 +14,6 @@ Page({
     }
   },
 
-  onLoad() {
-    this.loadCategories()
-  },
-
   onShow() {
     this.loadCategories()
   },

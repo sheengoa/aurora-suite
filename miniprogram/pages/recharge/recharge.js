@@ -72,6 +72,8 @@ Page({
 
   // 加载充值套餐列表
   async loadRechargeList(append = false) {
+    let loadFailed = false
+
     if (this.data.loadingRecharge) {
       return
     }
@@ -115,13 +117,17 @@ Page({
     } catch (err) {
       console.error('加载充值套餐失败', err)
       if (!append) {
-        wx.showToast({ title: '加载失败', icon: 'none' })
+        loadFailed = true
       }
     } finally {
       if (!append) {
         wx.hideLoading()
       }
       this.setData({ loadingRecharge: false })
+    }
+
+    if (loadFailed) {
+      wx.showToast({ title: '加载失败', icon: 'none' })
     }
   },
 

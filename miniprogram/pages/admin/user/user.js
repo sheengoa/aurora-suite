@@ -17,16 +17,14 @@ Page({
     loadingUsers: false
   },
 
-  onLoad() {
-    this.loadUsers()
-  },
-
   onShow() {
     this.loadUsers()
   },
 
   // 加载用户列表
   async loadUsers(append = false) {
+    let loadFailed = false
+
     if (this.data.loadingUsers) {
       return
     }
@@ -65,16 +63,17 @@ Page({
     } catch (err) {
       console.error('加载用户失败', err)
       if (!append) {
-        wx.showToast({
-          title: '加载失败',
-          icon: 'none'
-        })
+        loadFailed = true
       }
     } finally {
       if (!append) {
         wx.hideLoading()
       }
       this.setData({ loadingUsers: false })
+    }
+
+    if (loadFailed) {
+      wx.showToast({ title: '加载失败', icon: 'none' })
     }
   },
 

@@ -283,7 +283,7 @@ wx.cloud.init({
 - `adminSession` - 管理员短期会话表
 
 
-> ⚠️ **重要**：不要再把所有集合设置为 `read: true, write: true`。请在云开发控制台逐个集合配置以下自定义安全规则。云函数使用服务端权限，不受这些前端规则限制。
+> ⚠️ **重要**：不要再把所有集合设置为 `read: true, write: true`。请在云开发控制台逐个集合配置以下自定义安全规则。仓库的 `database-rules/` 目录提供了可直接粘贴到对应集合“安全规则”中的 JSON 文件；云函数使用服务端权限，不受这些前端规则限制。
 
 | 集合 | 规则 |
 | --- | --- |
@@ -329,7 +329,9 @@ wx.cloud.init({
 const bgImg = "把images文件夹的bg.png上传到云存储，得到url。你的背景图片URL放这里"
 ```
 
-#### 7. 删除images/githubImg文件夹，避免代码包过大，没法上传代码
+#### 7. 确认发布包排除部署素材
+
+`project.config.json` 已通过 `packOptions.ignore` 排除仅供文档展示的 `images/githubImg` 目录，以及上传到云存储后使用的 `images/bg.png`，无需从仓库手工删除这些素材。
 
 #### 8. 运行项目
 

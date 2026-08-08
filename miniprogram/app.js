@@ -43,22 +43,12 @@ App({
       
       // 重写onLoad方法
       pageConfig.onLoad = async function(options) {
-        wx.showLoading({
-          title: '加载中...',
-        });
-        
         try {
           // 等待openid获取完成
           await that.checkOpenid();
         } catch (error) {
           console.error('获取用户信息失败', error);
-          wx.showToast({
-            title: '加载失败，请重试',
-            icon: 'none'
-          });
         } finally {
-          wx.hideLoading();
-
           // 云初始化失败时也继续渲染页面，让页面自身显示空态或错误态。
           if (originalOnLoad) {
             originalOnLoad.call(this, options);
@@ -104,6 +94,7 @@ App({
         resolve(openid);
       } catch (error) {
         console.error('获取openid失败', error);
+        that.globalData.openidPromise = null;
         reject(error);
       }
     });

@@ -14,16 +14,14 @@ Page({
     customActionStyle: ''
   },
 
-  onLoad() {
-    this.loadTableCodeList()
-  },
-
   onShow() {
     this.loadTableCodeList()
   },
 
   // 加载桌码列表
   async loadTableCodeList() {
+    let loadFailed = false
+
     try {
       wx.showLoading({ title: '加载中...' })
 
@@ -54,12 +52,13 @@ Page({
       })
     } catch (err) {
       console.error('加载桌码列表失败', err)
-      wx.showToast({
-        title: '加载失败',
-        icon: 'none'
-      })
+      loadFailed = true
     } finally {
       wx.hideLoading()
+    }
+
+    if (loadFailed) {
+      wx.showToast({ title: '加载失败', icon: 'none' })
     }
   },
 

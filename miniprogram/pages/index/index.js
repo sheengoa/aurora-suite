@@ -32,6 +32,7 @@ Page({
     sectionMetrics: [],
     hasMoreGoodsSections: false,
     allGoodsEmpty: false,
+    menuLoadError: false,
     cart: {},
     cartCount: 0,
     cartTotalPrice: 0,
@@ -190,9 +191,13 @@ Page({
   },
 
   async loadMenu(showLoading = true) {
+    let feedbackTitle = ''
+
     if (showLoading) {
       wx.showLoading({ title: '加载中...' })
     }
+
+    this.setData({ menuLoadError: false })
 
     try {
       const res = await wx.cloud.callFunction({
@@ -215,7 +220,8 @@ Page({
         loadingNextSection: false,
         prefetchingSections: false,
         hasMoreGoodsSections: visibleList.length > 0,
-        allGoodsEmpty: visibleList.length === 0
+        allGoodsEmpty: visibleList.length === 0,
+        menuLoadError: false
       })
 
       if (visibleList.length > 0) {
@@ -223,18 +229,34 @@ Page({
         this.setActiveSection(0, false)
         this.prefetchUntilScrollable()
       } else if (showLoading) {
-        wx.showToast({ title: '暂无可售菜品', icon: 'none' })
+        feedbackTitle = '暂无可售菜品'
       }
     } catch (err) {
       console.error('加载菜品分类失败', err)
+      this.setData({
+        menuList: [],
+        goodsSections: [],
+        currentMenuId: '',
+        hasMoreGoodsSections: false,
+        allGoodsEmpty: false,
+        menuLoadError: true
+      })
       if (showLoading) {
-        wx.showToast({ title: '加载失败', icon: 'none' })
+        feedbackTitle = '菜品加载失败'
       }
     } finally {
       if (showLoading) {
         wx.hideLoading()
       }
     }
+
+    if (feedbackTitle) {
+      wx.showToast({ title: feedbackTitle, icon: 'none' })
+    }
+  },
+
+  retryLoadMenu() {
+    this.loadMenu()
   },
 
   getSectionIndexById(categoryId) {

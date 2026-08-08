@@ -21,16 +21,14 @@ Page({
     loadingOptions: false
   },
 
-  onLoad() {
-    this.loadOptions()
-  },
-
   onShow() {
     this.loadOptions()
   },
 
   // 加载充值选项列表
   async loadOptions(append = false) {
+    let loadFailed = false
+
     if (this.data.loadingOptions) {
       return
     }
@@ -64,16 +62,17 @@ Page({
     } catch (err) {
       console.error('加载充值选项失败', err)
       if (!append) {
-        wx.showToast({
-          title: '加载失败',
-          icon: 'none'
-        })
+        loadFailed = true
       }
     } finally {
       if (!append) {
         wx.hideLoading()
       }
       this.setData({ loadingOptions: false })
+    }
+
+    if (loadFailed) {
+      wx.showToast({ title: '加载失败', icon: 'none' })
     }
   },
 

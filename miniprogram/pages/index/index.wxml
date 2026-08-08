@@ -16,6 +16,19 @@
 
   <!-- 主内容区 -->
   <view class="main-content">
+    <view class="menu-error-state" wx:if="{{menuLoadError}}">
+      <view class="menu-error-mark">!</view>
+      <view class="menu-error-title">菜品加载失败</view>
+      <view class="menu-error-description">请检查网络后重新加载</view>
+      <view
+        class="menu-error-action"
+        bindtap="retryLoadMenu"
+        hover-class="control-pressed"
+        aria-role="button"
+        aria-label="重新加载菜品">重新加载</view>
+    </view>
+
+    <block wx:else>
     <!-- 左侧分类菜单 -->
     <scroll-view
       class="menu-sidebar VerticalNav nav"
@@ -120,6 +133,7 @@
         <van-empty wx:if="{{allGoodsEmpty}}" description="暂无菜品" />
       </view>
     </scroll-view>
+    </block>
   </view>
 
   <!-- 悬浮购物车 -->

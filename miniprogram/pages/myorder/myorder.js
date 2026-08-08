@@ -13,10 +13,6 @@ Page({
     loadingOrders: false
   },
 
-  onLoad() {
-    this.loadOrders()
-  },
-
   onShow() {
     const tabBar = this.getTabBar && this.getTabBar()
     if (tabBar) tabBar.setData({ selected: 2 })
@@ -60,6 +56,8 @@ Page({
 
   // 加载订单列表
   async loadOrders(append = false) {
+    let loadFailed = false
+
     if (this.data.loadingOrders) {
       return
     }
@@ -171,10 +169,18 @@ Page({
       })
     } catch (err) {
       console.error('加载订单失败', err)
-      wx.showToast({ title: '加载失败', icon: 'none' })
+      if (!append) {
+        loadFailed = true
+      }
     } finally {
-      wx.hideLoading()
+      if (!append) {
+        wx.hideLoading()
+      }
       this.setData({ loadingOrders: false })
+    }
+
+    if (loadFailed) {
+      wx.showToast({ title: '加载失败', icon: 'none' })
     }
   },
 

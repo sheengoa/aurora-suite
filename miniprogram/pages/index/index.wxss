@@ -37,6 +37,60 @@
   overflow: hidden;
 }
 
+.menu-error-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 40rpx 48rpx 220rpx;
+  text-align: center;
+}
+
+.menu-error-mark {
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30rpx;
+  background: #fff0ed;
+  color: #d94335;
+  font-size: 48rpx;
+  font-weight: 700;
+}
+
+.menu-error-title {
+  margin-top: 28rpx;
+  color: #333;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.menu-error-description {
+  margin-top: 12rpx;
+  color: #777;
+  font-size: 26rpx;
+  line-height: 1.5;
+}
+
+.menu-error-action {
+  min-width: 208rpx;
+  height: 88rpx;
+  margin-top: 32rpx;
+  padding: 0 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 26rpx;
+  background: #d94335;
+  color: white;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
 /* 左侧分类菜单 */
 .menu-sidebar {
   width: 180rpx;

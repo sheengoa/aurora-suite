@@ -73,7 +73,16 @@
     "tabSize": 2
   },
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "images/githubImg"
+      },
+      {
+        "type": "file",
+        "value": "images/bg.png"
+      }
+    ],
     "include": []
   },
   "appid": "填写你的小程序AppID",
