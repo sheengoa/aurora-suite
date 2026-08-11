@@ -19,7 +19,8 @@ exports.main = async (event) => {
         throw new Error('订单不存在')
       }
       if (!order.pay_status) {
-        if (order.paymentStatus !== 'pending') {
+        const isLegacyPendingOrder = !order.paymentStatus && (order.status === undefined || order.status === 0)
+        if (order.paymentStatus !== 'pending' && !isLegacyPendingOrder) {
           throw new Error('该订单当前不可取消')
         }
         await transaction.collection('order').doc(order._id).update({

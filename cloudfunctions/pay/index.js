@@ -25,11 +25,12 @@ exports.main = async (event) => {
   const orderRes = await db.collection('order').where({
     _id: orderId,
     _openid: openid,
-    pay_status: false,
-    paymentStatus: 'pending'
+    pay_status: false
   }).limit(1).get()
   const order = orderRes.data && orderRes.data[0]
-  if (!order) {
+  const paymentStatus = order && order.paymentStatus
+  const isLegacyPendingOrder = order && !paymentStatus && (order.status === undefined || order.status === 0)
+  if (!order || (paymentStatus !== 'pending' && !isLegacyPendingOrder)) {
     throw new Error('订单不存在、已支付或已关闭')
   }
   const expiresAt = order.expiresAt && new Date(order.expiresAt).getTime()
