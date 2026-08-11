@@ -50,13 +50,13 @@
         </view>
       </view>
 
-      <view class="orders-state" wx:if="{{orderLoadError && orderList.length === 0}}">
+      <view class="orders-state" wx:if="{{showOrderErrorState}}">
         <view class="orders-state-icon cuIcon-warn"></view>
         <view class="orders-state-title">订单加载失败</view>
         <view class="orders-state-copy">请检查网络后重新加载</view>
         <view class="orders-retry" bindtap="retryLoadOrders" hover-class="control-pressed" aria-role="button" aria-label="重新加载订单">重新加载</view>
       </view>
-      <van-empty wx:elif="{{hasLoadedOrders && !loadingOrders && orderList.length === 0}}" description="暂无订单" />
+      <van-empty wx:elif="{{showOrderEmptyState}}" description="暂无订单" />
     </view>
   </view>
 

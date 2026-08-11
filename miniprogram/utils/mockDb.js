@@ -188,7 +188,8 @@ class MockQuery {
   }
 
   async add({ data }) {
-    const record = { ...(data || {}), _id: (data && data._id) || createId(this.collectionName) }
+    const record = { _id: (data && data._id) || createId(this.collectionName) }
+    applyData(record, data || {})
     state[this.collectionName] = state[this.collectionName] || []
     state[this.collectionName].push(record)
     persist()

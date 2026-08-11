@@ -1,46 +1,48 @@
 <!--components/avatarNicknameModal/avatarNicknameModal.wxml-->
-<view class="super-page-box" catchtouchmove="catchtouchmove" wx:if="{{showAvaModal}}">
-  <view class="super-modal-box">
-    <view class="super-modal-body-box">
-      <view class="super-modal-title flex-jc-ac">
-        完善个人信息
-        <view class="modal-close-hit" bindtap="closeModalTap" hover-class="soft-control-pressed" aria-role="button" aria-label="关闭个人信息弹层">
-          <image src="./image/close.png" mode="aspectFit"></image>
+<root-portal wx:if="{{showAvaModal}}">
+  <view class="super-page-box" catchtouchmove="catchtouchmove">
+    <view class="super-modal-box">
+      <view class="super-modal-body-box">
+        <view class="super-modal-title flex-jc-ac">
+          完善个人信息
+          <view class="modal-close-hit" bindtap="closeModalTap" hover-class="soft-control-pressed" aria-role="button" aria-label="关闭个人信息弹层">
+            <image src="./image/close.png" mode="aspectFit"></image>
+          </view>
         </view>
+
+        <scroll-view class="super-modal-content" scroll-y enhanced show-scrollbar="{{false}}">
+          <view class="super-avatar-box">
+            <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="chooseavatar" aria-label="选择头像"></button>
+            <view class="avatar-img-box flex-jc-ac">
+              <image wx:if="{{avatarUrl && !avatarLoadFailed}}" src="{{avatarUrl}}" mode="scaleToFill" binderror="onAvatarImageError" style="height: 175rpx; width: 175rpx; border-radius: 20rpx;"></image>
+              <image wx:else src="./image/moren.png" mode="widthFix" style="height: 105rpx; width: 105rpx;"></image>
+            </view>
+            <view class="avatar-select-tips flex-jc-ac">点击获取头像</view>
+          </view>
+
+          <view class="super-nick-name-box flex-jb-ac">
+            <view class="nick-name-box flex-ac">
+              <view style="font-size: 28rpx; color: #222; width: 150rpx;">昵称</view>
+              <input class="nick-name-input" placeholder="点击获取您的昵称" type="nickname" value="{{nickName}}" bindblur="bindblur"></input>
+            </view>
+            <view class="flex-jc-ac">
+              <image src="./image/arrow.png" mode="widthFix" style="height: 45rpx; width: 45rpx;"></image>
+            </view>
+          </view>
+
+          <view class="super-phone-box flex-jb-ac">
+            <view class="phone-label-box flex-ac">
+              <view style="font-size: 28rpx; color: #222; width: 150rpx;">手机号</view>
+              <view class="phone-display">{{displayPhoneNumber || '未获取'}}</view>
+            </view>
+            <button class="phone-btn" open-type="getPhoneNumber" bindgetphonenumber="getphonenumber">
+              {{phoneNumber ? '重新获取' : '获取手机号'}}
+            </button>
+          </view>
+        </scroll-view>
+
+        <view class="apply-btn flex-jc-ac" bindtap="saveUserInfo" hover-class="control-pressed" aria-role="button" aria-label="保存个人信息">保存</view>
       </view>
-
-      <scroll-view class="super-modal-content" scroll-y enhanced show-scrollbar="{{false}}">
-        <view class="super-avatar-box">
-          <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="chooseavatar" aria-label="选择头像"></button>
-          <view class="avatar-img-box flex-jc-ac">
-            <image wx:if="{{avatarUrl && !avatarLoadFailed}}" src="{{avatarUrl}}" mode="scaleToFill" binderror="onAvatarImageError" style="height: 175rpx; width: 175rpx; border-radius: 20rpx;"></image>
-            <image wx:else src="./image/moren.png" mode="widthFix" style="height: 105rpx; width: 105rpx;"></image>
-          </view>
-          <view class="avatar-select-tips flex-jc-ac">点击获取头像</view>
-        </view>
-
-        <view class="super-nick-name-box flex-jb-ac">
-          <view class="nick-name-box flex-ac">
-            <view style="font-size: 28rpx; color: #222; width: 150rpx;">昵称</view>
-            <input class="nick-name-input" placeholder="点击获取您的昵称" type="nickname" value="{{nickName}}" bindblur="bindblur"></input>
-          </view>
-          <view class="flex-jc-ac">
-            <image src="./image/arrow.png" mode="widthFix" style="height: 45rpx; width: 45rpx;"></image>
-          </view>
-        </view>
-
-        <view class="super-phone-box flex-jb-ac">
-          <view class="phone-label-box flex-ac">
-            <view style="font-size: 28rpx; color: #222; width: 150rpx;">手机号</view>
-            <view class="phone-display">{{displayPhoneNumber || '未获取'}}</view>
-          </view>
-          <button class="phone-btn" open-type="getPhoneNumber" bindgetphonenumber="getphonenumber">
-            {{phoneNumber ? '重新获取' : '获取手机号'}}
-          </button>
-        </view>
-      </scroll-view>
-
-      <view class="apply-btn flex-jc-ac" bindtap="saveUserInfo" hover-class="control-pressed" aria-role="button" aria-label="保存个人信息">保存</view>
     </view>
   </view>
-</view>
+</root-portal>

@@ -69,6 +69,8 @@ Page({
     loadingOrders: false,
     hasLoadedOrders: false,
     orderLoadError: false,
+    showOrderErrorState: false,
+    showOrderEmptyState: false,
     showOrderDetail: false,
     selectedOrder: null,
     cancellingOrder: false,
@@ -115,7 +117,9 @@ Page({
       // 重置分页状态
       orderPage: 0,
       orderHasMore: true,
-      orderList: []
+      orderList: [],
+      showOrderErrorState: false,
+      showOrderEmptyState: false
     }, () => this.loadOrders())
   },
 
@@ -133,7 +137,11 @@ Page({
 
     if (!append) {
       wx.showLoading({ title: '加载中...' })
-      this.setData({ orderLoadError: false })
+      this.setData({
+        orderLoadError: false,
+        showOrderErrorState: false,
+        showOrderEmptyState: false
+      })
     }
     
     try {
@@ -247,15 +255,20 @@ Page({
         orderPage: page,
         orderHasMore: hasMore,
         hasLoadedOrders: true,
-        orderLoadError: false
+        orderLoadError: false,
+        showOrderErrorState: false,
+        showOrderEmptyState: newList.length === 0
       })
     } catch (err) {
       console.error('加载订单失败', err)
       if (!append && requestId === this.orderRequestId) {
         loadFailed = true
+        const showOrderErrorState = this.data.orderList.length === 0
         this.setData({
           hasLoadedOrders: true,
-          orderLoadError: this.data.orderList.length === 0
+          orderLoadError: showOrderErrorState,
+          showOrderErrorState,
+          showOrderEmptyState: false
         })
       }
     } finally {
