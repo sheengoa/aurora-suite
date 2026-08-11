@@ -18,16 +18,42 @@ exports.main = async (event) => {
       if (!order || order._openid !== openid) {
         throw new Error('订单不存在')
       }
-      if (order.type !== 'order' || !order.pay_status || order.status !== 0) {
+      if (!order.pay_status) {
+        const isLegacyPendingOrder = !order.paymentStatus && (order.status === undefined || order.status === 0)
+        if (order.paymentStatus !== 'pending' && !isLegacyPendingOrder) {
+          throw new Error('该订单当前不可取消')
+        }
+        await transaction.collection('order').doc(order._id).update({
+          data: {
+            status: 3,
+            fulfillmentStatus: 'cancelled',
+            paymentStatus: 'cancelled',
+            cancelTime: db.serverDate()
+          }
+        })
+        return { refundAmount: 0, paymentCancelled: true }
+      }
+      if (order.type !== 'order' || order.status !== 0) {
         throw new Error('该订单当前不可取消')
       }
       if (order.payMethod !== 'balance') {
-        throw new Error('微信支付订单请联系商家退款')
+        await transaction.collection('order').doc(order._id).update({
+          data: {
+            status: 3,
+            fulfillmentStatus: 'cancelled',
+            refundStatus: 'requested',
+            refundRequestTime: db.serverDate(),
+            cancelTime: db.serverDate()
+          }
+        })
+        return { refundAmount: Number(order.finalPrice || 0), refundRequested: true }
       }
 
       await transaction.collection('order').doc(order._id).update({
         data: {
           status: 3,
+          fulfillmentStatus: 'cancelled',
+          refundStatus: 'refunded',
           cancelTime: db.serverDate()
         }
       })
@@ -44,6 +70,19 @@ exports.main = async (event) => {
         await transaction.collection('user').doc(user._id).update({
           data: {
             balance: db.command.inc(refundAmount)
+          }
+        })
+        await transaction.collection('balanceLog').add({
+          data: {
+            userId: user._id,
+            userOpenid: openid,
+            orderId: order._id,
+            type: 'refund',
+            amount: refundAmount,
+            before: Number(user.balance || 0),
+            after: Number(user.balance || 0) + refundAmount,
+            reason: '余额订单取消退款',
+            createTime: db.serverDate()
           }
         })
       }

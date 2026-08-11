@@ -7,7 +7,7 @@ const db = cloud.database()
 exports.main = async () => {
   try {
     const res = await db.collection('admin')
-      .field({ shopName: true, welcomeText: true })
+      .field({ shopName: true, welcomeText: true, isOpen: true })
       .limit(1)
       .get()
     return { success: true, data: (res.data || [])[0] || {} }

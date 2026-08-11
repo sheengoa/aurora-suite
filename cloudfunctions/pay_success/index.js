@@ -152,12 +152,22 @@ function generatePrintContent(order) {
   return content
 }
 
+async function recordPrintState(orderId, data) {
+  if (!orderId || String(orderId).startsWith('TEST_')) return
+  try {
+    await db.collection('order').doc(orderId).update({ data })
+  } catch (err) {
+    console.error('记录打印状态失败', err)
+  }
+}
+
 // 异步打印订单（不阻塞主流程）
 async function printOrderAsync(orderId, orderData) {
   try {
     // 1. 查询打印机信息
     const printerRes = await db.collection('printer').limit(1).get()
     if (!printerRes.data || printerRes.data.length === 0) {
+      await recordPrintState(orderId, { printStatus: 0, printError: '尚未绑定打印机' })
       console.log('未绑定打印机，跳过打印')
       return
     }
@@ -189,9 +199,19 @@ async function printOrderAsync(orderId, orderData) {
     if (printRes.result && printRes.result.success) {
       console.log('打印订单成功', printRes.result)
     } else {
+      await recordPrintState(orderId, {
+        printStatus: 3,
+        printError: String(printRes.result && (printRes.result.error || printRes.result.errmsg) || '打印失败').slice(0, 160),
+        printFailTime: db.serverDate()
+      })
       console.error('打印订单失败', printRes.result)
     }
   } catch (err) {
+    await recordPrintState(orderId, {
+      printStatus: 3,
+      printError: String(err.message || '打印失败').slice(0, 160),
+      printFailTime: db.serverDate()
+    })
     console.error('打印订单异常', err)
     // 不抛出异常，避免影响支付回调
   }
@@ -261,6 +281,7 @@ exports.main = async (event, context) => {
       await transaction.collection('order').doc(orderId).update({
         data: {
           pay_status: true,
+          paymentStatus: 'paid',
           payTime: db.serverDate()
         }
       })
@@ -280,6 +301,19 @@ exports.main = async (event, context) => {
           await transaction.collection('user').doc(user._id).update({
             data: {
               balance: db.command.inc(Number(totalGet) || 0)
+            }
+          })
+          await transaction.collection('balanceLog').add({
+            data: {
+              userId: user._id,
+              userOpenid: openid,
+              orderId: order._id,
+              type: 'recharge',
+              amount: Number(totalGet) || 0,
+              before: Number(user.balance || 0),
+              after: Number(user.balance || 0) + (Number(totalGet) || 0),
+              reason: '微信支付充值到账',
+              createTime: db.serverDate()
             }
           })
         }

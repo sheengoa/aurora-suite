@@ -1,17 +1,38 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
+const crypto = require('crypto')
 
 cloud.init({
   env: '填写你的环境ID'
 })
 
 const db = cloud.database()
+const CALLBACK_TOKEN = process.env.PRINT_CALLBACK_TOKEN || ''
+
+function safeEqual(left, right) {
+  const leftBuffer = Buffer.from(String(left || ''))
+  const rightBuffer = Buffer.from(String(right || ''))
+  return leftBuffer.length === rightBuffer.length && crypto.timingSafeEqual(leftBuffer, rightBuffer)
+}
+
+function getCallbackToken(event = {}) {
+  const headers = event.headers || {}
+  const query = event.queryStringParameters || {}
+  return headers['x-print-callback-token'] || headers['X-Print-Callback-Token'] || query.token || event.callbackToken || ''
+}
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  console.log('打印回调数据:', event)
-  
   try {
+    if (!CALLBACK_TOKEN) {
+      console.error('打印回调未配置 PRINT_CALLBACK_TOKEN')
+      return { code: -1, message: '打印回调未配置' }
+    }
+    if (!safeEqual(getCallbackToken(event), CALLBACK_TOKEN)) {
+      console.error('打印回调鉴权失败')
+      return { code: -1, message: '无效回调' }
+    }
+
     // 解析 body（如果是字符串则解析为 JSON）
     let bodyData = event
     if (event.body) {
@@ -58,6 +79,14 @@ exports.main = async (event, context) => {
       if (printStatus === 2 || printStatus === 3 || printStatus === 4) {
         if (outTradeNo) {
           try {
+            const orderRes = await db.collection('order').doc(outTradeNo).get()
+            const order = orderRes.data
+            if (!order || order.type !== 'order' || order.pay_status !== true) {
+              return { code: -1, message: '订单不存在或尚未支付' }
+            }
+            if (String(order.printId || '') === String(printId || '') && Number(order.printStatus) === printStatus) {
+              return { code: 0, message: 'ok' }
+            }
             // 更新订单的打印状态
             await db.collection('order').doc(outTradeNo).update({
               data: {
@@ -65,7 +94,8 @@ exports.main = async (event, context) => {
                 printTime: db.serverDate(),  // 打印时间
                 printId: printId,  // 打印任务ID
                 sn: sn,  // 打印机SN
-                rtime: rtime  // 打印回调时间
+                rtime: rtime,  // 打印回调时间
+                printError: printStatus === 3 ? String(dataObj.message || dataObj.error || '打印失败').slice(0, 160) : ''
               }
             })
             console.log('订单打印状态更新成功', {
@@ -104,10 +134,9 @@ exports.main = async (event, context) => {
     
   } catch (err) {
     console.error('处理打印回调异常', err)
-    // 即使异常也返回成功，避免重复回调
     return {
-      code: 0,
-      message: 'ok'
+      code: -1,
+      message: '处理失败'
     }
   }
 }

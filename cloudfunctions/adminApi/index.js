@@ -7,6 +7,9 @@ const db = cloud.database()
 const _ = db.command
 const SESSION_TTL = 12 * 60 * 60 * 1000
 const MAX_PAGE_SIZE = 100
+const ORDER_TRANSITIONS = { 0: [1, 3], 1: [4, 3], 4: [2, 3], 2: [], 3: [] }
+const FULFILLMENT_STATUS = { 0: 'pending_accept', 1: 'preparing', 2: 'completed', 3: 'cancelled', 4: 'ready' }
+const ORDER_STATUS_TEXT = { 0: '待接单', 1: '制作中', 2: '已完成', 3: '已取消', 4: '待取餐' }
 
 const READABLE_COLLECTIONS = new Set([
   'admin',
@@ -19,7 +22,7 @@ const READABLE_COLLECTIONS = new Set([
 ])
 
 const WRITABLE_FIELDS = {
-  admin: ['shopName', 'welcomeText', 'updateTime'],
+  admin: ['shopName', 'welcomeText', 'isOpen', 'updateTime'],
   dish: [
     'name', 'price', 'description', 'categoryId', 'categoryName', 'image',
     'images', 'status', 'sort', 'tags', 'skus', 'createTime', 'updateTime',
@@ -217,7 +220,14 @@ async function listUsers(event) {
     .skip(page * pageSize)
     .limit(pageSize)
     .end()
-  const list = res.list || []
+  const list = (res.list || []).map(user => {
+    const phoneNumber = String(user.phoneNumber || '')
+    const maskedPhone = /^1\d{10}$/.test(phoneNumber)
+      ? `${phoneNumber.slice(0, 3)}****${phoneNumber.slice(7)}`
+      : ''
+    const { phoneNumber: _phoneNumber, ...safeUser } = user
+    return { ...safeUser, maskedPhone }
+  })
   return { list, hasMore: list.length === pageSize, page }
 }
 
@@ -226,6 +236,111 @@ async function removeAllSessions() {
   await Promise.all((res.data || []).map(item => (
     db.collection('adminSession').doc(item._id).remove()
   )))
+}
+
+function money(value) {
+  const result = Math.round(Number(value) * 100) / 100
+  if (!Number.isFinite(result) || result < 0 || result > 1000000) throw new Error('余额参数无效')
+  return result
+}
+
+async function transitionOrder(event, operatorOpenid) {
+  const orderId = String(event.orderId || '')
+  const targetStatus = Number(event.targetStatus)
+  const reason = String(event.reason || '').trim().slice(0, 80)
+  if (!orderId || !Number.isInteger(targetStatus)) throw new Error('订单状态参数无效')
+
+  return db.runTransaction(async transaction => {
+    const res = await transaction.collection('order').doc(orderId).get()
+    const order = res.data
+    if (!order || order.type !== 'order' || order.pay_status !== true) throw new Error('订单不存在或尚未支付')
+    const currentStatus = Number.isInteger(order.status) ? order.status : 0
+    if (!(ORDER_TRANSITIONS[currentStatus] || []).includes(targetStatus)) {
+      throw new Error(`订单无法从${ORDER_STATUS_TEXT[currentStatus] || '当前状态'}变为${ORDER_STATUS_TEXT[targetStatus] || '目标状态'}`)
+    }
+    if (targetStatus === 3 && !reason) throw new Error('取消订单必须填写原因')
+
+    const update = {
+      status: targetStatus,
+      fulfillmentStatus: FULFILLMENT_STATUS[targetStatus],
+      statusUpdateTime: db.serverDate(),
+      statusHistory: _.push({
+        from: currentStatus,
+        to: targetStatus,
+        reason,
+        operatorOpenid,
+        createTime: new Date()
+      })
+    }
+    if (targetStatus === 3 && order.payMethod === 'balance') {
+      const refundAmount = money(order.finalPrice || 0)
+      const userRes = await transaction.collection('user').where({ _openid: order._openid }).limit(1).get()
+      const user = userRes.data && userRes.data[0]
+      if (!user) throw new Error('会员不存在，无法完成退款')
+      const before = money(user.balance || 0)
+      await transaction.collection('user').doc(user._id).update({ data: { balance: before + refundAmount } })
+      await transaction.collection('balanceLog').add({
+        data: {
+          userId: user._id,
+          userOpenid: user._openid || '',
+          orderId,
+          type: 'refund',
+          amount: refundAmount,
+          before,
+          after: before + refundAmount,
+          reason: reason || '管理员取消订单退款',
+          operatorOpenid,
+          createTime: db.serverDate()
+        }
+      })
+      update.refundStatus = 'refunded'
+    } else if (targetStatus === 3 && order.payMethod === 'wechat') {
+      update.refundStatus = 'requested'
+      update.refundRequestTime = db.serverDate()
+    }
+    if (targetStatus === 2) update.completeTime = db.serverDate()
+    if (targetStatus === 3) update.cancelTime = db.serverDate()
+    await transaction.collection('order').doc(orderId).update({ data: update })
+    return { orderId, status: targetStatus, fulfillmentStatus: FULFILLMENT_STATUS[targetStatus] }
+  })
+}
+
+async function adjustBalance(event, operatorOpenid) {
+  const userId = String(event.userId || '')
+  const targetBalance = money(event.balance)
+  const reason = String(event.reason || '').trim().slice(0, 80)
+  if (!userId) throw new Error('会员参数无效')
+  if (!reason) throw new Error('请填写调账原因')
+
+  return db.runTransaction(async transaction => {
+    const res = await transaction.collection('user').doc(userId).get()
+    const user = res.data
+    if (!user) throw new Error('会员不存在')
+    const before = money(user.balance || 0)
+    const amount = Math.round((targetBalance - before) * 100) / 100
+    await transaction.collection('user').doc(userId).update({ data: { balance: targetBalance, updateTime: db.serverDate() } })
+    await transaction.collection('balanceLog').add({
+      data: {
+        userId,
+        userOpenid: user._openid || '',
+        type: 'admin_adjustment',
+        amount,
+        before,
+        after: targetBalance,
+        reason,
+        operatorOpenid,
+        createTime: db.serverDate()
+      }
+    })
+    return { balance: targetBalance }
+  })
+}
+
+async function listBalanceLogs(event) {
+  const userId = String(event.userId || '')
+  if (!userId) throw new Error('会员参数无效')
+  const res = await db.collection('balanceLog').where({ userId }).orderBy('createTime', 'desc').limit(50).get()
+  return res.data || []
 }
 
 exports.main = async (event) => {
@@ -322,6 +437,18 @@ exports.main = async (event) => {
       return { success: true, data: await listUsers(event) }
     }
 
+    if (action === 'transitionOrder') {
+      return { success: true, data: await transitionOrder(event, openid) }
+    }
+
+    if (action === 'adjustBalance') {
+      return { success: true, data: await adjustBalance(event, openid) }
+    }
+
+    if (action === 'listBalanceLogs') {
+      return { success: true, data: await listBalanceLogs(event) }
+    }
+
     if (action === 'add') {
       if (!ADDABLE_COLLECTIONS.has(event.collectionName)) {
         throw new Error('该集合不允许新增记录')
@@ -343,6 +470,16 @@ exports.main = async (event) => {
     if (action === 'remove') {
       if (!REMOVABLE_COLLECTIONS.has(event.collectionName) || !event.documentId) {
         throw new Error('该记录不允许删除')
+      }
+      if (event.collectionName === 'dishCategory') {
+        const dishCount = await db.collection('dish').where({
+          categoryId: event.documentId
+        }).count()
+        if (dishCount.total > 0) {
+          throw Object.assign(new Error('该分类下仍有菜品，请先移动或删除菜品'), {
+            code: 'CATEGORY_NOT_EMPTY'
+          })
+        }
       }
       await db.collection(event.collectionName).doc(event.documentId).remove()
       return { success: true }
