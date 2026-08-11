@@ -18,6 +18,13 @@ Page({
     this.loadTableCodeList()
   },
 
+  onUnload() {
+    if (this.posterTimer) {
+      clearTimeout(this.posterTimer)
+      this.posterTimer = null
+    }
+  },
+
   // 加载桌码列表
   async loadTableCodeList() {
     let loadFailed = false
@@ -88,6 +95,13 @@ Page({
     })
   },
 
+  onQrImageError(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    if (!Number.isNaN(index)) {
+      this.setData({ [`tableCodeList[${index}].qrImageLoadFailed`]: true })
+    }
+  },
+
   // 确认新建桌码
   async confirmAddTableCode() {
     const tableNumber = this.data.newTableNumber.trim()
@@ -148,6 +162,17 @@ Page({
         }
       })
 
+      if (getApp().globalData.mockMode) {
+        await db.collection('tableCode').doc(addRes._id).update({
+          data: { posterUrl: qrCodeUrl }
+        })
+        wx.hideLoading()
+        wx.showToast({ title: '创建成功', icon: 'success' })
+        this.closeAddModal()
+        this.loadTableCodeList()
+        return
+      }
+
       // 生成海报
       wx.showLoading({ title: '生成海报中...' })
       this.currentTableCodeId = addRes._id
@@ -165,6 +190,14 @@ Page({
     } catch (err) {
       wx.hideLoading()
       console.error('创建桌码失败', err)
+      if (this.currentTableCodeId) {
+        try {
+          await db.collection('tableCode').doc(this.currentTableCodeId).remove()
+        } catch (cleanupErr) {
+          console.error('清理未完成桌码失败', cleanupErr)
+        }
+        this.currentTableCodeId = null
+      }
       wx.showToast({
         title: err.message || '创建失败',
         icon: 'none'
@@ -174,30 +207,61 @@ Page({
 
   // 生成海报
   async generatePoster(qrCodeUrl, tableNumber) {
-    return new Promise((resolve) => {
-      // 背景图片URL
-      const bgImg = '填写你的桌码背景图片URL'
-
-      // 绘制海报的JSON数据
+    return new Promise((resolve, reject) => {
       const viewList = {
         "width": "450px",
         "height": "798px",
-        "background": "#f8f8f8",
+        "background": "#f9f9f9",
         "views": [
           {
-            "type": "image",
-            "url": bgImg,
+            "type": "rect",
             "css": {
               "width": "450px",
-              "height": "798px",
+              "height": "180px",
               "top": "0px",
               "left": "0px",
-              "rotate": "0",
-              "borderRadius": "",
-              "borderWidth": "",
-              "borderColor": "#000000",
-              "shadow": "",
-              "mode": "scaleToFill"
+              "color": "#8c271e"
+            }
+          },
+          {
+            "type": "text",
+            "text": "Aurora 小餐馆",
+            "css": {
+              "top": "55px",
+              "left": "55px",
+              "width": "340px",
+              "fontSize": "38px",
+              "lineHeight": "46px",
+              "maxLines": 1,
+              "fontWeight": "bold",
+              "color": "#ffffff",
+              "textAlign": "center"
+            }
+          },
+          {
+            "type": "text",
+            "text": "微信扫码点餐",
+            "css": {
+              "top": "112px",
+              "left": "55px",
+              "width": "340px",
+              "fontSize": "20px",
+              "lineHeight": "28px",
+              "maxLines": 1,
+              "color": "#f7ebe8",
+              "textAlign": "center"
+            }
+          },
+          {
+            "type": "rect",
+            "css": {
+              "width": "310px",
+              "height": "310px",
+              "top": "220px",
+              "left": "70px",
+              "color": "#ffffff",
+              "borderRadius": "24px",
+              "shadow": "0 12px 34px rgba(28, 22, 20, 0.10)"
             }
           },
           {
@@ -206,8 +270,8 @@ Page({
             "css": {
               "width": "240px",
               "height": "240px",
-              "top": "260px",
-              "left": "90px",
+              "top": "255px",
+              "left": "105px",
               "rotate": "0",
               "borderRadius": "10px",
               "borderWidth": "",
@@ -218,44 +282,42 @@ Page({
           },
           {
             "type": "text",
-            "text": `桌码号：${tableNumber}`,
-            "css": [
-              {
-                top: '520px',
-                width: "635rpx",
-                height: '50px',
-                fontSize: '48px',
-                maxLines: '2',
-                left: '80px',
-                lineHeight: '30px',
-                color: '#333',
-                fontWeight: 'bold'
-              }
-            ]
+            "text": `${tableNumber}号桌`,
+            "css": {
+              "top": "565px",
+              "left": "55px",
+              "width": "340px",
+              "fontSize": "42px",
+              "lineHeight": "52px",
+              "maxLines": 1,
+              "color": "#1a1c1c",
+              "fontWeight": "bold",
+              "textAlign": "center"
+            }
           },
-
-        //   {
-        //     "type": "text",
-        //     "text": "长按保存或扫码点餐",
-        //     "css": [
-        //       {
-        //         top: '680px',
-        //         width: "635rpx",
-        //         height: '50px',
-        //         fontSize: '20px',
-        //         maxLines: '2',
-        //         left: '140px',
-        //         lineHeight: '30px',
-        //         color: '#666'
-        //       }
-        //     ]
-        //   }
+          {
+            "type": "text",
+            "text": "扫码后即可浏览菜单并下单",
+            "css": {
+              "top": "635px",
+              "left": "55px",
+              "width": "340px",
+              "fontSize": "20px",
+              "lineHeight": "30px",
+              "maxLines": 1,
+              "color": "#656461",
+              "textAlign": "center"
+            }
+          }
         ]
       }
 
-      // 保存当前桌码号，用于onImgOK中更新数据库
       this.currentTableNumber = tableNumber
       this.posterResolve = resolve
+      this.posterReject = reject
+      this.posterTimer = setTimeout(() => {
+        this.finishPosterGeneration(new Error('海报生成超时'))
+      }, 15000)
 
       this.setData({
         paintPallette: this.palette(viewList),
@@ -267,6 +329,22 @@ Page({
   // 处理特定格式函数
   palette(viewList) {
     return viewList
+  },
+
+  finishPosterGeneration(error) {
+    if (this.posterTimer) {
+      clearTimeout(this.posterTimer)
+      this.posterTimer = null
+    }
+    const resolve = this.posterResolve
+    const reject = this.posterReject
+    this.posterResolve = null
+    this.posterReject = null
+    if (error) {
+      if (reject) reject(error)
+      return
+    }
+    if (resolve) resolve()
   },
 
   // 绘制完成后的回调函数
@@ -292,24 +370,20 @@ Page({
         this.currentTableCodeId = null
       }
 
-      if (this.posterResolve) {
-        this.posterResolve()
-        this.posterResolve = null
-      }
+      this.finishPosterGeneration()
 
       wx.hideLoading()
     } catch (err) {
       console.error('上传海报失败', err)
-      if (this.posterResolve) {
-        this.posterResolve()
-        this.posterResolve = null
-      }
+      this.finishPosterGeneration(err)
       wx.hideLoading()
-      wx.showToast({
-        title: '上传海报失败',
-        icon: 'none'
-      })
     }
+  },
+
+  onImgErr(e) {
+    const detail = e && e.detail
+    const error = detail && detail.error ? detail.error : new Error('海报生成失败')
+    this.finishPosterGeneration(error instanceof Error ? error : new Error(String(error)))
   },
 
   touchEnd() {},

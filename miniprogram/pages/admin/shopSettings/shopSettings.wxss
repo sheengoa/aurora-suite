@@ -1,7 +1,7 @@
 page {
   min-height: 100%;
-  background: #f5f6f7;
-  color: #262626;
+  background: var(--brand-bg, #f9f9f9);
+  color: var(--brand-text, #1a1c1c);
 }
 
 .page,
@@ -20,24 +20,7 @@ page {
   position: relative;
   padding: 28rpx 24rpx 34rpx;
   overflow: hidden;
-  background: #9f2f29;
-}
-
-.preview-band::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: -80rpx;
-  width: 360rpx;
-  height: 100%;
-  opacity: 0.18;
-  background: repeating-linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.34) 0,
-    rgba(255, 255, 255, 0.34) 2rpx,
-    transparent 2rpx,
-    transparent 18rpx
-  );
+  background: var(--brand-red, #8c271e);
 }
 
 .preview-label {
@@ -74,7 +57,7 @@ page {
   flex-shrink: 0;
   color: #ffffff;
   font-size: 34rpx;
-  background: #d94335;
+  background: #8c271e;
   border-radius: 12rpx;
 }
 
@@ -82,6 +65,22 @@ page {
   min-width: 0;
   flex: 1;
 }
+
+.store-status {
+  min-width: 104rpx;
+  min-height: 52rpx;
+  padding: 0 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 23rpx;
+  font-weight: 750;
+  border-radius: 14rpx;
+}
+
+.store-status.open { color: #287b61; background: #e7f4ef; }
+.store-status.closed { color: #8c271e; background: #f7ebe8; }
 
 .store-name,
 .store-welcome {
@@ -118,7 +117,7 @@ page {
 }
 
 .heading-icon {
-  color: #d94335;
+  color: #8c271e;
   font-size: 30rpx;
 }
 
@@ -126,6 +125,20 @@ page {
   position: relative;
   margin-bottom: 28rpx;
 }
+
+.business-switch-row {
+  min-height: 112rpx;
+  padding-top: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  border-top: 1rpx solid #ebe8e6;
+}
+
+.business-switch-copy { min-width: 0; flex: 1; }
+.business-switch-row .form-label { margin-bottom: 6rpx; }
+.business-switch-desc { color: #656461; font-size: 23rpx; line-height: 1.5; }
 
 .form-label {
   margin-bottom: 12rpx;
@@ -138,7 +151,7 @@ page {
 }
 
 .required {
-  color: #d94335;
+  color: #8c271e;
 }
 
 .form-input,
@@ -195,9 +208,9 @@ page {
   color: #ffffff;
   font-size: 29rpx;
   font-weight: 750;
-  background: #d94335;
+  background: #8c271e;
   border-radius: 12rpx;
-  box-shadow: 0 8rpx 18rpx rgba(217, 67, 53, 0.2);
+  box-shadow: 0 8rpx 18rpx rgba(140, 39, 30, 0.2);
 }
 
 .save-btn.is-saving {

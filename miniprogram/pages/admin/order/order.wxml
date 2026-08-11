@@ -3,7 +3,7 @@
 <view class="page">
   <!-- 筛选栏 -->
   <view class="filter-bar">
-    <van-tabs active="{{orderType}}" bind:change="onChange" color="#d94335" swipeable="{{false}}">
+    <van-tabs active="{{orderType}}" bind:change="onChange" color="#8c271e" swipeable="{{false}}">
       <van-tab title="全部订单" />
       <van-tab title="充值订单" />
       <van-tab title="点餐订单" />
@@ -12,6 +12,17 @@
       <view class="refresh-btn" bindtap="refreshOrders" hover-class="control-pressed">刷新</view>
       <text class="refresh-tip">每 10 秒自动刷新</text>
     </view>
+    <scroll-view class="status-filter" scroll-x show-scrollbar="{{false}}">
+      <view class="status-filter-inner">
+        <view
+          class="status-chip {{orderStatus === item.value ? 'active' : ''}}"
+          wx:for="{{statusOptions}}"
+          wx:key="value"
+          data-value="{{item.value}}"
+          bindtap="selectStatus"
+          hover-class="soft-control-pressed">{{item.text}}</view>
+      </view>
+    </scroll-view>
   </view>
 
   <!-- 订单列表 -->
@@ -20,11 +31,11 @@
       <!-- 订单头部 -->
       <view class="order-header">
         <view class="order-user-info" wx:if="{{item.userAvatar || item.userNickName || item.userPhone}}">
-          <image wx:if="{{item.userAvatar}}" class="user-avatar" src="{{item.userAvatar}}" mode="aspectFill"></image>
+          <image wx:if="{{item.userAvatar && !item.avatarLoadFailed}}" class="user-avatar" src="{{item.userAvatar}}" mode="aspectFill" binderror="onOrderImageError" data-scope="avatar" data-order-index="{{index}}"></image>
           <view wx:else class="user-avatar-placeholder cuIcon-my" aria-label="未授权头像"></view>
           <view class="user-info-text">
             <view class="user-name">{{item.userNickName || '未设置昵称'}}</view>
-            <view class="user-phone" wx:if="{{item.userPhone}}">{{item.userPhone}}</view>
+            <view class="user-phone" wx:if="{{item.maskedPhone}}">{{item.maskedPhone}}</view>
           </view>
         </view>
         <view class="order-type">
@@ -33,6 +44,7 @@
           <text wx:elif="{{item.orderType === 'takeOut'}}">打包订单</text>
           <text wx:else>点餐订单</text>
         </view>
+        <view class="business-status {{item.statusClass}}" wx:if="{{item.type === 'order'}}">{{item.statusText}}</view>
       </view>
 
       <!-- 充值订单内容 -->
@@ -56,8 +68,9 @@
       <!-- 点餐订单内容 -->
       <view class="order-content" wx:if="{{item.type === 'order'}}">
         <view class="goods-list">
-          <view class="goods-item" wx:for="{{item.goods}}" wx:for-item="goods" wx:key="index">
-            <image class="goods-image" src="{{goods.dishImage}}" mode="aspectFill"></image>
+          <view class="goods-item" wx:for="{{item.goods}}" wx:for-item="goods" wx:for-index="goodsIndex" wx:key="index">
+            <image wx:if="{{goods.dishImage && !goods.imageLoadFailed}}" class="goods-image" src="{{goods.dishImage}}" mode="aspectFill" binderror="onOrderImageError" data-scope="goods" data-order-index="{{index}}" data-goods-index="{{goodsIndex}}"></image>
+            <view wx:else class="goods-image goods-image-placeholder cuIcon-pic"></view>
             <view class="goods-info">
               <view class="goods-name">{{goods.dishName}}</view>
               <view class="goods-sku" wx:if="{{goods.skuName}}">{{goods.skuName}}</view>
@@ -102,7 +115,9 @@
             <text class="price-num">¥{{item.type === 'recharge' ? item.amount : item.finalPrice}}</text>
           </view>
           <view class="action-btns">
-            <!-- <view class="action-btn delete" bindtap="deleteOrder" data-order="{{item}}" catchtap="stopPropagation">删除</view> -->
+            <view class="action-btn secondary" wx:if="{{item.type === 'order' && item.pay_status && item.printStatus !== 2}}" bindtap="reprintOrder" data-order="{{item}}" hover-class="soft-control-pressed">{{reprintingOrderId === item._id ? '提交中' : '重打小票'}}</view>
+            <view class="action-btn danger" wx:if="{{item.canCancel}}" bindtap="cancelBusinessOrder" data-order="{{item}}" hover-class="soft-control-pressed">取消</view>
+            <view class="action-btn primary" wx:if="{{item.canAdvance}}" bindtap="advanceOrder" data-order="{{item}}" hover-class="control-pressed">{{updatingOrderId === item._id ? '处理中' : item.nextActionText}}</view>
           </view>
         </view>
       </view>

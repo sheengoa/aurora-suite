@@ -5,29 +5,37 @@
     "pages/recharge/recharge",
     "pages/myorder/myorder",
     "pages/myhome/myhome",
-    "pages/settle/settle",
-    "pages/admin/admin",
-    "pages/admin/dishCategory/dishCategory",
-    "pages/admin/dish/dish",
-    "pages/admin/user/user",
-    "pages/admin/order/order",
-    "pages/admin/shopSettings/shopSettings",
-    "pages/admin/rechargeOptions/rechargeOptions",
-    "pages/admin/tableCode/tableCode",
-    "pages/admin/printer/printer"
+    "pages/settle/settle"
+  ],
+  "subPackages": [
+    {
+      "root": "pages/admin",
+      "name": "admin",
+      "pages": [
+        "admin",
+        "dishCategory/dishCategory",
+        "dish/dish",
+        "user/user",
+        "order/order",
+        "shopSettings/shopSettings",
+        "rechargeOptions/rechargeOptions",
+        "tableCode/tableCode",
+        "printer/printer"
+      ]
+    }
   ],
 
   "window": {
-    "backgroundColor": "#F6F6F6",
+    "backgroundColor": "#F9F9F9",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#d94335",
+    "navigationBarBackgroundColor": "#8c271e",
     "navigationBarTitleText": "餐饮点餐",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
     "custom": true,
     "color": "#7A7E83",
-    "selectedColor": "#d94335",
+    "selectedColor": "#8c271e",
     "backgroundColor": "#ffffff",
     "list": [
       {
@@ -70,5 +78,6 @@
     "van-empty": "/vant/empty/index"
   },
   "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
   "style": "v2"
 }

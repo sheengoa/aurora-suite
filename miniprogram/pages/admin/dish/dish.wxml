@@ -115,7 +115,7 @@
         <view class="dish-item {{item.status === 1 ? 'is-online' : 'is-offline'}}" wx:for="{{dishes}}" wx:key="_id">
           <view class="dish-core">
             <view class="dish-image">
-              <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}" aria-label="{{item.name}} 菜品图片"></image>
+              <image wx:if="{{item.image && !item.imageLoadFailed}}" src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}" binderror="onDishImageError" data-index="{{index}}" aria-label="{{item.name}} 菜品图片"></image>
               <view wx:else class="no-image">
                 <text class="cuIcon-pic no-image-icon" aria-hidden="true"></text>
                 <text>待上传</text>
@@ -311,7 +311,8 @@
               data-src="{{image}}"
               aria-role="button"
               aria-label="预览菜品图片 {{index + 1}}">
-              <image class="dish-image-thumb" src="{{image}}" mode="aspectFill"></image>
+              <image wx:if="{{!dishEditorImageFailures[index]}}" class="dish-image-thumb" src="{{image}}" mode="aspectFill" binderror="onDishEditorImageError" data-index="{{index}}"></image>
+              <view wx:else class="dish-image-thumb no-image">加载失败</view>
               <view
                 class="dish-image-remove"
                 catchtap="removeDishImage"
@@ -390,7 +391,7 @@
               </view>
               <view class="sku-status-row">
                 <view class="sku-status-text">{{item.status === 1 ? '启用' : '停用'}}</view>
-                <switch checked="{{item.status === 1}}" bindchange="onSkuStatusChange" data-index="{{index}}" color="#c93b32" aria-label="{{item.status === 1 ? '停用' : '启用'}}规格 {{index + 1}}"/>
+                <switch checked="{{item.status === 1}}" bindchange="onSkuStatusChange" data-index="{{index}}" color="#8c271e" aria-label="{{item.status === 1 ? '停用' : '启用'}}规格 {{index + 1}}"/>
               </view>
             </view>
           </view>
@@ -512,7 +513,7 @@
             <view class="form-label">设为必选</view>
             <view class="form-helper">开启后，顾客必须选择至少一项</view>
           </view>
-          <switch checked="{{currentTag.required}}" bindchange="onTagRequiredChange" color="#c93b32" aria-label="设为必选"/>
+          <switch checked="{{currentTag.required}}" bindchange="onTagRequiredChange" color="#8c271e" aria-label="设为必选"/>
         </view>
         <view class="form-item">
           <view class="form-label">选项列表</view>

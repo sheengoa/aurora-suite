@@ -23,7 +23,7 @@
   </view>
 
   <!-- 订单绑定桌码 -->
-  <view class="section table-section">
+  <view class="section table-section" wx:if="{{orderType === 'dineIn'}}">
     <view class="table-code-wrapper">
       <view class="table-code-display">
         <text class="table-code-value table-code-bold" wx:if="{{tableNumber}}">{{tableNumber}}号桌</text>
@@ -59,11 +59,11 @@
     </view>
     <view class="goods-list">
       <view class="goods-item" wx:for="{{orderGoods}}" wx:key="cartKey">
-        <image wx:if="{{item.dishImage}}" class="goods-image" src="{{item.dishImage}}" mode="aspectFill"></image>
+        <image wx:if="{{item.dishImage && !item.imageLoadFailed}}" class="goods-image" src="{{item.dishImage}}" mode="aspectFill" binderror="onDishImageError" data-index="{{index}}"></image>
         <view wx:else class="goods-image goods-image-placeholder">暂无图片</view>
         <view class="goods-info">
           <view class="goods-name">{{item.dishName}}</view>
-          <view class="goods-sku" wx:if="{{item.skuName}}">{{item.skuName}}</view>
+          <view class="goods-sku" wx:if="{{item.showSkuName && item.skuName}}">{{item.skuName}}</view>
           <view class="goods-tags" wx:if="{{item.tags && item.tags.length > 0}}">
             <van-tag
               type="danger"
@@ -137,6 +137,8 @@
       bind:tap="submitOrder"
       hover-class="control-pressed">
       <text wx:if="{{submitting}}">提交中...</text>
+      <text wx:elif="{{!isOpen}}">店铺已打烊</text>
+      <text wx:elif="{{pendingOrderId}}">继续支付</text>
       <text wx:else>提交订单</text>
     </view>
   </view>
@@ -144,6 +146,7 @@
   <!-- 用户信息授权组件 -->
   <avatar-nickname-modal
     showAvaModal="{{showAuthModal}}"
-    bind:saved="onUserInfoSaved">
+    bind:saved="onUserInfoSaved"
+    bind:close="onAuthModalClosed">
   </avatar-nickname-modal>
 </view>

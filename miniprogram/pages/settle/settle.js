@@ -1,11 +1,17 @@
 // pages/settle/settle.js
 const app = getApp()
 const db = wx.cloud.database()
+const { normalizeDish } = require('../../utils/dish')
 const {
   isScanCancelled,
   normalizeTableNumber,
   scanTableCodeFromCamera
 } = require('../../utils/tableCode')
+const {
+  isPaymentCancelled,
+  requestOrderPayment
+} = require('../../utils/payment')
+const { loadShopSettings } = require('../../utils/shopSettings')
 
 Page({
   data: {
@@ -21,17 +27,25 @@ Page({
     submitting: false,
     canSubmit: false,
     showAuthModal: false,
-    savedPayMethod: null
+    savedPayMethod: null,
+    pendingOrderId: '',
+    isOpen: true
   },
 
   onLoad() {
     this.loadCartData()
     this.loadUserInfo()
+    this.loadBusinessStatus()
   },
 
   onShow() {
     this.loadUserInfo()
-    this.updateCanSubmit()
+    this.loadBusinessStatus()
+  },
+
+  async loadBusinessStatus() {
+    const settings = await loadShopSettings(db)
+    this.setData({ isOpen: settings.isOpen }, () => this.updateCanSubmit())
   },
 
   loadCartData() {
@@ -74,6 +88,7 @@ Page({
         const unitPrice = Number(sku.price || item.info.price || 0)
         const count = Number(item.count || 0)
         const subtotal = (unitPrice * count).toFixed(2)
+        const normalizedDish = normalizeDish(item.info || {})
 
         goodsList.push({
           cartKey,
@@ -82,6 +97,7 @@ Page({
           dishImage: item.info.image,
           skuId: sku.id || 'default',
           skuName: sku.name || '默认规格',
+          showSkuName: normalizedDish.hasMultipleSkus,
           price: unitPrice,
           count,
           tags: tagsArray,
@@ -104,9 +120,6 @@ Page({
       this.updateCanSubmit()
       this.updatePayMethod()
 
-      if (!tableNumber) {
-        this.requestTableCode()
-      }
     } catch (err) {
       console.error('加载购物车数据失败', err)
       wx.showToast({
@@ -169,8 +182,7 @@ Page({
 
   selectOrderType(e) {
     const orderType = e.currentTarget.dataset.value
-    this.setData({ orderType })
-    this.updateCanSubmit()
+    this.setData({ orderType }, () => this.updateCanSubmit())
   },
 
   onRemarkInput(e) {
@@ -179,10 +191,17 @@ Page({
     })
   },
 
+  onDishImageError(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    if (!Number.isNaN(index)) {
+      this.setData({ [`orderGoods[${index}].imageLoadFailed`]: true })
+    }
+  },
+
   requestTableCode() {
     wx.showModal({
       title: '请先扫描桌码',
-      content: '每笔订单都需要绑定桌码，扫码后才能提交订单。',
+      content: '堂食订单需要绑定当前桌码，扫码后才能提交订单。',
       confirmText: '去扫码',
       cancelText: '稍后',
       success: (result) => {
@@ -269,16 +288,18 @@ Page({
   },
 
   updateCanSubmit() {
-    const { tableNumber, orderGoods } = this.data
+    const { tableNumber, orderGoods, orderType, isOpen } = this.data
     let canSubmit = true
 
     if (!orderGoods || orderGoods.length === 0) {
       canSubmit = false
     }
 
-    if (!tableNumber) {
+    if (orderType === 'dineIn' && !tableNumber) {
       canSubmit = false
     }
+
+    if (!isOpen) canSubmit = false
 
     this.setData({ canSubmit })
   },
@@ -288,12 +309,15 @@ Page({
       return
     }
 
-    if (!this.data.tableNumber) {
+    if (this.data.orderType === 'dineIn' && !this.data.tableNumber) {
       this.requestTableCode()
       return
     }
 
     if (!this.data.canSubmit) {
+      if (!this.data.isOpen) {
+        wx.showToast({ title: '店铺已打烊，暂不接单', icon: 'none' })
+      }
       return
     }
 
@@ -304,18 +328,10 @@ Page({
     }
 
     const userInfo = this.data.userInfo
-    if (!userInfo || !userInfo.avatarUrl || !userInfo.nickName || !userInfo.phoneNumber) {
+    if (!app.globalData.mockMode && (!userInfo || !userInfo.avatarUrl || !userInfo.nickName || !userInfo.phoneNumber)) {
       this.setData({
         showAuthModal: true,
         savedPayMethod: this.data.payMethod
-      })
-      return
-    }
-
-    if (!this.data.tableNumber) {
-      wx.showToast({
-        title: '请先扫描桌码',
-        icon: 'none'
       })
       return
     }
@@ -337,6 +353,12 @@ Page({
     wx.showLoading({ title: '下单中...' })
 
     try {
+      if (!payWithBalance && this.data.pendingOrderId) {
+        wx.hideLoading()
+        await this.payPendingOrder(this.data.pendingOrderId)
+        return
+      }
+
       const doBuyRes = await wx.cloud.callFunction({
         name: 'doBuy',
         data: {
@@ -344,7 +366,7 @@ Page({
           totalPrice: this.data.totalPrice,
           finalPrice: actualFinalPrice,
           payWithBalance,
-          tableNumber: this.data.tableNumber,
+          tableNumber: this.data.orderType === 'dineIn' ? this.data.tableNumber : '',
           orderType: this.data.orderType,
           remark: this.data.remark || ''
         }
@@ -371,31 +393,8 @@ Page({
       }
 
       wx.hideLoading()
-      wx.showLoading({ title: '拉起支付中...' })
-
-      const nonceStr = Math.random().toString(36).substr(2, 15) + Date.now().toString(36)
-
-      const payRes = await wx.cloud.callFunction({
-        name: 'pay',
-        data: {
-          outTradeNo: orderId,
-          nonceStr
-        }
-      })
-
-      const payment = payRes.result && payRes.result.payment ? payRes.result.payment : payRes.result
-
-      wx.hideLoading()
-      await wx.requestPayment(payment)
-
-      wx.showToast({ title: '支付成功', icon: 'success' })
-      this.clearCart()
-
-      setTimeout(() => {
-        wx.switchTab({
-          url: '/pages/myorder/myorder'
-        })
-      }, 1500)
+      this.setData({ pendingOrderId: orderId })
+      await this.payPendingOrder(orderId)
     } catch (err) {
       console.error('创建订单失败', err)
       wx.hideLoading()
@@ -408,8 +407,49 @@ Page({
     }
   },
 
+  async payPendingOrder(orderId) {
+    wx.showLoading({ title: '确认支付中...' })
+    try {
+      const result = await requestOrderPayment({
+        db,
+        orderId,
+        mockMode: app.globalData.mockMode
+      })
+      wx.hideLoading()
+
+      if (!result.confirmed) {
+        wx.showModal({
+          title: '支付结果确认中',
+          content: '订单已保留，请稍后到订单页查看结果或继续支付。',
+          showCancel: false,
+          success: () => wx.switchTab({ url: '/pages/myorder/myorder' })
+        })
+        return
+      }
+
+      this.setData({ pendingOrderId: '' })
+      this.clearCart()
+      wx.showToast({ title: '支付成功', icon: 'success' })
+      setTimeout(() => wx.switchTab({ url: '/pages/myorder/myorder' }), 1200)
+    } catch (err) {
+      wx.hideLoading()
+      if (isPaymentCancelled(err)) {
+        wx.showToast({ title: '已取消支付，可稍后继续', icon: 'none' })
+        return
+      }
+      throw err
+    }
+  },
+
   editOrder() {
     wx.navigateBack()
+  },
+
+  onAuthModalClosed() {
+    this.setData({
+      showAuthModal: false,
+      savedPayMethod: null
+    })
   },
 
   clearCart() {

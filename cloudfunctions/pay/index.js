@@ -18,15 +18,31 @@ exports.main = async (event) => {
   if (!openid || !orderId || !event.nonceStr) {
     throw new Error('支付参数无效')
   }
+  if (SUB_MCH_ID.indexOf('填写') > -1 || ENV_ID.indexOf('填写') > -1) {
+    throw new Error('微信支付服务尚未配置，请先完成商户号和云环境配置')
+  }
 
   const orderRes = await db.collection('order').where({
     _id: orderId,
     _openid: openid,
-    pay_status: false
+    pay_status: false,
+    paymentStatus: 'pending'
   }).limit(1).get()
   const order = orderRes.data && orderRes.data[0]
   if (!order) {
-    throw new Error('订单不存在、已支付或不属于当前用户')
+    throw new Error('订单不存在、已支付或已关闭')
+  }
+  const expiresAt = order.expiresAt && new Date(order.expiresAt).getTime()
+  if (Number.isFinite(expiresAt) && expiresAt <= Date.now()) {
+    await db.collection('order').doc(orderId).update({
+      data: {
+        status: 3,
+        fulfillmentStatus: 'cancelled',
+        paymentStatus: 'expired',
+        cancelTime: db.serverDate()
+      }
+    })
+    throw new Error('订单已过期，请重新下单')
   }
 
   const expectedAmount = order.type === 'recharge'

@@ -3,9 +3,18 @@ const app = getApp()
 const db = wx.cloud.database()
 const { callAdminApi } = require('../../utils/adminAuth')
 
+function maskPhoneNumber(phoneNumber) {
+  const value = String(phoneNumber || '')
+  return /^(\d{3})\d{4}(\d{4})$/.test(value)
+    ? value.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2')
+    : value
+}
+
 Page({
   data: {
     userInfo: null, // 用户信息
+    displayPhoneNumber: '',
+    avatarLoadFailed: false,
     showAuthModal: false, // 显示授权弹窗
     // 管理员相关
     clickCount: 0, // 连续点击次数
@@ -32,11 +41,15 @@ Page({
 
   onShow() {
     const tabBar = this.getTabBar && this.getTabBar()
-    if (tabBar) tabBar.setData({ selected: 3 })
+    if (tabBar) tabBar.setData({ selected: 3, interactionLocked: false })
     if (app.globalData.userInfo) {
       this.applyUserInfo(app.globalData.userInfo)
     }
     this.loadUserInfo()
+  },
+
+  onHide() {
+    this.setTabBarInteractionLocked(false)
   },
 
   onUnload() {
@@ -52,8 +65,14 @@ Page({
         ...(this.data.userInfo || {}),
         ...userInfo,
         balance: typeof userInfo.balance === 'undefined' ? 0 : userInfo.balance
-      }
+      },
+      displayPhoneNumber: maskPhoneNumber(userInfo.phoneNumber),
+      avatarLoadFailed: false
     })
+  },
+
+  onAvatarImageError() {
+    this.setData({ avatarLoadFailed: true })
   },
 
   // 加载用户信息
@@ -88,13 +107,18 @@ Page({
   showAuthModal() {
     this.setData({
       showAuthModal: true
-    })
+    }, () => this.syncTabBarInteractionLock())
+  },
+
+  onAuthModalClosed() {
+    this.setData({ showAuthModal: false }, () => this.syncTabBarInteractionLock())
   },
 
   // 用户信息保存成功回调
   onUserInfoSaved(e) {
     const userInfo = e.detail && (e.detail.userInfo || e.detail)
     this.applyUserInfo(userInfo)
+    this.setData({ showAuthModal: false }, () => this.syncTabBarInteractionLock())
     // 刷新用户信息
     this.loadUserInfo()
   },
@@ -161,7 +185,7 @@ Page({
         showPasswordModal: true,
         isFirstTime: !res.configured,
         adminPassword: ''
-      })
+      }, () => this.syncTabBarInteractionLock())
     } catch (err) {
       wx.hideLoading()
       console.error('检查管理员失败', err)
@@ -174,7 +198,21 @@ Page({
     this.setData({
       showPasswordModal: false,
       adminPassword: ''
-    })
+    }, () => this.syncTabBarInteractionLock())
+  },
+
+  setTabBarInteractionLocked(locked) {
+    const tabBar = this.getTabBar && this.getTabBar()
+    const interactionLocked = Boolean(locked)
+    if (tabBar && tabBar.data.interactionLocked !== interactionLocked) {
+      tabBar.setData({ interactionLocked })
+    }
+  },
+
+  syncTabBarInteractionLock() {
+    this.setTabBarInteractionLocked(
+      this.data.showAuthModal || this.data.showPasswordModal
+    )
   },
 
   // 空函数，用于拦截遮罩点击，防止穿透到下层

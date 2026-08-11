@@ -81,7 +81,14 @@ exports.main = async (event, context) => {
       .limit(pageSize)
       .end()
     
-    const list = aggregateRes.list || []
+    const list = (aggregateRes.list || []).map(user => {
+      const phoneNumber = String(user.phoneNumber || '')
+      const maskedPhone = /^1\d{10}$/.test(phoneNumber)
+        ? `${phoneNumber.slice(0, 3)}****${phoneNumber.slice(7)}`
+        : ''
+      const { phoneNumber: _phoneNumber, ...safeUser } = user
+      return { ...safeUser, maskedPhone }
+    })
     
     // 检查是否还有更多数据
     const hasMore = list.length === pageSize

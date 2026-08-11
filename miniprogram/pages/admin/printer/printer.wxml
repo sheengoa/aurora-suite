@@ -1,6 +1,10 @@
 <!--pages/admin/printer/printer.wxml-->
 <aurora-navbar id="page-navbar" title="打印机管理"></aurora-navbar>
 <view class="page">
+  <view class="service-warning" wx:if="{{printServiceError}}">
+    <view class="service-warning-title">打印服务不可用</view>
+    <view class="service-warning-copy">{{printServiceError}}</view>
+  </view>
   <!-- 打印机信息卡片 -->
   <view class="printer-card" wx:if="{{printerInfo}}">
     <view class="card-header">

@@ -1,10 +1,10 @@
 {
   "navigationStyle": "custom",
   "navigationBarTextStyle": "white",
-  "enablePullDownRefresh": true,
+  "enablePullDownRefresh": false,
+  "disableScroll": true,
   "usingComponents": {
     "avatar-nickname-modal": "/components/avatarNicknameModal/avatarNicknameModal"
   }
 }
-
 

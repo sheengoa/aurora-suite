@@ -7,9 +7,7 @@ const {
   saveStoredCart
 } = require('../../utils/cart')
 const {
-  isScanCancelled,
-  normalizeTableNumber,
-  scanTableCodeFromCamera
+  normalizeTableNumber
 } = require('../../utils/tableCode')
 
 function clone(data) {
@@ -28,7 +26,8 @@ Page({
     currentPriceText: '0.00',
     totalPriceText: '0.00',
     tableNumber: '',
-    shareImageUrl: ''
+    shareImageUrl: '',
+    dishImageFailures: []
   },
 
   onLoad(options) {
@@ -83,6 +82,7 @@ Page({
         selectedSkuId: selectedSku ? selectedSku.id : '',
         selectedTags,
         quantity: 1,
+        dishImageFailures: [],
         currentPriceText: Number(currentPrice).toFixed(2),
         totalPriceText: Number(currentPrice).toFixed(2)
       })
@@ -160,6 +160,13 @@ Page({
       current: imageUrl,
       urls: images
     })
+  },
+
+  onDishImageError(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    if (!Number.isNaN(index)) {
+      this.setData({ [`dishImageFailures[${index}]`]: true })
+    }
   },
 
   selectSku(e) {
@@ -322,60 +329,10 @@ Page({
     )
     const summary = getCartSummary(cart)
 
-    if (!this.data.tableNumber) {
-      this.requestTableCodeForCheckout(cart, summary)
-      return
-    }
-
     this.navigateToSettle(cart, summary)
   },
 
-  requestTableCodeForCheckout(cart, summary) {
-    wx.showModal({
-      title: '请先扫描桌码',
-      content: '订单需要绑定当前桌码，扫码成功后才能进入订单确认。',
-      confirmText: '去扫码',
-      cancelText: '暂不购买',
-      success: (result) => {
-        if (result.confirm) {
-          this.scanTableCodeForCheckout(cart, summary)
-        }
-      }
-    })
-  },
-
-  async scanTableCodeForCheckout(cart, summary) {
-    try {
-      const tableNumber = await scanTableCodeFromCamera()
-
-      this.setData({
-        tableNumber
-      }, () => {
-        wx.showToast({
-          title: `已绑定${tableNumber}号桌`,
-          icon: 'success'
-        })
-        this.navigateToSettle(cart, summary)
-      })
-    } catch (err) {
-      if (isScanCancelled(err)) {
-        return
-      }
-
-      console.error('扫码失败', err)
-      wx.showToast({
-        title: err && err.code === 'INVALID_TABLE_CODE' ? '未能识别桌码' : '扫码失败',
-        icon: 'none'
-      })
-    }
-  },
-
   navigateToSettle(cart, summary) {
-    if (!this.data.tableNumber) {
-      this.requestTableCodeForCheckout(cart, summary)
-      return
-    }
-
     try {
       wx.setStorageSync('settleCartData', {
         cart,

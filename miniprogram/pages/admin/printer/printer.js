@@ -11,6 +11,7 @@ Page({
       workStatus: -1,
       workStatusDesc: '未知'
     },
+    printServiceError: '',
     showBindModal: false,
     bindForm: {
       sn: '',
@@ -276,11 +277,15 @@ Page({
 
       if (res.result && res.result.success && res.result.data && res.result.data.data) {
         this.setData({
-          printerStatus: res.result.data.data
+          printerStatus: res.result.data.data,
+          printServiceError: ''
         })
+      } else if (res.result && !res.result.success) {
+        this.setData({ printServiceError: res.result.error || '打印服务不可用' })
       }
     } catch (err) {
       console.error('查询状态失败', err)
+      this.setData({ printServiceError: err.message || '打印服务不可用' })
     }
   },
 

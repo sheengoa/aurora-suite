@@ -43,8 +43,8 @@
 .edit-order-btn {
   padding: 8rpx 24rpx;
   font-size: 26rpx;
-  color: #d94335;
-  border: 2rpx solid #d94335;
+  color: #8c271e;
+  border: 2rpx solid #8c271e;
   border-radius: 8rpx;
   background: white;
 }
@@ -85,9 +85,9 @@
 }
 
 .order-type-item.active {
-  color: #d94335;
+  color: #8c271e;
   background: rgba(229, 77, 66, 0.1);
-  border-color: #d94335;
+  border-color: #8c271e;
   font-weight: 600;
 }
 
@@ -121,7 +121,7 @@
 }
 
 .table-code-empty {
-  color: #d94335;
+  color: #8c271e;
   font-size: 30rpx;
   font-weight: 600;
 }
@@ -133,8 +133,8 @@
 .change-table-btn {
   padding: 12rpx 24rpx;
   font-size: 26rpx;
-  color: #d94335;
-  border: 2rpx solid #d94335;
+  color: #8c271e;
+  border: 2rpx solid #8c271e;
   border-radius: 8rpx;
   background: white;
   cursor: pointer;
@@ -217,7 +217,7 @@
 
 .goods-price {
   font-size: 26rpx;
-  color: #d94335;
+  color: #8c271e;
   font-weight: bold;
 }
 
@@ -228,7 +228,7 @@
 
 .goods-subtotal {
   font-size: 32rpx;
-  color: #d94335;
+  color: #8c271e;
   font-weight: 600;
   min-width: 120rpx;
   text-align: right;
@@ -260,7 +260,7 @@
 }
 
 .price-value {
-  color: #d94335;
+  color: #8c271e;
   font-weight: 600;
   font-size: 30rpx;
 }
@@ -293,7 +293,7 @@
 
 .pay-method-item.active {
   background: rgba(229, 77, 66, 0.08);
-  border-color: #d94335;
+  border-color: #8c271e;
 }
 
 .pay-method-content {
@@ -316,7 +316,7 @@
 }
 
 .pay-method-item.active .pay-method-title {
-  color: #d94335;
+  color: #8c271e;
   font-weight: 600;
 }
 
@@ -343,8 +343,8 @@
 }
 
 .pay-method-radio.checked {
-  border-color: #d94335;
-  background: #d94335;
+  border-color: #8c271e;
+  background: #8c271e;
 }
 
 .radio-dot {
@@ -387,7 +387,7 @@
 
 .footer-price-num {
   font-size: 44rpx;
-  color: #d94335;
+  color: #8c271e;
   font-weight: 600;
   letter-spacing: 0;
 }
@@ -401,7 +401,7 @@
   border-radius: var(--control-radius);
   font-size: 32rpx;
   font-weight: 600;
-  background-color: #d94335;
+  background-color: #8c271e;
   color: white;
   text-align: center;
   box-shadow: 0 4rpx 12rpx rgba(229, 77, 66, 0.3);
@@ -428,7 +428,7 @@
 /* 高级版视觉覆盖 */
 .page {
   padding-top: 20rpx;
-  background: linear-gradient(180deg, #fff7f3 0%, #f6f7f9 260rpx, #f6f7f9 100%);
+  background: #f9f9f9;
 }
 
 .section {
@@ -445,8 +445,8 @@
 
 .edit-order-btn,
 .change-table-btn {
-  color: #d94335;
-  border-color: rgba(217, 67, 53, 0.32);
+  color: #8c271e;
+  border-color: rgba(140, 39, 30, 0.32);
   background: #fff4f0;
   border-radius: 999rpx;
 }
@@ -458,10 +458,10 @@
 }
 
 .order-type-item.active {
-  color: #d94335;
+  color: #8c271e;
   background: #fff4f0;
-  border-color: rgba(217, 67, 53, 0.34);
-  box-shadow: 0 8rpx 18rpx rgba(217, 67, 53, 0.1);
+  border-color: rgba(140, 39, 30, 0.34);
+  box-shadow: 0 8rpx 18rpx rgba(140, 39, 30, 0.1);
 }
 
 .remark-input,
@@ -495,21 +495,21 @@
 .goods-subtotal,
 .footer-price-num,
 .price-value {
-  color: #d94335;
+  color: #8c271e;
 }
 
 .pay-method-item.active {
   background: #fff4f0;
-  border-color: rgba(217, 67, 53, 0.34);
+  border-color: rgba(140, 39, 30, 0.34);
 }
 
 .pay-method-item.active .pay-method-title {
-  color: #d94335;
+  color: #8c271e;
 }
 
 .pay-method-radio.checked {
-  border-color: #d94335;
-  background: #d94335;
+  border-color: #8c271e;
+  background: #8c271e;
 }
 
 .footer {
@@ -518,8 +518,8 @@
 }
 
 .submit-btn {
-  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
-  box-shadow: 0 12rpx 26rpx rgba(217, 67, 53, 0.22);
+  background: #8c271e;
+  box-shadow: 0 12rpx 26rpx rgba(140, 39, 30, 0.22);
 }
 
 /* 原型统一收束：结算页改为浮动圆角提交栏 */
@@ -549,7 +549,7 @@
 .edit-order-btn,
 .change-table-btn {
   min-width: 88rpx;
-  min-height: 72rpx;
+  min-height: 88rpx;
   padding: 0 24rpx;
   display: flex;
   align-items: center;

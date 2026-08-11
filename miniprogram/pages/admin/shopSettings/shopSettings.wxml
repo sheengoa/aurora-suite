@@ -11,6 +11,7 @@
         <view class="store-name">{{shopName || '店铺名称'}}</view>
         <view class="store-welcome">{{welcomeText || '欢迎光临本店'}}</view>
       </view>
+      <view class="store-status {{isOpen ? 'open' : 'closed'}}">{{isOpen ? '营业中' : '已打烊'}}</view>
     </view>
   </view>
 
@@ -49,6 +50,14 @@
         bindinput="onWelcomeTextInput"
       ></textarea>
       <view class="field-counter">{{welcomeText.length}} / 48</view>
+    </view>
+
+    <view class="business-switch-row">
+      <view class="business-switch-copy">
+        <view class="form-label">营业状态</view>
+        <view class="business-switch-desc">打烊后顾客仍可浏览菜单，但不能提交新订单</view>
+      </view>
+      <switch checked="{{isOpen}}" color="#8c271e" bindchange="onOpenChange" aria-label="切换营业状态" />
     </view>
   </view>
 

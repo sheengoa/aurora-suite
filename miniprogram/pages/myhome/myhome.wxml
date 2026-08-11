@@ -7,19 +7,22 @@
 
     <view class="member-profile">
       <view class="user-avatar profile-avatar">
-        <image wx:if="{{userInfo && userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+        <image wx:if="{{userInfo && userInfo.avatarUrl && !avatarLoadFailed}}" src="{{userInfo.avatarUrl}}" mode="aspectFill" binderror="onAvatarImageError"></image>
         <view wx:else class="profile-avatar-placeholder cuIcon-my" aria-label="未授权头像"></view>
       </view>
       <view class="profile-info">
         <view class="profile-kicker">{{userInfo && userInfo.nickName ? '门店会员' : '待授权'}}</view>
         <view class="profile-name">{{userInfo && userInfo.nickName ? userInfo.nickName : '授权头像昵称'}}</view>
-        <view class="profile-sub" wx:if="{{userInfo && userInfo.phoneNumber}}">{{userInfo.phoneNumber}}</view>
+        <view class="profile-sub" wx:if="{{userInfo && userInfo.phoneNumber}}">{{displayPhoneNumber}}</view>
         <view class="profile-sub" wx:else>{{userInfo && userInfo.nickName ? '请先完善个人信息' : '点击完善，授权头像昵称'}}</view>
       </view>
       <view
         class="profile-edit"
         wx:if="{{!userInfo || !userInfo.phoneNumber}}"
-        bindtap="showAuthModal">
+        bindtap="showAuthModal"
+        hover-class="soft-control-pressed"
+        aria-role="button"
+        aria-label="完善个人信息">
         {{userInfo && userInfo.nickName ? '完善' : '授权'}}
       </view>
     </view>
@@ -49,7 +52,7 @@
       </view>
       <button class="service-tile contact-tile" open-type="contact">
         <view class="service-icon-wrap amber">
-          <van-icon name="service-o" size="44rpx" color="#d94335" />
+          <van-icon name="service-o" size="44rpx" color="#8c271e" />
         </view>
         <view class="service-title">联系客服</view>
         <view class="service-desc">问题反馈</view>
@@ -77,8 +80,8 @@
         </view>
       </view>
       <view class="modal-footer">
-        <view class="modal-btn cancel" bindtap="closePasswordModal">取消</view>
-        <view class="modal-btn confirm" bindtap="verifyPassword">{{isFirstTime ? '设置' : '登录'}}</view>
+        <view class="modal-btn cancel" bindtap="closePasswordModal" hover-class="soft-control-pressed" aria-role="button" aria-label="取消管理员验证">取消</view>
+        <view class="modal-btn confirm" bindtap="verifyPassword" hover-class="control-pressed" aria-role="button" aria-label="{{isFirstTime ? '设置管理员密码' : '管理员登录'}}">{{isFirstTime ? '设置' : '登录'}}</view>
       </view>
     </view>
   </view>
@@ -86,7 +89,8 @@
   <!-- 用户信息授权组件 -->
   <avatar-nickname-modal 
     showAvaModal="{{showAuthModal}}" 
-    bind:saved="onUserInfoSaved">
+    bind:saved="onUserInfoSaved"
+    bind:close="onAuthModalClosed">
   </avatar-nickname-modal>
 
   <!-- 版本号显示 -->

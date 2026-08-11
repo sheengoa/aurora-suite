@@ -117,7 +117,8 @@ Page({
     dishPage: 0,
     dishPageSize: 20,
     dishHasMore: true,
-    loadingDishes: false
+    loadingDishes: false,
+    dishEditorImageFailures: {}
   },
 
   onLoad() {
@@ -290,7 +291,9 @@ Page({
             wx.hideLoading()
             console.error('删除失败', err)
             wx.showToast({
-              title: '删除失败',
+              title: err.code === 'CATEGORY_NOT_EMPTY'
+                ? '请先处理分类下的菜品'
+                : '删除失败',
               icon: 'none'
             })
           }
@@ -330,10 +333,15 @@ Page({
       return
     }
 
+    if (append && this.data.loadingDishes) {
+      return
+    }
+
+    const categoryId = this.data.currentCategoryId
+    const requestId = (this.dishRequestId || 0) + 1
+    this.dishRequestId = requestId
+
     try {
-      if (this.data.loadingDishes) {
-        return
-      }
       this.setData({ loadingDishes: true })
 
       const pageSize = this.data.dishPageSize
@@ -342,7 +350,7 @@ Page({
 
       const res = await db.collection('dish')
         .where({
-          categoryId: this.data.currentCategoryId
+          categoryId
         })
         .orderBy('sort', 'asc')
         .skip(skip)
@@ -350,6 +358,9 @@ Page({
         .get()
 
       const list = (res.data || []).map(item => this.normalizeDishForView(item))
+      if (requestId !== this.dishRequestId || categoryId !== this.data.currentCategoryId) {
+        return
+      }
       const newDishes = append ? this.data.dishes.concat(list) : list
       const hasMore = list.length === pageSize
 
@@ -360,12 +371,16 @@ Page({
       })
     } catch (err) {
       console.error('加载菜品失败', err)
-      wx.showToast({
-        title: '加载失败',
-        icon: 'none'
-      })
+      if (requestId === this.dishRequestId) {
+        wx.showToast({
+          title: '加载失败',
+          icon: 'none'
+        })
+      }
     } finally {
-      this.setData({ loadingDishes: false })
+      if (requestId === this.dishRequestId) {
+        this.setData({ loadingDishes: false })
+      }
     }
   },
 
@@ -404,7 +419,8 @@ Page({
         sort: this.data.dishes.length,
         tags: [],
         skus: [createSku()]
-      }
+      },
+      dishEditorImageFailures: {}
     })
   },
 
@@ -417,14 +433,35 @@ Page({
     this.setData({
       showDishModal: true,
       editDishMode: true,
-      currentDish: editableDish
+      currentDish: editableDish,
+      dishEditorImageFailures: {}
     })
   },
 
   closeDishModal() {
     this.setData({
-      showDishModal: false
+      showDishModal: false,
+      dishEditorImageFailures: {}
     })
+  },
+
+  onDishImageError(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    if (!Number.isNaN(index)) {
+      this.setData({ [`dishes[${index}].imageLoadFailed`]: true })
+    }
+  },
+
+  onDishEditorImageError(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    if (!Number.isNaN(index)) {
+      this.setData({
+        dishEditorImageFailures: {
+          ...this.data.dishEditorImageFailures,
+          [index]: true
+        }
+      })
+    }
   },
 
   async toggleDishStatus(e) {
@@ -614,7 +651,8 @@ Page({
       loadingVisible = false
       this.setData({
         'currentDish.images': images,
-        'currentDish.image': images[0] || ''
+        'currentDish.image': images[0] || '',
+        dishEditorImageFailures: {}
       })
 
       wx.showToast({

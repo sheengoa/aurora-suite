@@ -22,7 +22,7 @@
 .detail-page {
   position: relative;
   min-height: 100vh;
-  background: #f6f7f9;
+  background: #f9f9f9;
   color: #22252b;
 }
 
@@ -64,7 +64,7 @@
 
 .product-band {
   padding: 30rpx 32rpx;
-  border-bottom: 14rpx solid #f6f7f9;
+  border-bottom: 14rpx solid #f9f9f9;
 }
 
 .product-heading {
@@ -141,7 +141,7 @@
   margin-left: 12rpx;
   padding: 0 10rpx;
   border-radius: 5rpx;
-  color: #d94335;
+  color: #8c271e;
   background: #fff1ee;
   font-size: 20rpx;
   font-weight: 500;
@@ -174,7 +174,7 @@
 }
 
 .sku-option.selected {
-  border-color: #d94335;
+  border-color: #8c271e;
   background: #fff6f3;
 }
 
@@ -189,7 +189,7 @@
   justify-content: center;
   border-radius: 0 10rpx 0 10rpx;
   color: #ffffff;
-  background: #d94335;
+  background: #8c271e;
 }
 
 .sku-name {
@@ -226,7 +226,7 @@
 }
 
 .tag-option.selected {
-  border-color: #d94335;
+  border-color: #8c271e;
   color: #b9322a;
   background: #fff6f3;
   font-weight: 600;
@@ -266,9 +266,9 @@
 }
 
 .stepper-button.primary {
-  border-color: #d94335;
+  border-color: #8c271e;
   color: #ffffff;
-  background: #d94335;
+  background: #8c271e;
 }
 
 .stepper-button.disabled {
@@ -320,7 +320,7 @@
   min-width: 0;
   display: flex;
   align-items: baseline;
-  color: #d94335;
+  color: #8c271e;
 }
 
 .bottom-price-label {
@@ -448,8 +448,8 @@
 
 .add-button {
   color: #ffffff;
-  background: #d94335;
-  box-shadow: 0 10rpx 24rpx rgba(217, 67, 53, 0.24);
+  background: #8c271e;
+  box-shadow: 0 10rpx 24rpx rgba(140, 39, 30, 0.24);
 }
 
 .add-button:active {
@@ -519,7 +519,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: #d94335;
+  color: #8c271e;
   background: #fff1ee;
 }
 
@@ -557,7 +557,7 @@
 
 .primary-button {
   color: #ffffff;
-  background: #d94335;
+  background: #8c271e;
 }
 
 .primary-button.compact {
@@ -654,8 +654,8 @@
 }
 
 .stepper-button.primary::before {
-  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
-  box-shadow: 0 8rpx 18rpx rgba(217, 67, 53, 0.2);
+  background: #8c271e;
+  box-shadow: 0 8rpx 18rpx rgba(140, 39, 30, 0.2);
 }
 
 .stepper-button.disabled::before {

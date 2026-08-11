@@ -17,11 +17,13 @@
         <view class="qr-shell" bindtap="previewPoster" data-item="{{item}}" hover-class="qr-pressed">
           <view class="qr-frame">
             <image
-              wx:if="{{item.qrCodeUrl}}"
+              wx:if="{{item.qrCodeUrl && !item.qrImageLoadFailed}}"
               class="qr-image"
               src="{{item.qrCodeUrl}}"
               mode="aspectFit"
               lazy-load="{{true}}"
+              binderror="onQrImageError"
+              data-index="{{index}}"
             />
             <view wx:else class="qr-placeholder cuIcon-qrcode"></view>
             <view class="scan-corner corner-tl"></view>
@@ -79,7 +81,7 @@
           <text class="cuIcon-qr_code"></text>
           <text>新建桌码</text>
         </view>
-        <view class="modal-close cuIcon-close" bindtap="closeAddModal" hover-class="control-pressed"></view>
+        <view class="modal-close cuIcon-close" bindtap="closeAddModal" hover-class="control-pressed" aria-role="button" aria-label="关闭创建桌码弹层"></view>
       </view>
       <view class="modal-content">
         <view class="form-label">桌码号 <text class="required">*</text></view>
@@ -108,6 +110,7 @@
     dancePalette="{{template}}"
     palette="{{paintPallette}}"
     bind:imgOK="onImgOK"
+    bind:imgErr="onImgErr"
     bind:touchEnd="touchEnd"
     action="{{action}}"
     use2D="{{true}}"

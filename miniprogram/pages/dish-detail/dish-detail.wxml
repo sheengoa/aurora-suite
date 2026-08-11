@@ -32,13 +32,20 @@
         indicator-dots="{{dish.images.length > 1}}"
         indicator-color="rgba(255, 255, 255, 0.54)"
         indicator-active-color="#ffffff">
-        <swiper-item wx:for="{{dish.images}}" wx:key="*this" wx:for-item="image">
+        <swiper-item wx:for="{{dish.images}}" wx:key="*this" wx:for-item="image" wx:for-index="imageIndex">
           <image
+            wx:if="{{!dishImageFailures[imageIndex]}}"
             class="hero-image"
             src="{{image}}"
             mode="aspectFill"
             data-src="{{image}}"
+            data-index="{{imageIndex}}"
+            binderror="onDishImageError"
             bindtap="previewImage"></image>
+          <view wx:else class="hero-placeholder">
+            <van-icon name="photo-o" size="66rpx"></van-icon>
+            <text>图片加载失败</text>
+          </view>
         </swiper-item>
       </swiper>
       <view wx:else class="hero-placeholder">
@@ -55,7 +62,7 @@
     </view>
 
     <view class="selection-band">
-      <view class="selection-section" wx:if="{{dish.enabledSkus && dish.enabledSkus.length > 0}}">
+      <view class="selection-section" wx:if="{{dish.enabledSkus && dish.enabledSkus.length > 1}}">
         <view class="section-heading">
           <view>
             <text class="section-title">选择规格</text>

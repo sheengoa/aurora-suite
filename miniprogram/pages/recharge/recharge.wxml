@@ -119,6 +119,7 @@
 
   <avatar-nickname-modal
     showAvaModal="{{showAuthModal}}"
-    bind:saved="handleUserAuth">
+    bind:saved="handleUserAuth"
+    bind:close="onAuthModalClosed">
   </avatar-nickname-modal>
 </view>

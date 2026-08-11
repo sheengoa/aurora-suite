@@ -3,7 +3,7 @@
   min-height: 100vh;
   box-sizing: border-box;
   padding: 24rpx 24rpx calc(var(--tabbar-height) + 34rpx + env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, #fff7f3 0%, #f6f7f9 360rpx, #f6f7f9 100%);
+  background: #f9f9f9;
 }
 
 .member-hero {
@@ -13,8 +13,8 @@
   border-radius: 26rpx;
   overflow: hidden;
   color: #ffffff;
-  background: linear-gradient(135deg, #9f2c25 0%, #d94335 58%, #f36a5d 100%);
-  box-shadow: 0 22rpx 50rpx rgba(217, 67, 53, 0.24);
+  background: #8c271e;
+  box-shadow: 0 22rpx 50rpx rgba(140, 39, 30, 0.24);
 }
 
 .hero-bg-mark {
@@ -81,8 +81,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #d94335;
-  background: #fff0ed;
+  color: #8c271e;
+  background: #f7ebe8;
   font-size: 54rpx;
 }
 
@@ -125,7 +125,7 @@
   padding: 0 24rpx;
   border-radius: 999rpx;
   background: #ffffff;
-  color: #d94335;
+  color: #8c271e;
   font-size: 24rpx;
   font-weight: 700;
   box-shadow: 0 10rpx 24rpx rgba(82, 20, 16, 0.12);
@@ -196,7 +196,7 @@
   width: 6rpx;
   height: 28rpx;
   border-radius: 999rpx;
-  background: #d94335;
+  background: #8c271e;
 }
 
 .service-grid {
@@ -327,7 +327,7 @@ button.service-tile::after {
 
 .password-hint {
   margin-top: 20rpx;
-  color: #d94335;
+  color: #8c271e;
   text-align: center;
   font-size: 24rpx;
 }
@@ -352,7 +352,7 @@ button.service-tile::after {
 }
 
 .modal-btn.confirm {
-  color: #d94335;
+  color: #8c271e;
   font-weight: 800;
 }
 
@@ -390,3 +390,50 @@ button.service-tile::after {
   border-right: 0 !important;
   border-radius: var(--control-radius);
 }
+
+/* 个人中心沿用顾客端纸面体系，不使用迎宾页之外的装饰性大色块。 */
+.member-hero {
+  min-height: 0;
+  padding: 28rpx;
+  color: #1a1c1c;
+  background: #ffffff;
+  border: 1rpx solid #ebe8e6;
+  border-radius: 32rpx;
+  box-shadow: 0 14rpx 34rpx rgba(31, 25, 22, 0.07);
+}
+
+.hero-bg-mark,
+.hero-illustration { display: none; }
+
+.profile-avatar {
+  width: 112rpx;
+  height: 112rpx;
+  border: 0;
+  background: #f7ebe8;
+  box-shadow: none;
+}
+
+.profile-avatar-placeholder { color: #8c271e; background: #f7ebe8; }
+.profile-kicker { height: auto; padding: 4rpx 12rpx; color: #8c271e; background: #f7ebe8; border-radius: 8rpx; font-size: 20rpx; }
+.profile-name { margin-top: 12rpx; color: #1a1c1c; font-size: 34rpx; }
+.profile-sub { margin-top: 8rpx; color: #656461; font-size: 22rpx; }
+.profile-edit { min-width: 112rpx; min-height: 88rpx; padding: 0 20rpx; display: flex; align-items: center; justify-content: center; box-sizing: border-box; color: #8c271e; background: #f7ebe8; box-shadow: none; }
+
+.modal-btn.confirm {
+  color: #ffffff;
+  background: #8c271e;
+  box-shadow: 0 10rpx 22rpx rgba(140, 39, 30, 0.18);
+}
+
+.hero-metrics {
+  margin-top: 28rpx;
+  padding: 24rpx;
+  border: 1rpx solid #edecea;
+  border-radius: 24rpx;
+  background: #fcf5f3;
+}
+
+.metric-label { color: #656461; font-size: 22rpx; }
+.metric-value { margin-top: 8rpx; color: #8c271e; font-size: 40rpx; }
+.metric-value.small { color: #1a1c1c; font-size: 28rpx; }
+.metric-divider { background: rgba(140, 39, 30, 0.18); }

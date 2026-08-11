@@ -173,7 +173,9 @@ Page({
             wx.hideLoading()
             console.error('删除失败', err)
             wx.showToast({
-              title: '删除失败',
+              title: err.code === 'CATEGORY_NOT_EMPTY'
+                ? '请先处理分类下的菜品'
+                : '删除失败',
               icon: 'none'
             })
           }

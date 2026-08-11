@@ -1,6 +1,6 @@
 page {
   min-height: 100%;
-  background: #f5f6f7;
+  background: #f9f9f9;
   color: #262626;
 }
 
@@ -44,7 +44,7 @@ page {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #d94335;
+  color: #8c271e;
   font-size: 30rpx;
   background: #fff1ef;
   border-radius: 12rpx;
@@ -62,10 +62,10 @@ page {
   color: #ffffff;
   font-size: 28rpx;
   font-weight: 700;
-  background: #d94335;
-  border: 1rpx solid #d94335;
+  background: #8c271e;
+  border: 1rpx solid #8c271e;
   border-radius: 12rpx;
-  box-shadow: 0 8rpx 18rpx rgba(217, 67, 53, 0.18);
+  box-shadow: 0 8rpx 18rpx rgba(140, 39, 30, 0.18);
 }
 
 .add-btn .cuIcon-add {
@@ -95,7 +95,7 @@ page {
   left: 0;
   width: 6rpx;
   z-index: 2;
-  background: #d94335;
+  background: #8c271e;
 }
 
 .option-ticket.is-disabled::before {
@@ -119,7 +119,7 @@ page {
   width: 26rpx;
   height: 26rpx;
   z-index: 3;
-  background: #f5f6f7;
+  background: #f9f9f9;
   border-radius: 50%;
 }
 
@@ -149,7 +149,7 @@ page {
   min-width: 0;
   display: flex;
   align-items: baseline;
-  color: #d94335;
+  color: #8c271e;
   line-height: 1;
 }
 
@@ -186,7 +186,7 @@ page {
 
 .benefit-label .cuIcon-presentfill,
 .benefit-label .cuIcon-recharge {
-  color: #d94335;
+  color: #8c271e;
   font-size: 24rpx;
 }
 
@@ -285,7 +285,7 @@ page {
 
 .ticket-desc .cuIcon-tag {
   flex-shrink: 0;
-  color: #d94335;
+  color: #8c271e;
   font-size: 24rpx;
 }
 
@@ -380,13 +380,13 @@ page {
 }
 
 .modal-title .cuIcon-rechargefill {
-  color: #d94335;
+  color: #8c271e;
   font-size: 32rpx;
 }
 
 .modal-close {
-  width: 72rpx;
-  height: 72rpx;
+  width: 88rpx;
+  height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -412,7 +412,7 @@ page {
 }
 
 .required {
-  color: #d94335;
+  color: #8c271e;
 }
 
 .input-shell {
@@ -427,7 +427,7 @@ page {
   z-index: 1;
   display: flex;
   align-items: center;
-  color: #d94335;
+  color: #8c271e;
   font-size: 28rpx;
   font-weight: 700;
 }
@@ -465,7 +465,7 @@ page {
 }
 
 .setting-icon {
-  color: #d94335;
+  color: #8c271e;
   font-size: 26rpx;
 }
 
@@ -499,8 +499,8 @@ page {
 
 .modal-btn.confirm {
   color: #ffffff;
-  background: #d94335;
-  box-shadow: 0 8rpx 18rpx rgba(217, 67, 53, 0.18);
+  background: #8c271e;
+  box-shadow: 0 8rpx 18rpx rgba(140, 39, 30, 0.18);
 }
 
 .add-btn {

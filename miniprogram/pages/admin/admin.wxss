@@ -1,6 +1,6 @@
 /* pages/admin/admin.wxss */
 .page {
-  --admin-brand: #c93b32;
+  --admin-brand: #8c271e;
   --admin-brand-dark: #a82f28;
   --admin-jade: #168a72;
   --admin-gold: #b27b2d;
@@ -229,8 +229,8 @@
 }
 
 .tone-red {
-  color: #c93b32;
-  background: #fff0ed;
+  color: #8c271e;
+  background: #f7ebe8;
 }
 
 .tone-blue {
@@ -441,3 +441,25 @@
   min-height: 88rpx;
   border-radius: var(--control-radius) !important;
 }
+
+/* 管理端保持工作台密度，品牌色只用于重点操作和状态。 */
+.admin-top {
+  color: #1a1c1c;
+  background: #f9f9f9;
+  border-bottom: 1rpx solid #ebe8e6;
+}
+
+.header {
+  min-height: 150rpx;
+  padding: 12rpx 24rpx 24rpx;
+}
+
+.header-kicker { color: #8c271e; }
+.header-kicker-dot { background: #8c271e; }
+.header-title { color: #1a1c1c; font-size: 36rpx; }
+.header-subtitle { color: #656461; font-size: 22rpx; }
+.header-ticket { width: 128rpx; height: 112rpx; padding: 16rpx; background: #fcf5f3; border-color: #f0d8d3; }
+.ticket-mark { background: #8c271e; }
+.ticket-line { height: 6rpx; background: rgba(140, 39, 30, 0.25); }
+.ticket-line-strong { background: #8c271e; }
+.ticket-status { width: 10rpx; height: 10rpx; background: #8c271e; border-color: rgba(140, 39, 30, 0.18); }

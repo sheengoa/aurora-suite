@@ -1,195 +1,120 @@
-/**app.wxss**/
 @import './components/colorui/animation.wxss';
 @import './components/colorui/icon.wxss';
 @import './components/colorui/main.wxss';
 @import './components/colorui/vertical-nav.wxss';
+@import './styles/aurora-theme.wxss';
 
-/* 全局红色主题样式 */
 page {
-  --theme-color: #d94335;
-  --theme-color-dark: #b9342b;
-  --theme-color-light: #f36a5d;
-  --theme-soft: #fff0ed;
-  --theme-warm: #fff8f6;
-  --accent-color: #1f9d8a;
-  --warning-color: #c77a18;
-  --success-color: #2f9e5b;
-  --text-main: #22252b;
-  --text-sub: #69707d;
-  --text-muted: #9aa1ad;
-  --line-color: #ebeef3;
+  --brand-red: #8c271e;
+  --brand-red-dark: #6f1f19;
+  --brand-red-soft: #f7ebe8;
+  --brand-red-wash: #fcf5f3;
+  --brand-bg: #f9f9f9;
+  --brand-surface: #ffffff;
+  --brand-text: #1a1c1c;
+  --brand-sub: #656461;
+  --brand-muted: #9ca3af;
+  --brand-line: #ebe8e6;
+  --brand-success: #287b61;
+  --brand-warning: #a66a23;
+  --brand-error: #b3261e;
+  --theme-color: #8c271e;
+  --theme-color-dark: #6f1f19;
+  --theme-color-light: #b65c51;
+  --theme-soft: #f7ebe8;
+  --theme-warm: #fcf5f3;
+  --accent-color: #287b61;
+  --warning-color: #a66a23;
+  --success-color: #287b61;
+  --text-main: #1a1c1c;
+  --text-sub: #656461;
+  --text-muted: #9ca3af;
+  --line-color: #ebe8e6;
   --card-bg: #ffffff;
-  --page-bg: #f4f5f7;
-  --card-shadow: 0 12rpx 34rpx rgba(27, 36, 48, 0.07);
-  --soft-shadow: 0 8rpx 22rpx rgba(217, 67, 53, 0.16);
-  --theme-gradient: linear-gradient(135deg, #d94335 0%, #c63b32 100%);
+  --page-bg: #f9f9f9;
+  --card-shadow: 0 12rpx 34rpx rgba(31, 25, 22, 0.07);
+  --soft-shadow: 0 10rpx 24rpx rgba(140, 39, 30, 0.16);
+  --theme-gradient: #8c271e;
   --space-1: 8rpx;
   --space-2: 12rpx;
   --space-3: 16rpx;
   --space-4: 20rpx;
   --space-5: 24rpx;
   --space-6: 32rpx;
-  --field-radius: 14rpx;
+  --field-radius: 24rpx;
   --chip-radius: 999rpx;
   --control-radius: 26rpx;
-  --card-radius: 16rpx;
+  --card-radius: 24rpx;
   --floating-radius: 40rpx;
-  --modal-radius: 24rpx;
+  --modal-radius: 28rpx;
   --control-height: 88rpx;
-  --tabbar-height: 128rpx;
-  background-color: #f6f7f9;
-  color: #22252b;
+  --tabbar-height: 120rpx;
+  min-height: 100%;
+  background: var(--brand-bg);
+  color: var(--brand-text);
   font-size: 28rpx;
 }
 
-button::after {
-  border: 0;
-}
+button::after { border: 0; }
 
 button,
 input,
-textarea {
-  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-}
+textarea { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
 
-.container {
-  padding: 20rpx;
-}
+button,
+view,
+text,
+input,
+textarea { box-sizing: border-box; }
 
-/* 主题按钮 */
-.btn-theme {
-  min-height: 88rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  background: var(--theme-gradient);
-  color: white;
-  border: none;
-  border-radius: var(--control-radius);
-  padding: 0 40rpx;
-  box-shadow: var(--soft-shadow);
-  transition: transform 160ms ease, opacity 160ms ease;
-}
+.container { padding: 24rpx; }
 
-.btn-theme:active {
-  transform: scale(0.97);
-  opacity: 0.92;
-}
-
+.btn-theme,
 .btn-theme-plain {
   min-height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  background: white;
-  color: var(--theme-color);
-  border: 2rpx solid rgba(217, 67, 53, 0.26);
   border-radius: var(--control-radius);
   padding: 0 40rpx;
-  transition: transform 160ms ease, opacity 160ms ease;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), opacity 160ms ease;
 }
 
-.btn-theme-plain:active {
-  transform: scale(0.97);
-  opacity: 0.92;
-}
+.btn-theme { color: #fff; background: var(--brand-red); box-shadow: var(--soft-shadow); }
+.btn-theme-plain { color: var(--brand-red); background: #fff; border: 2rpx solid rgba(140, 39, 30, 0.24); }
+.btn-theme:active,
+.btn-theme-plain:active { transform: scale(0.97); opacity: 0.92; }
 
-/* 卡片样式 */
 .card {
-  background: white;
-  border-radius: var(--card-radius);
-  padding: 30rpx;
   margin-bottom: 20rpx;
+  padding: 30rpx;
+  background: var(--brand-surface);
+  border: 1rpx solid rgba(26, 28, 28, 0.05);
+  border-radius: var(--card-radius);
   box-shadow: var(--card-shadow);
-  border: 1rpx solid rgba(34, 37, 43, 0.05);
 }
 
-/* 标签 */
-.tag-red {
-  background: var(--theme-color);
-  color: white;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-  font-size: 22rpx;
-}
+.tag-red { padding: 4rpx 12rpx; color: #fff; background: var(--brand-red); border-radius: 8rpx; font-size: 22rpx; }
+.price { color: var(--brand-red); font-weight: 700; }
+.price-symbol { font-size: 24rpx; }
+.price-num { font-size: 36rpx; }
+.badge { position: absolute; top: -10rpx; right: -10rpx; min-width: 36rpx; height: 36rpx; padding: 0 8rpx; color: #fff; background: var(--brand-red); border-radius: 50%; font-size: 20rpx; line-height: 36rpx; text-align: center; }
+.divider { height: 1rpx; margin: 20rpx 0; background: var(--brand-line); }
 
-/* 价格样式 */
-.price {
-  color: var(--theme-color);
-  font-weight: bold;
-}
+.modal-dialog { border-radius: var(--modal-radius) !important; box-shadow: 0 30rpx 90rpx rgba(18, 24, 33, 0.22); }
 
-.price-symbol {
-  font-size: 24rpx;
-}
-
-.price-num {
-  font-size: 36rpx;
-}
-
-/* 徽章 */
-.badge {
-  position: absolute;
-  top: -10rpx;
-  right: -10rpx;
-  background: var(--theme-color);
-  color: white;
-  border-radius: 50%;
-  min-width: 36rpx;
-  height: 36rpx;
-  line-height: 36rpx;
-  text-align: center;
-  font-size: 20rpx;
-  padding: 0 8rpx;
-}
-
-/* 分割线 */
-.divider {
-  height: 1rpx;
-  background: var(--line-color);
-  margin: 20rpx 0;
-}
-
-input,
-textarea {
-  box-sizing: border-box;
-}
+.form-input,
+.form-textarea,
+.password-input,
+.search-input,
+.option-input { background: #fff !important; border-color: #e6e1de !important; border-radius: var(--field-radius) !important; }
 
 .add-btn,
 .save-btn,
 .bind-btn,
 .refresh-btn,
 .action-btn,
-.modal-btn,
-.submit-btn,
-.recharge-btn,
-.cart-settle-btn,
-.settle-btn,
-.add-cart-btn {
-  letter-spacing: 0;
-}
-
-.modal-dialog {
-  border-radius: var(--modal-radius) !important;
-  box-shadow: 0 30rpx 90rpx rgba(18, 24, 33, 0.22);
-}
-
-.form-input,
-.form-textarea,
-.password-input,
-.search-input,
-.option-input {
-  border-color: #e6e9ef !important;
-  border-radius: var(--field-radius) !important;
-  background: #fbfcfd;
-}
-
-.add-btn,
-.save-btn,
-.bind-btn,
-.refresh-btn,
 .modal-btn,
 .submit-btn,
 .recharge-btn,
@@ -203,13 +128,13 @@ textarea {
 .add-button,
 .empty-action {
   min-height: var(--control-height);
-  box-sizing: border-box;
-  border-radius: var(--control-radius) !important;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  border-radius: var(--control-radius) !important;
   line-height: 1.2;
-  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), opacity 160ms ease, background 180ms ease, box-shadow 180ms ease;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), opacity 160ms ease, background 180ms ease;
 }
 
 .add-btn:active,
@@ -227,35 +152,19 @@ textarea {
 .secondary-button:active,
 .buy-button:active,
 .add-button:active,
-.empty-action:active {
-  transform: scale(0.97);
-}
+.empty-action:active { transform: scale(0.97); }
 
 .modal-btn.cancel,
-.secondary-button {
-  background: #f1f3f5;
-  color: var(--text-sub);
-  border: 1rpx solid #e5e8ec;
-}
-
+.secondary-button { color: var(--brand-sub); background: #f3f1ef; border: 1rpx solid #e7e2df; }
 .section-title,
 .header-title,
-.modal-title {
-  letter-spacing: 0;
-}
+.modal-title { letter-spacing: 0; }
+.tab-page-padding { padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom)); }
+.control-pressed { opacity: 0.72; transform: scale(0.98); }
+.soft-control-pressed { opacity: 0.72; background: #f0edeb !important; }
 
-/* 统一自定义导航下的滚动安全余量 */
-.tab-page-padding {
-  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
-}
-
-/* 统一小程序自定义控件的按压反馈，避免出现系统默认方块遮罩 */
-.control-pressed {
-  opacity: 0.72;
-  transform: scale(0.98);
-}
-
-.soft-control-pressed {
-  opacity: 0.72;
-  background: #eef1f5 !important;
-}
+/* Vant / ColorUI 的页面级覆盖，只改变品牌令牌，不修改第三方源码。 */
+.van-button--danger,
+.van-tag--danger { background: var(--brand-red) !important; border-color: var(--brand-red) !important; }
+.van-tabs__line { background: var(--brand-red) !important; }
+.van-empty__description { color: var(--brand-sub) !important; }

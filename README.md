@@ -11,97 +11,80 @@
 <table>
   <tr>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/home.png" alt="点餐页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/01-pages-index-index.png" alt="点餐页面" />
       <br />
       <div align="center">点餐页面</div>
     </td>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/recharge.png" alt="充值页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/03-pages-recharge-recharge.png" alt="充值页面" />
       <br />
       <div align="center">充值页面</div>
     </td>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/myorder.png" alt="我的订单页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/04-pages-myorder-myorder.png" alt="我的订单页面" />
       <br />
       <div align="center">我的订单页面</div>
     </td>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/my.png" alt="个人中心页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/05-pages-myhome-myhome.png" alt="个人中心页面" />
       <br />
       <div align="center">个人中心页面</div>
     </td>
   </tr>
   <tr>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/workMenu.png" alt="管理员页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/07-pages-admin-admin.png" alt="管理员页面" />
       <br />
       <div align="center">管理员页面</div>
     </td>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/printerManage.png" alt="打印机管理页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/15-pages-admin-printer-printer.png" alt="打印机管理页面" />
       <br />
       <div align="center">打印机管理页面</div>
     </td>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/goodsDetail.png" alt="菜品详情页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/02-pages-dish-detail-dish-detail.png" alt="菜品详情页面" />
       <br />
       <div align="center">菜品详情页面</div>
     </td>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/ordercomfire.png" alt="结算订单页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/06-pages-settle-settle.png" alt="结算订单页面" />
       <br />
       <div align="center">结算订单页面</div>
     </td>
   </tr>
   <tr>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/shopSettings.png" alt="店铺设置页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/12-pages-admin-shopSettings-shopSettings.png" alt="店铺设置页面" />
       <br />
       <div align="center">店铺设置页面</div>
     </td>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/dishManage.png" alt="菜品管理页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/09-pages-admin-dish-dish.png" alt="菜品管理页面" />
       <br />
       <div align="center">菜品管理页面</div>
     </td>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/userManage.png" alt="会员管理页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/10-pages-admin-user-user.png" alt="会员管理页面" />
       <br />
       <div align="center">会员管理页面</div>
     </td>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/orderManage.png" alt="订单管理页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/11-pages-admin-order-order.png" alt="订单管理页面" />
       <br />
       <div align="center">订单管理页面</div>
     </td>
   </tr>
   <tr>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/rechargeManage.png" alt="充值选项管理页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/13-pages-admin-rechargeOptions-rechargeOptions.png" alt="充值选项管理页面" />
       <br />
       <div align="center">充值选项管理页面</div>
     </td>
     <td width="25%">
-      <img src="./miniprogram/images/githubImg/tableCodeManage.png" alt="桌码管理页面" />
+      <img src="./docs/visual-qa/2026-08-09/brand-ui-final/full-routes/14-pages-admin-tableCode-tableCode.png" alt="桌码管理页面" />
       <br />
       <div align="center">桌码管理页面</div>
-    </td>
-    <td width="25%">
-      <img src="./miniprogram/images/githubImg/zhuoma2.png" alt="一键生成桌码" />
-      <br />
-      <div align="center">一键生成桌码</div>
-    </td>
-    <td width="25%">
-      <img src="./miniprogram/images/githubImg/zhuoma.jpg" alt="桌码示例" />
-      <br />
-      <div align="center">桌码示例</div>
-    </td>
-  </tr>
-  <tr>
-    <td width="25%">
-      <img src="./miniprogram/images/githubImg/xiaopiao.jpg" alt="小票示例" />
-      <br />
-      <div align="center">小票示例</div>
     </td>
   </tr>
 </table>
@@ -322,18 +305,11 @@ wx.cloud.init({
 
 
 
-#### 6. 修改生成桌码的背景图
+#### 6. 确认发布包内容
 
-把images文件夹里的bg.png图片上传到云存储，得到url，把/pages/admin/tableCode/tableCode.js里面的bgImg变量的值替换为url
-```
-const bgImg = "把images文件夹的bg.png上传到云存储，得到url。你的背景图片URL放这里"
-```
+运行时图片位于 `miniprogram/images`。设计原型和视觉验收截图位于 `docs`，不属于小程序上传包。
 
-#### 7. 确认发布包排除部署素材
-
-`project.config.json` 已通过 `packOptions.ignore` 排除仅供文档展示的 `images/githubImg` 目录，以及上传到云存储后使用的 `images/bg.png`，无需从仓库手工删除这些素材。
-
-#### 8. 运行项目
+#### 7. 运行项目
 
 1. 在微信开发者工具中点击"编译"按钮
 2. 小程序会自动运行并显示在模拟器中
@@ -378,29 +354,6 @@ const bgImg = "把images文件夹的bg.png上传到云存储，得到url。你�
 
 
 
-
----
-
-## 💰 打赏支持
-
-如果这个项目对你有帮助，欢迎打赏支持！
-
-部署遇到问题的，需要协助可以v：yxh1168888
-
-<table>
-  <tr>
-    <td width="25%">
-      <img src="./miniprogram/images/githubImg/skm.png" alt="收款码" />
-      <br />
-      <div align="center">打赏支持</div>
-    </td>
-    <td width="25%">
-      <img src="./miniprogram/images/githubImg/wx.jpg" alt="微信页面" />
-      <br />
-      <div align="center">微信(备注来意)</div>
-    </td>
-  </tr>
-</table>
 
 ---
 

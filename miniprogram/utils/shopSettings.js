@@ -1,6 +1,7 @@
 const DEFAULT_SHOP_SETTINGS = {
   shopName: '小店点餐',
-  welcomeText: '欢迎光临本店，很高兴为您服务。'
+  welcomeText: '欢迎光临本店，很高兴为您服务。',
+  isOpen: true
 }
 
 function normalizeText(value, fallback, maxLength) {
@@ -19,7 +20,8 @@ function normalizeShopSettings(settings = {}) {
       settings.welcomeText,
       DEFAULT_SHOP_SETTINGS.welcomeText,
       48
-    )
+    ),
+    isOpen: settings.isOpen !== false
   }
 }
 

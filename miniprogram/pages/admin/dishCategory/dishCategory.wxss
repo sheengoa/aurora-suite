@@ -10,7 +10,7 @@
 .add-btn {
   margin-bottom: 20rpx;
   padding: 30rpx;
-  background: linear-gradient(135deg, #d94335 0%, #f36a5d 100%);
+  background: #8c271e;
   color: white;
   border-radius: 16rpx;
   display: flex;
@@ -85,7 +85,7 @@
 }
 
 .action-btn.edit {
-  background: #d94335;
+  background: #8c271e;
   color: white;
 }
 
@@ -178,21 +178,21 @@
 }
 
 .modal-btn.confirm {
-  color: #d94335;
+  color: #8c271e;
   font-weight: bold;
 }
 
 /* 高级版视觉覆盖 */
 .page {
-  background: linear-gradient(180deg, #fff7f3 0%, #f6f7f9 240rpx, #f6f7f9 100%);
+  background: #f9f9f9;
   padding: 24rpx;
   padding-bottom: 48rpx;
 }
 
 .add-btn {
   border-radius: 16rpx;
-  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
-  box-shadow: 0 18rpx 38rpx rgba(217, 67, 53, 0.22);
+  background: #8c271e;
+  box-shadow: 0 18rpx 38rpx rgba(140, 39, 30, 0.22);
 }
 
 .category-list {
@@ -210,7 +210,7 @@
   height: 74rpx;
   border-radius: 16rpx;
   background: #fff4f0;
-  color: #d94335;
+  color: #8c271e;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -236,7 +236,7 @@
 
 .action-btn.delete {
   background: #fff1ef;
-  color: #d94335;
+  color: #8c271e;
 }
 
 .modal-mask {
@@ -275,7 +275,7 @@
 }
 
 .modal-btn.confirm {
-  color: #d94335;
+  color: #8c271e;
 }
 
 /* 统一后台控件的尺寸与圆角 */
@@ -315,8 +315,8 @@
 
 .modal-btn.confirm {
   color: #ffffff;
-  background: #d94335;
-  box-shadow: 0 10rpx 22rpx rgba(217, 67, 53, 0.18);
+  background: #8c271e;
+  box-shadow: 0 10rpx 22rpx rgba(140, 39, 30, 0.18);
 }
 
 /* 原型统一收束：分类管理 */

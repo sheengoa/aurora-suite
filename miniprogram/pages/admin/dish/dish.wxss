@@ -1,8 +1,8 @@
 /* pages/admin/dish/dish.wxss */
 .page {
-  --menu-brand: #d94335;
+  --menu-brand: #8c271e;
   --menu-brand-dark: #b52f26;
-  --menu-brand-header: #c93b32;
+  --menu-brand-header: #8c271e;
   --menu-brand-soft: #fff3f1;
   --menu-brand-pale: #f7d8d4;
   --menu-ink: #242424;
@@ -1912,6 +1912,28 @@
   gap: 8rpx;
   box-sizing: border-box;
   border-radius: var(--control-radius) !important;
+}
+
+/* 操作层级：积极操作使用品牌实色，风险操作使用清晰的品牌浅底。 */
+.dish-actions {
+  padding: 10rpx;
+  gap: 10rpx;
+}
+
+.dish-actions .action-btn.status,
+.dish-actions .action-btn.delete {
+  color: var(--menu-brand) !important;
+  background: #f7ebe8 !important;
+  border: 1rpx solid rgba(140, 39, 30, 0.14);
+  box-shadow: none;
+}
+
+.dish-actions .action-btn.edit,
+.dish-item.is-offline .dish-actions .action-btn.status {
+  color: #ffffff !important;
+  background: var(--menu-brand) !important;
+  border: 1rpx solid var(--menu-brand);
+  box-shadow: 0 8rpx 18rpx rgba(140, 39, 30, 0.16);
 }
 
 .form-input,

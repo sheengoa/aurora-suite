@@ -1,0 +1,115 @@
+/* Aurora 跨页面视觉合同：页面特例仍保留在各自 WXSS。 */
+.page:not(.welcome-page),
+.detail-page,
+.myhome-page { background: #f9f9f9 !important; color: #1a1c1c !important; }
+
+.workspace-header,
+.preview-band { background: #8c271e !important; background-image: none !important; }
+
+.card,
+.order-card,
+.order-item,
+.user-list,
+.category-list,
+.printer-card,
+.settings-section,
+.filter-bar,
+.page-tools,
+.option-ticket,
+.table-code-item,
+.section,
+.product-band,
+.selection-band,
+.detail-band,
+.service-section,
+.rules-section,
+.recharge-section,
+.merchant-pass,
+.store-preview { background: #fff !important; border-radius: 24rpx !important; box-shadow: 0 12rpx 30rpx rgba(31, 25, 22, 0.06) !important; }
+
+.primary-button,
+.buy-button,
+.add-button,
+.add-btn,
+.add-dish-btn,
+.save-btn,
+.submit-btn,
+.recharge-btn,
+.checkout-btn,
+.search-btn,
+.bind-btn,
+.confirm,
+.action-btn.edit,
+.action-btn.add,
+.action-btn.primary,
+.settle-btn.active,
+.cart-settle-btn { background: #8c271e !important; background-image: none !important; border-color: #8c271e !important; color: #fff !important; }
+
+.price,
+.price-num,
+.goods-price,
+.order-total-value,
+.balance-amount,
+.amount-value,
+.arrival-value,
+.footer-price-num,
+.bottom-price-value,
+.recharge-amount,
+.recharge-value.total,
+.recharge-value { color: #8c271e !important; }
+
+.active,
+.selected,
+.current,
+.menu-item.active .menu-name,
+.category-item.active .category-name,
+.order-status.success,
+.tab-active { color: #8c271e; }
+
+.segment,
+.order-type-item,
+.pay-method-item,
+.sku-option,
+.tag-option,
+.option-btn,
+.setting-options,
+.form-input,
+.form-textarea,
+.remark-input,
+.search-input { border-radius: 24rpx !important; }
+
+.order-type-item.active,
+.pay-method-item.active,
+.sku-option.selected,
+.tag-option.selected,
+.option-btn.active { border-color: #8c271e !important; background: #fcf5f3 !important; color: #8c271e !important; }
+
+.modal-mask,
+.cart-mask { background: rgba(26, 28, 28, 0.54) !important; }
+.modal-dialog { border-radius: 32rpx !important; }
+.modal-btn.confirm {
+  color: #fff !important;
+  background: #8c271e !important;
+  border-color: #8c271e !important;
+}
+
+.admin-item,
+.service-tile,
+.category-item,
+.dish-item,
+.user-item,
+.order-item,
+.printer-card,
+.table-code-item { border-radius: 20rpx !important; }
+
+.empty-action,
+.error-actions .primary-button { background: #8c271e !important; color: #fff !important; }
+.page-tools,
+.filter-bar { border: 1rpx solid #ebe8e6 !important; }
+.search-btn,
+.refresh-btn { border-radius: 26rpx !important; }
+
+.fixed-action-bar,
+.footer,
+.checkout-wrapper,
+.action-bar { padding-bottom: env(safe-area-inset-bottom); }

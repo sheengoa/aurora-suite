@@ -15,8 +15,10 @@ Component({
    */
   data: {
     avatarUrl: null,
+    avatarLoadFailed: false,
     nickName: null,
     phoneNumber: null,
+    displayPhoneNumber: '',
     phoneCode: null,
     realPhoneNumber: null, // 真实的手机号（用于提交）
   },
@@ -36,8 +38,13 @@ Component({
     chooseavatar(res) {
       const avatarUrl = res.detail.avatarUrl
       this.setData({
-        avatarUrl: avatarUrl
+        avatarUrl: avatarUrl,
+        avatarLoadFailed: false
       })
+    },
+
+    onAvatarImageError() {
+      this.setData({ avatarLoadFailed: true })
     },
 
     /** 获取昵称信息 */
@@ -63,11 +70,11 @@ Component({
           
           if (phoneRes.result && phoneRes.result.success && phoneRes.result.phoneNumber) {
             const phoneNumber = phoneRes.result.phoneNumber
-            // 格式化显示手机号（中间4位用*代替，保护隐私）
-           // const displayPhone = phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+            const displayPhoneNumber = phoneNumber.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2')
             
             this.setData({
               phoneNumber: phoneNumber,
+              displayPhoneNumber,
               phoneCode: e.detail.code,
               realPhoneNumber: phoneNumber // 保存真实手机号用于提交
             })
@@ -200,11 +207,14 @@ Component({
      * 关闭弹窗
      */
     closeModalTap() {
+      this.triggerEvent('close')
       this.setData({
         showAvaModal: false,
         nickName: null,
         avatarUrl: null,
+        avatarLoadFailed: false,
         phoneNumber: null,
+        displayPhoneNumber: '',
         phoneCode: null,
         realPhoneNumber: null
       })

@@ -17,8 +17,28 @@ const {
   loadShopSettings: fetchShopSettings
 } = require('../../utils/shopSettings')
 
+const CATEGORY_SUBTITLES = {
+  招牌面食: 'Signature Noodles',
+  特惠套餐: 'Value Sets',
+  热炒小菜: 'Hot Dishes',
+  饮品甜点: 'Drinks & Desserts'
+}
+const WELCOME_COLLAPSE_DISTANCE = 260
+const WELCOME_SNAP_THRESHOLD = 0.46
+const WELCOME_PROJECTION_TIME = 0.14
+
 function clone(data) {
   return JSON.parse(JSON.stringify(data || {}))
+}
+
+function getWelcomeLayout(windowHeight) {
+  const height = Math.max(568, Math.min(844, Number(windowHeight) || 844))
+  const ratio = (height - 568) / (844 - 568)
+  return {
+    cardTop: Math.round(210 + 142 * ratio),
+    cardHeight: Math.round(96 + 16 * ratio),
+    stageTop: Math.round(314 + 158 * ratio)
+  }
 }
 
 Page({
@@ -28,6 +48,8 @@ Page({
     goodsSections: [],
     goodsScrollTop: 0,
     goodsScrollAnimation: true,
+    menuScrollEnabled: false,
+    menuAtTop: true,
     verticalNavTop: 0,
     sectionMetrics: [],
     hasMoreGoodsSections: false,
@@ -40,16 +62,44 @@ Page({
     showCart: false,
     userInfo: null,
     shopName: DEFAULT_SHOP_SETTINGS.shopName,
+    isOpen: DEFAULT_SHOP_SETTINGS.isOpen,
+    welcomeNamePrimary: 'Aurora',
+    welcomeNameSecondary: '小餐馆',
     welcomeText: DEFAULT_SHOP_SETTINGS.welcomeText,
     showTagModal: false,
     currentDish: null,
+    modalSkus: [],
+    modalTags: [],
     selectedSkuId: '',
     selectedTags: {},
     modalDishCount: 1,
     modalTotalPrice: 0,
+    cartImageFailures: {},
+    currentDishImageFailed: false,
     showAuthModal: false,
     statusBarHeight: 0,
-    storefrontTop: 68,
+    storefrontTop: 128,
+    heroHeight: 506,
+    welcomeProgress: 0,
+    welcomeState: 'expanded',
+    welcomeCardTop: 352,
+    welcomeCardHeight: 112,
+    welcomeCardInset: 24,
+    welcomeCardRadius: 28,
+    welcomeCardOffsetY: 280,
+    welcomeExpandedCardTop: 352,
+    welcomeExpandedCardHeight: 112,
+    welcomeExpandedStageTop: 472,
+    welcomeCollapsedCardTop: 72,
+    welcomeCollapsedStageTop: 142,
+    welcomeStageTop: 472,
+    welcomeStageOffsetY: 330,
+    welcomeCardContentOpacity: 1,
+    welcomeCompactOpacity: 0,
+    welcomeCopyOpacity: 1,
+    welcomeCopyY: 0,
+    welcomeHintOpacity: 1,
+    welcomeSettleDuration: 320,
     tableNumber: '',
     goodsPageSize: 20,
     goodsLoading: false,
@@ -60,21 +110,43 @@ Page({
   onLoad(options) {
     const systemInfo = wx.getSystemInfoSync()
     const statusBarHeight = systemInfo.statusBarHeight || 0
-    let storefrontTop = statusBarHeight + 44
+    const windowHeight = systemInfo.windowHeight || 844
+    const compactHeight = windowHeight < 680
+    const storefrontTop = compactHeight
+      ? Math.max(80, statusBarHeight + 60)
+      : Math.max(104, statusBarHeight + 80)
+    const welcomeLayout = getWelcomeLayout(windowHeight)
+    let welcomeCollapsedCardTop = statusBarHeight + 52
 
     try {
       const menuButton = wx.getMenuButtonBoundingClientRect()
       if (menuButton && menuButton.bottom) {
-        storefrontTop = menuButton.bottom + 8
+        welcomeCollapsedCardTop = menuButton.bottom + 8
       }
     } catch (err) {
-      console.warn('获取胶囊位置失败，使用默认顶部间距', err)
+      console.warn('获取胶囊位置失败，使用默认收起位置', err)
     }
-
+    const welcomeCollapsedStageTop = welcomeCollapsedCardTop + 78
     this.setData({
       statusBarHeight,
-      storefrontTop
-    })
+      storefrontTop,
+      heroHeight: Math.max(Math.round(windowHeight * 0.62), welcomeLayout.stageTop),
+      welcomeCardTop: welcomeLayout.cardTop,
+      welcomeCardHeight: welcomeLayout.cardHeight,
+      welcomeCardOffsetY: welcomeLayout.cardTop - welcomeCollapsedCardTop,
+      welcomeCardInset: 24,
+      welcomeCardRadius: 28,
+      welcomeStageTop: welcomeLayout.stageTop,
+      welcomeStageOffsetY: welcomeLayout.stageTop - welcomeCollapsedStageTop,
+      welcomeExpandedCardTop: welcomeLayout.cardTop,
+      welcomeExpandedCardHeight: welcomeLayout.cardHeight,
+      welcomeExpandedStageTop: welcomeLayout.stageTop,
+      welcomeCollapsedCardTop,
+      welcomeCollapsedStageTop,
+      welcomeNamePrimary: this.getWelcomeNameParts(DEFAULT_SHOP_SETTINGS.shopName).primary,
+      welcomeNameSecondary: this.getWelcomeNameParts(DEFAULT_SHOP_SETTINGS.shopName).secondary,
+      tableNumber: app.globalData.mockMode ? '3' : ''
+    }, () => this.updateWelcomeMotion(0, true))
     this.updateCart(getStoredCart())
 
     if (options.scene) {
@@ -102,18 +174,263 @@ Page({
   onShow() {
     const tabBar = this.getTabBar && this.getTabBar()
     if (tabBar) tabBar.setData({ selected: 0 })
+    this.syncTabBarInteractionLock()
     this.updateCart(getStoredCart())
     this.loadUserInfo()
     this.loadShopSettings()
   },
 
+  onHide() {
+    if (this.pendingWelcomeTarget !== null && typeof this.pendingWelcomeTarget !== 'undefined') {
+      this.commitWelcomePosition(this.pendingWelcomeTarget)
+    }
+    this.setTabBarInteractionLocked(false)
+    if (this.welcomeMotionTimer) {
+      clearTimeout(this.welcomeMotionTimer)
+      this.welcomeMotionTimer = null
+    }
+    if (this.welcomeSettleTimer) {
+      clearTimeout(this.welcomeSettleTimer)
+      this.welcomeSettleTimer = null
+    }
+    if (this.welcomeSnapTimer) {
+      clearTimeout(this.welcomeSnapTimer)
+      this.welcomeSnapTimer = null
+    }
+  },
+
+  onUnload() {
+    if (this.welcomeMotionTimer) clearTimeout(this.welcomeMotionTimer)
+    if (this.welcomeSettleTimer) clearTimeout(this.welcomeSettleTimer)
+    if (this.welcomeSnapTimer) clearTimeout(this.welcomeSnapTimer)
+    if (this.goodsScrollTimer) clearTimeout(this.goodsScrollTimer)
+  },
+
+  beginWelcomeSettle(payload = {}) {
+    const target = Number(payload.target) >= 1 ? 1 : 0
+    const duration = Math.max(0, Number(payload.duration) || 0)
+    this.pendingWelcomeTarget = target
+    if (this.welcomeSettleTimer) clearTimeout(this.welcomeSettleTimer)
+    this.setData({
+      welcomeState: 'settling',
+      welcomeSettleDuration: duration
+    }, () => this.updateWelcomeMotion(target, true, 'settling'))
+    this.welcomeSettleTimer = setTimeout(() => {
+      this.welcomeSettleTimer = null
+      if (this.pendingWelcomeTarget === target) {
+        this.commitWelcomePosition(target)
+      }
+    }, duration + 80)
+  },
+
+  lockMenuForWelcomeMotion() {
+    if (!this.data.menuScrollEnabled) return
+    this.setData({
+      menuScrollEnabled: false,
+      goodsScrollAnimation: false,
+      goodsScrollTop: 0,
+      menuAtTop: true
+    })
+  },
+
+  updateWelcomeMotion(progress = 0, immediate = false, stateOverride = '') {
+    const nextProgress = Math.max(0, Math.min(1, Number(progress) || 0))
+    const visualProgress = nextProgress
+    const expandedHeight = this.data.welcomeExpandedCardHeight || 112
+    const visualHeight = expandedHeight + (68 - expandedHeight) * visualProgress
+    const cardOffsetY = (this.data.welcomeExpandedCardTop - this.data.welcomeCollapsedCardTop) * (1 - visualProgress)
+    const stageOffsetY = (this.data.welcomeExpandedStageTop - this.data.welcomeCollapsedStageTop) * (1 - visualProgress)
+    // 收起态使用充值页白色卡片同级的 24rpx 固定圆角，不再缩放卡片表面。
+    const visualRadius = 28 - 16 * visualProgress
+    const state = nextProgress >= 0.985 ? 'collapsed' : nextProgress > 0.005 ? 'collapsing' : 'expanded'
+    const next = {
+      welcomeProgress: nextProgress,
+      welcomeState: stateOverride || state,
+      welcomeCardTop: this.data.welcomeCollapsedCardTop + cardOffsetY,
+      welcomeCardHeight: visualHeight,
+      welcomeCardInset: 24 - 14 * visualProgress,
+      welcomeCardRadius: visualRadius,
+      welcomeCardOffsetY: cardOffsetY,
+      welcomeStageTop: this.data.welcomeCollapsedStageTop + stageOffsetY,
+      welcomeStageOffsetY: stageOffsetY,
+      welcomeCardContentOpacity: Math.max(0, Math.min(1, 1 - (visualProgress - 0.34) / 0.16)),
+      welcomeCompactOpacity: Math.max(0, Math.min(1, (visualProgress - 0.50) / 0.16)),
+      welcomeCopyOpacity: Math.max(0, 1 - visualProgress / 0.62),
+      welcomeCopyY: -22 * visualProgress,
+      welcomeHintOpacity: Math.max(0, 1 - visualProgress / 0.42)
+    }
+    if (immediate) {
+      this.setData(next)
+      return
+    }
+    if (this.welcomeMotionTimer) return
+    this.welcomeMotionTimer = setTimeout(() => {
+      this.welcomeMotionTimer = null
+      this.setData(next)
+    }, 16)
+  },
+
+  getWelcomeTouchY(event) {
+    const touch = event && event.touches && event.touches[0]
+      ? event.touches[0]
+      : event && event.changedTouches && event.changedTouches[0]
+    if (!touch) return null
+    const value = typeof touch.clientY === 'undefined' ? touch.pageY : touch.clientY
+    const number = Number(value)
+    return Number.isFinite(number) ? number : null
+  },
+
+  getWelcomeTouchTime(event, previous = 0) {
+    const value = Number(event && event.timeStamp) || Date.now()
+    return value > previous ? value : previous + 16
+  },
+
+  onWelcomeTouchStart(event) {
+    if (this.pendingWelcomeTarget !== null && typeof this.pendingWelcomeTarget !== 'undefined') return
+    const startY = this.getWelcomeTouchY(event)
+    if (startY === null) return
+
+    const dataset = event && event.currentTarget && event.currentTarget.dataset || {}
+    const source = dataset.motionSource || 'viewport'
+    const startProgress = Math.max(0, Math.min(1, Number(this.data.welcomeProgress) || 0))
+    const menuAtTop = dataset.menuAtTop === true || dataset.menuAtTop === 'true' || this.data.menuAtTop
+    if (source === 'menu' && startProgress >= 0.999 && !menuAtTop) return
+
+    const startTime = this.getWelcomeTouchTime(event)
+    this.welcomeTouchState = {
+      source,
+      handled: source === 'viewport' || startProgress < 0.999,
+      moved: false,
+      startY,
+      lastY: startY,
+      lastTime: startTime,
+      startProgress,
+      progress: startProgress,
+      velocityY: 0
+    }
+  },
+
+  onWelcomeTouchMove(event) {
+    const state = this.welcomeTouchState
+    const currentY = this.getWelcomeTouchY(event)
+    if (!state || currentY === null) return
+
+    const deltaY = currentY - state.startY
+    const currentTime = this.getWelcomeTouchTime(event, state.lastTime)
+    const elapsed = Math.max(8, currentTime - state.lastTime)
+    const instantVelocity = (currentY - state.lastY) * 1000 / elapsed
+    state.lastY = currentY
+    state.lastTime = currentTime
+    state.velocityY = state.velocityY * 0.65 + instantVelocity * 0.35
+    state.moved = state.moved || Math.abs(deltaY) >= 3
+
+    if (!state.handled) {
+      if (state.startProgress >= 0.999 && deltaY > 2) {
+        state.handled = true
+        this.lockMenuForWelcomeMotion()
+      } else {
+        return
+      }
+    }
+
+    const nextProgress = state.startProgress < 0.999
+      ? state.startProgress - deltaY / WELCOME_COLLAPSE_DISTANCE
+      : 1 - deltaY / WELCOME_COLLAPSE_DISTANCE
+    const progress = Math.max(0, Math.min(1, nextProgress))
+    if (Math.abs(progress - state.progress) < 0.001) return
+    state.progress = progress
+    this.updateWelcomeMotion(progress, true)
+  },
+
+  onWelcomeTouchEnd(event) {
+    const state = this.welcomeTouchState
+    this.welcomeTouchState = null
+    if (!state || !state.handled || !state.moved) return
+
+    const endTime = this.getWelcomeTouchTime(event, state.lastTime)
+    const idleTime = Math.max(0, endTime - state.lastTime)
+    const idleWeight = Math.max(0, Math.min(1, 1 - idleTime / 96))
+    const velocity = Math.max(-2200, Math.min(2200, state.velocityY * idleWeight))
+    const current = Math.max(0, Math.min(1, state.progress))
+    const projected = Math.max(0, Math.min(1,
+      current - velocity * WELCOME_PROJECTION_TIME / WELCOME_COLLAPSE_DISTANCE
+    ))
+    const target = projected >= WELCOME_SNAP_THRESHOLD ? 1 : 0
+    const distance = Math.abs(target - current)
+
+    if (distance < 0.002) {
+      this.commitWelcomePosition(target)
+      return
+    }
+
+    const speed = Math.min(1800, Math.abs(velocity))
+    const duration = Math.round(Math.max(200, Math.min(390,
+      260 + distance * 150 - speed * 0.035
+    )))
+    this.beginWelcomeSettle({ target, duration })
+  },
+
+  commitWelcomePosition(progress) {
+    const target = progress >= 1 ? 1 : 0
+    this.pendingWelcomeTarget = null
+    this.welcomeTouchState = null
+    if (this.welcomeSettleTimer) {
+      clearTimeout(this.welcomeSettleTimer)
+      this.welcomeSettleTimer = null
+    }
+    this.welcomeLatched = target === 1
+    this.currentGoodsScrollTop = 0
+    this.updateWelcomeMotion(target, true)
+    this.setData({
+      goodsScrollAnimation: false,
+      goodsScrollTop: 0,
+      menuScrollEnabled: target === 1,
+      menuAtTop: true
+    }, () => {
+      this.setData({ goodsScrollAnimation: true })
+    })
+  },
+
+  onGoodsScroll(event) {
+    const scrollTop = Math.max(0, Number(event && event.detail && event.detail.scrollTop) || 0)
+    const menuAtTop = scrollTop <= 1
+    if (menuAtTop !== this.data.menuAtTop) {
+      this.setData({ menuAtTop })
+    }
+    if (!this.data.menuScrollEnabled || !this.welcomeLatched) {
+      this.currentGoodsScrollTop = 0
+      if (scrollTop > 1 && this.data.goodsScrollTop !== 0) {
+        this.setData({ goodsScrollAnimation: false, goodsScrollTop: 0, menuAtTop: true })
+      }
+      return
+    }
+    this.currentGoodsScrollTop = scrollTop
+    if (this.isMenuJumping) return
+    if (this.goodsScrollTimer) clearTimeout(this.goodsScrollTimer)
+    this.goodsScrollTimer = setTimeout(() => this.updateCurrentMenuByScroll(scrollTop), 70)
+  },
+
   async loadShopSettings() {
     const settings = await fetchShopSettings(db)
-    this.setData(settings)
+    const nameParts = this.getWelcomeNameParts(settings.shopName)
+    this.setData({ ...settings, welcomeNamePrimary: nameParts.primary, welcomeNameSecondary: nameParts.secondary })
+  },
+
+  getWelcomeNameParts(name) {
+    const value = String(name || '').trim()
+    const parts = value.split(/\s+/)
+    if (parts.length > 1) {
+      return { primary: parts.shift(), secondary: parts.join(' ') }
+    }
+    return { primary: value, secondary: '' }
   },
 
   normalizeDish(goods) {
-    return normalizeDishData(goods)
+    const dish = normalizeDishData(goods)
+    return {
+      ...dish,
+      requiresSelection: dish.hasMultipleSkus || (dish.tags || []).length > 0
+    }
   },
 
   getDefaultSku(goods) {
@@ -148,6 +465,7 @@ Page({
     return {
       categoryId: category._id,
       categoryName: category.name,
+      categorySubtitle: CATEGORY_SUBTITLES[category.name] || 'Aurora Menu',
       anchorId: `section-${index}`,
       menuAnchorId: `menu-${index}`,
       goods: [],
@@ -214,6 +532,7 @@ Page({
         currentMenuId: visibleList.length > 0 ? visibleList[0]._id : '',
         goodsScrollTop: 0,
         goodsScrollAnimation: true,
+        menuAtTop: true,
         verticalNavTop: 0,
         sectionMetrics: [],
         goodsLoading: false,
@@ -539,6 +858,7 @@ Page({
   },
 
   async switchMenu(e) {
+    if (!this.data.menuScrollEnabled || !this.welcomeLatched) return
     const menuId = e.currentTarget.dataset.id
     const index = this.getSectionIndexById(menuId)
     const section = this.data.goodsSections[index]
@@ -600,6 +920,7 @@ Page({
   },
 
   async onGoodsScrollToLower() {
+    if (!this.data.menuScrollEnabled || !this.welcomeLatched) return
     if (this.isMenuJumping) return
 
     if (this.data.loadingNextSection || this.data.goodsLoading) return
@@ -624,21 +945,6 @@ Page({
     await this.loadNextSection(currentIndex + 1)
   },
 
-  onGoodsScroll(e) {
-    const scrollTop = e && e.detail ? e.detail.scrollTop || 0 : 0
-    this.currentGoodsScrollTop = scrollTop
-
-    if (this.isMenuJumping) return
-
-    if (this.goodsScrollTimer) {
-      clearTimeout(this.goodsScrollTimer)
-    }
-
-    this.goodsScrollTimer = setTimeout(() => {
-      this.updateCurrentMenuByScroll(scrollTop)
-    }, 60)
-  },
-
   updateCurrentMenuByScroll(scrollTop = this.currentGoodsScrollTop || 0) {
     const metrics = this.data.sectionMetrics || []
 
@@ -651,7 +957,7 @@ Page({
       return
     }
 
-    const probeTop = scrollTop + 24
+    const probeTop = Math.max(0, scrollTop) + 24
     let activeMetric = metrics[0]
 
     for (let i = 0; i < metrics.length; i++) {
@@ -773,11 +1079,14 @@ Page({
     this.setData({
       showTagModal: true,
       currentDish: dish,
+      modalSkus: dish.enabledSkus,
+      modalTags: dish.tags || [],
       selectedSkuId: sku.id,
       selectedTags: this.buildInitialTags(dish),
       modalDishCount: 1,
-      modalTotalPrice: sku.price.toFixed(2)
-    })
+      modalTotalPrice: sku.price.toFixed(2),
+      currentDishImageFailed: false
+    }, () => this.syncTabBarInteractionLock())
   },
 
   addToCart(e) {
@@ -832,9 +1141,8 @@ Page({
 
   addDishToCartDirect(e) {
     const goods = this.normalizeDish(e.currentTarget.dataset.goods)
-    const hasTags = goods.tags && goods.tags.length > 0
 
-    if (goods.hasMultipleSkus || hasTags) {
+    if (goods.requiresSelection) {
       this.openDishModal(goods)
       return
     }
@@ -857,8 +1165,8 @@ Page({
   },
 
   confirmAddToCart() {
-    const { currentDish, selectedTags, selectedSkuId, modalDishCount } = this.data
-    const selectedSku = (currentDish.enabledSkus || []).find(sku => sku.id === selectedSkuId)
+    const { currentDish, modalSkus, modalTags, selectedTags, selectedSkuId, modalDishCount } = this.data
+    const selectedSku = modalSkus.find(sku => sku.id === selectedSkuId)
 
     if (!selectedSku) {
       wx.showToast({
@@ -868,8 +1176,8 @@ Page({
       return
     }
 
-    if (currentDish.tags && currentDish.tags.length > 0) {
-      for (let tag of currentDish.tags) {
+    if (modalTags.length > 0) {
+      for (let tag of modalTags) {
         if (tag.required) {
           const selectedValue = selectedTags[tag.id]
           if (!selectedValue ||
@@ -952,16 +1260,16 @@ Page({
     const goods = e.currentTarget.dataset.goods
     const cart = { ...this.data.cart }
 
-    for (let key in cart) {
-      if (cart[key] && cart[key].dishId === goods._id) {
-        cart[key].count--
-        if (cart[key].count <= 0) {
-          delete cart[key]
-        }
-        this.updateCart(cart)
-        break
-      }
+    const cartKey = Object.keys(cart).reverse().find(key => (
+      cart[key] && cart[key].dishId === goods._id
+    ))
+    if (!cartKey) return
+
+    cart[cartKey].count--
+    if (cart[cartKey].count <= 0) {
+      delete cart[cartKey]
     }
+    this.updateCart(cart)
   },
 
   reduceFromCart(e) {
@@ -991,7 +1299,7 @@ Page({
 
   selectSkuOption(e) {
     const skuId = e.currentTarget.dataset.skuId
-    const sku = (this.data.currentDish.enabledSkus || []).find(item => item.id === skuId)
+    const sku = this.data.modalSkus.find(item => item.id === skuId)
     if (!sku) return
 
     this.setData({
@@ -1046,17 +1354,40 @@ Page({
     this.setData({
       showTagModal: false,
       currentDish: null,
+      modalSkus: [],
+      modalTags: [],
       selectedSkuId: '',
       selectedTags: {},
       modalDishCount: 1,
-      modalTotalPrice: 0
-    })
+      modalTotalPrice: 0,
+      currentDishImageFailed: false
+    }, () => this.syncTabBarInteractionLock())
+  },
+
+  onDishImageError(e) {
+    const data = e.currentTarget.dataset || {}
+    if (data.scope === 'menu') {
+      this.setData({
+        [`goodsSections[${data.sectionIndex}].goods[${data.goodsIndex}].imageLoadFailed`]: true
+      })
+      return
+    }
+    if (data.scope === 'cart') {
+      this.setData({
+        cartImageFailures: {
+          ...this.data.cartImageFailures,
+          [data.cartKey]: true
+        }
+      })
+      return
+    }
+    if (data.scope === 'modal') {
+      this.setData({ currentDishImageFailed: true })
+    }
   },
 
   updateModalTotal(count) {
-    const sku = this.data.currentDish
-      ? (this.data.currentDish.enabledSkus || []).find(item => item.id === this.data.selectedSkuId)
-      : null
+    const sku = this.data.modalSkus.find(item => item.id === this.data.selectedSkuId)
     const price = sku ? sku.price : 0
     this.setData({
       modalDishCount: count,
@@ -1076,6 +1407,10 @@ Page({
 
   stopPropagation() {},
 
+  onAuthModalClosed() {
+    this.setData({ showAuthModal: false }, () => this.syncTabBarInteractionLock())
+  },
+
   async onUserInfoSaved(e) {
     const { avatarUrl, nickName, phoneNumber } = e.detail || {}
 
@@ -1087,7 +1422,7 @@ Page({
         phoneNumber
       },
       showAuthModal: false
-    })
+    }, () => this.syncTabBarInteractionLock())
 
     try {
       await this.loadUserInfo()
@@ -1120,14 +1455,27 @@ Page({
       cartTotalPriceText: totalPrice.toFixed(2),
       goodsSections,
       showCart: totalCount > 0 ? this.data.showCart : false
-    })
+    }, () => this.syncTabBarInteractionLock())
   },
 
   toggleCart() {
     if (this.data.cartCount === 0) return
-    this.setData({
-      showCart: !this.data.showCart
-    })
+    const showCart = !this.data.showCart
+    this.setData({ showCart }, () => this.syncTabBarInteractionLock())
+  },
+
+  setTabBarInteractionLocked(locked) {
+    const tabBar = this.getTabBar && this.getTabBar()
+    const interactionLocked = Boolean(locked)
+    if (tabBar && tabBar.data.interactionLocked !== interactionLocked) {
+      tabBar.setData({ interactionLocked })
+    }
+  },
+
+  syncTabBarInteractionLock() {
+    this.setTabBarInteractionLocked(
+      this.data.showCart || this.data.showTagModal || this.data.showAuthModal
+    )
   },
 
   clearCart() {
@@ -1139,37 +1487,14 @@ Page({
       wx.showToast({ title: '购物车为空', icon: 'none' })
       return
     }
-
-    if (!this.data.tableNumber) {
-      this.requestTableCodeForSettle()
+    if (!this.data.isOpen) {
+      wx.showToast({ title: '店铺已打烊，暂不接单', icon: 'none' })
       return
     }
-
     this.navigateToSettle()
   },
 
-  requestTableCodeForSettle() {
-    wx.showModal({
-      title: '请先扫描桌码',
-      content: '订单需要绑定当前桌码，扫码成功后才能进入订单确认。',
-      confirmText: '去扫码',
-      cancelText: '暂不结算',
-      success: (result) => {
-        if (result.confirm) {
-          this.scanTableCode({
-            settleAfterScan: true
-          })
-        }
-      }
-    })
-  },
-
   navigateToSettle() {
-    if (!this.data.tableNumber) {
-      this.requestTableCodeForSettle()
-      return
-    }
-
     try {
       wx.setStorageSync('settleCartData', {
         cart: this.data.cart,

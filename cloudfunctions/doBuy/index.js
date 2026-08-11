@@ -212,12 +212,22 @@ function generatePrintContent(order) {
   return content
 }
 
+async function recordPrintState(orderId, data) {
+  if (!orderId || String(orderId).startsWith('TEST_')) return
+  try {
+    await db.collection('order').doc(orderId).update({ data })
+  } catch (err) {
+    console.error('记录打印状态失败', err)
+  }
+}
+
 // 打印订单
 async function printOrder(orderId, orderData) {
   try {
     // 1. 查询打印机信息
     const printerRes = await db.collection('printer').limit(1).get()
     if (!printerRes.data || printerRes.data.length === 0) {
+      await recordPrintState(orderId, { printStatus: 0, printError: '尚未绑定打印机' })
       console.log('未绑定打印机，跳过打印')
       return
     }
@@ -249,9 +259,19 @@ async function printOrder(orderId, orderData) {
     if (printRes.result && printRes.result.success) {
       console.log('打印订单成功', printRes.result)
     } else {
+      await recordPrintState(orderId, {
+        printStatus: 3,
+        printError: String(printRes.result && (printRes.result.error || printRes.result.errmsg) || '打印失败').slice(0, 160),
+        printFailTime: db.serverDate()
+      })
       console.error('打印订单失败', printRes.result)
     }
   } catch (err) {
+    await recordPrintState(orderId, {
+      printStatus: 3,
+      printError: String(err.message || '打印失败').slice(0, 160),
+      printFailTime: db.serverDate()
+    })
     console.error('打印订单异常', err)
     throw err
   }
@@ -291,19 +311,29 @@ exports.main = async (event, context) => {
       const user = userRes.data[0]
       const currentBalance = user.balance || 0
       const finalOrderType = orderType === 'takeOut' ? 'takeOut' : 'dineIn'
-      const finalTableNumber = String(tableNumber || '').trim()
+      const finalTableNumber = finalOrderType === 'dineIn'
+        ? String(tableNumber || '').trim()
+        : ''
       const finalRemark = String(remark || '').trim().slice(0, 120)
 
-      if (!finalTableNumber) {
-        throw new Error('下单前请先扫描桌码')
+      const shopRes = await transaction.collection('admin').limit(1).get()
+      const shopSettings = shopRes.data && shopRes.data[0]
+      if (shopSettings && shopSettings.isOpen === false) {
+        throw new Error('店铺已打烊，暂不接单')
       }
 
-      const tableCodeRes = await transaction.collection('tableCode').where({
-        tableNumber: finalTableNumber
-      }).limit(1).get()
+      if (finalOrderType === 'dineIn') {
+        if (!finalTableNumber) {
+          throw new Error('堂食下单前请先扫描桌码')
+        }
 
-      if (!tableCodeRes.data || tableCodeRes.data.length === 0) {
-        throw new Error('桌码无效，请重新扫描')
+        const tableCodeRes = await transaction.collection('tableCode').where({
+          tableNumber: finalTableNumber
+        }).limit(1).get()
+
+        if (!tableCodeRes.data || tableCodeRes.data.length === 0) {
+          throw new Error('桌码无效，请重新扫描')
+        }
       }
 
       if (!Array.isArray(orderGoods) || orderGoods.length === 0) {
@@ -390,6 +420,10 @@ exports.main = async (event, context) => {
         orderType: finalOrderType,
         status: 0,
         pay_status: !!payWithBalance,
+        paymentStatus: payWithBalance ? 'paid' : 'pending',
+        fulfillmentStatus: 'pending_accept',
+        statusHistory: [],
+        expiresAt: payWithBalance ? null : new Date(Date.now() + 15 * 60 * 1000),
         payMethod: payWithBalance ? 'balance' : 'wechat',
         createTime: db.serverDate(),
         _openid: openid,
@@ -407,6 +441,21 @@ exports.main = async (event, context) => {
       })
 
       const orderId = orderRes._id
+      if (payWithBalance && recalculatedFinalPrice > 0) {
+        await transaction.collection('balanceLog').add({
+          data: {
+            userId: user._id,
+            userOpenid: openid,
+            orderId,
+            type: 'consume',
+            amount: -recalculatedFinalPrice,
+            before: currentBalance,
+            after: currentBalance - recalculatedFinalPrice,
+            reason: '余额支付点餐',
+            createTime: db.serverDate()
+          }
+        })
+      }
       // 添加 _id 和实际时间到订单数据中，用于打印
       const orderWithId = {
         ...orderData,

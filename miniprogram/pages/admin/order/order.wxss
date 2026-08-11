@@ -26,8 +26,8 @@
 .refresh-btn {
   padding: 8rpx 24rpx;
   border-radius: 999rpx;
-  border: 2rpx solid #d94335;
-  color: #d94335;
+  border: 2rpx solid #8c271e;
+  color: #8c271e;
   font-size: 24rpx;
 }
 
@@ -35,6 +35,47 @@
   font-size: 22rpx;
   color: #999;
 }
+
+.status-filter {
+  width: 100%;
+  margin-top: 16rpx;
+  white-space: nowrap;
+}
+
+.status-filter-inner {
+  display: inline-flex;
+  gap: 12rpx;
+  padding: 2rpx 2rpx 4rpx;
+}
+
+.status-chip {
+  min-height: 72rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #656461;
+  background: #f4f3f2;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+}
+
+.status-chip.active {
+  color: #ffffff;
+  background: #8c271e;
+}
+
+.business-status {
+  margin-left: 12rpx;
+  flex-shrink: 0;
+  color: #a66a23;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.business-status.completed { color: #287b61; }
+.business-status.cancelled { color: #8f817c; }
+.business-status.pending { color: #b3261e; }
 
 /* 订单列表 */
 .order-list {
@@ -130,11 +171,11 @@
 }
 
 .recharge-value.gift {
-  color: #ff6b6b;
+  color: var(--brand-warning, #a66a23);
 }
 
 .recharge-value.total {
-  color: #d94335;
+  color: #8c271e;
   font-size: 36rpx;
 }
 
@@ -193,7 +234,7 @@
 
 .tag-text {
   font-size: 22rpx;
-  color: #d94335;
+  color: #8c271e;
   background: rgba(229, 77, 66, 0.1);
   padding: 4rpx 12rpx;
   border-radius: 8rpx;
@@ -208,13 +249,22 @@
 
 .goods-price {
   font-size: 28rpx;
-  color: #d94335;
+  color: #8c271e;
   font-weight: bold;
 }
 
 .goods-count {
   font-size: 26rpx;
   color: #999;
+}
+
+.goods-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a2a7ad;
+  background: #f0f2f3;
+  font-size: 34rpx;
 }
 
 /* 订单底部 */
@@ -252,11 +302,11 @@
 }
 
 .print-status-text.printed {
-  color: #07c160;
+  color: var(--brand-success, #287b61);
 }
 
 .print-status-text.failed {
-  color: #ee0a24;
+  color: var(--brand-error, #b3261e);
 }
 
 .print-status-text.cancelled {
@@ -264,12 +314,13 @@
 }
 
 .print-status-text.not-printed {
-  color: #ff9500;
+  color: var(--brand-warning, #a66a23);
 }
 
 .order-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 20rpx;
   align-items: center;
 }
 
@@ -285,7 +336,7 @@
 
 .price-num {
   font-size: 36rpx;
-  color: #d94335;
+  color: #8c271e;
   font-weight: bold;
   margin-left: 10rpx;
 }
@@ -293,7 +344,13 @@
 .action-btns {
   display: flex;
   gap: 15rpx;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
+
+.action-btn.primary { color: #ffffff; background: #8c271e; }
+.action-btn.secondary { color: #8c271e; background: #f7ebe8; }
+.action-btn.danger { color: #b3261e; background: #fff0ee; }
 
 .action-btn {
   padding: 12rpx 30rpx;
@@ -310,7 +367,7 @@
 
 /* 高级版视觉覆盖 */
 .page {
-  background: linear-gradient(180deg, #fff7f3 0%, #f6f7f9 240rpx, #f6f7f9 100%);
+  background: #f9f9f9;
   padding: 24rpx;
   padding-bottom: 48rpx;
 }
@@ -327,8 +384,8 @@
 }
 
 .refresh-btn {
-  border-color: rgba(217, 67, 53, 0.34);
-  color: #d94335;
+  border-color: rgba(140, 39, 30, 0.34);
+  color: #8c271e;
   background: #fff4f0;
 }
 
@@ -371,7 +428,7 @@
   padding: 8rpx 16rpx;
   border-radius: 999rpx;
   background: #fff4f0;
-  color: #d94335;
+  color: #8c271e;
   font-size: 24rpx;
 }
 
@@ -392,7 +449,7 @@
 .goods-price,
 .price-num,
 .recharge-value.total {
-  color: #d94335;
+  color: #8c271e;
 }
 
 .recharge-value.gift {
@@ -409,7 +466,7 @@
 }
 
 .print-status-text.failed {
-  color: #d94335;
+  color: #8c271e;
 }
 
 .print-status-text.not-printed {
@@ -436,8 +493,8 @@
   justify-content: center;
   flex-shrink: 0;
   border-radius: 50%;
-  color: #d94335;
-  background: #fff0ed;
+  color: #8c271e;
+  background: #f7ebe8;
   font-size: 38rpx;
 }
 

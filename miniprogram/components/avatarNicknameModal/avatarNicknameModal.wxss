@@ -1,38 +1,39 @@
 /* components/avatarNicknameModal/avatarNicknameModal.wxss */
 .super-page-box {
-	background-color: rgba(51, 51, 51, 0.35);
+	background-color: rgba(26, 28, 28, 0.52);
 	position: fixed;
+	inset: 0;
 	width: 100vw;
 	height: 100vh;
 	z-index: 103;
-	animation: supermodal 200ms;
+	animation: modal-mask-in 180ms ease-out both;
 }
 
-@keyframes supermodal{
-	0% {
-		transform: scaleY(0);
-	}
-	50% {
-		transform: scaleY(0.5);
-	}
-	100% {
-		transform: scaleY(1);
-	}
+@keyframes modal-mask-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes modal-sheet-in {
+	from { transform: translateY(32rpx); }
+	to { transform: translateY(0); }
 }
 
 .super-modal-box {
 	position: fixed;
 	z-index: 999;
-	height: 75%;
+	height: 76vh;
+	max-height: calc(100vh - 80rpx);
 	width: 100vw;
 	bottom: 0rpx;
 	left: 0rpx;
+	animation: modal-sheet-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .super-modal-body-box {
 	background-color: #ffffff;
-	border-top-left-radius: 30rpx;
-	border-top-right-radius: 30rpx;
+	border-top-left-radius: 56rpx;
+	border-top-right-radius: 56rpx;
 	height: 100%;
 	width: 100%;
 	display: flex;
@@ -45,14 +46,33 @@
 	width: 100%;
 	font-size: 30rpx;
 	font-weight: bold;
-	color: #222222;
+	color: #1a1c1c;
 	position: relative;
 }
 
 .super-modal-content {
+	height: 0;
 	flex: 1;
-	overflow-y: auto;
+	min-height: 0;
 	padding-bottom: 20rpx;
+	box-sizing: border-box;
+}
+
+.modal-close-hit {
+	position: absolute;
+	top: 8rpx;
+	right: 10rpx;
+	width: 88rpx;
+	height: 88rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+}
+
+.modal-close-hit image {
+	width: 44rpx;
+	height: 44rpx;
 }
 
 .super-avatar-box {
@@ -118,14 +138,28 @@
 }
 
 .phone-btn {
-	padding: 12rpx 30rpx;
-	background: linear-gradient(135deg, #e54d42 0%, #f37370 100%);
+	min-height: 88rpx;
+	padding: 0 30rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #8c271e;
 	color: white;
 	font-size: 24rpx;
-	border-radius: 50rpx;
+	border-radius: 26rpx;
 	border: none;
 	line-height: 1.5;
-	width:250rpx !important;
+	width: 250rpx !important;
+}
+
+.soft-control-pressed {
+	opacity: 0.72;
+	background: #f0edeb;
+}
+
+.control-pressed {
+	opacity: 0.76;
+	transform: scale(0.98);
 }
 
 .phone-btn::after {
@@ -135,8 +169,8 @@
 .apply-btn {
 	width: 450rpx;
 	height: 95rpx;
-	border-radius: 20rpx;
-	background: linear-gradient(135deg, #e54d42 0%, #f37370 100%);
+	border-radius: 26rpx;
+	background: #8c271e;
 	color: #ffffff;
 	font-size: 28rpx;
 	font-weight: bold;

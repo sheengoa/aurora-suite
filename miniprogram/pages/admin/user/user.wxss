@@ -35,7 +35,7 @@
 }
 
 .search-btn {
-  background: linear-gradient(135deg, #d94335 0%, #f36a5d 100%);
+  background: #8c271e;
 }
 
 .clear-btn {
@@ -79,7 +79,7 @@
   width: 100%;
   height: 100%;
   background: #fff3f0;
-  color: #d94335;
+  color: #8c271e;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -232,6 +232,36 @@
   box-sizing: border-box;
 }
 
+.form-textarea {
+  width: 100%;
+  min-height: 132rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  color: #22252b;
+  font-size: 27rpx;
+  line-height: 1.5;
+  background: #fbfcfd;
+  border: 1rpx solid #e6e9ef;
+  border-radius: var(--field-radius);
+}
+
+.balance-log-section {
+  margin-top: 28rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #ebeef3;
+}
+
+.balance-log-title { color: #22252b; font-size: 26rpx; font-weight: 750; }
+.balance-log-empty { padding: 24rpx 0; color: #9aa1ad; font-size: 24rpx; text-align: center; }
+.balance-log-item { min-height: 76rpx; display: flex; align-items: center; justify-content: space-between; gap: 20rpx; border-bottom: 1rpx solid #f0f1f3; }
+.balance-log-copy { min-width: 0; flex: 1; }
+.balance-log-reason { color: #33363c; font-size: 24rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.balance-log-change { margin-top: 4rpx; color: #9aa1ad; font-size: 21rpx; }
+.balance-log-amount { flex-shrink: 0; font-size: 25rpx; font-weight: 750; }
+.balance-log-amount.income { color: #287b61; }
+.balance-log-amount.expense { color: #8c271e; }
+.modal-btn.disabled { opacity: 0.5; pointer-events: none; }
+
 .balance-edit {
   display: flex;
   gap: 15rpx;
@@ -274,13 +304,13 @@
 }
 
 .modal-btn.confirm {
-  color: #d94335;
+  color: #8c271e;
   font-weight: bold;
 }
 
 /* 高级版视觉覆盖 */
 .page {
-  background: linear-gradient(180deg, #fff7f3 0%, #f6f7f9 240rpx, #f6f7f9 100%);
+  background: #f9f9f9;
   padding: 24rpx;
   padding-bottom: 48rpx;
 }
@@ -304,8 +334,8 @@
 }
 
 .search-btn {
-  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
-  box-shadow: 0 10rpx 22rpx rgba(217, 67, 53, 0.18);
+  background: #8c271e;
+  box-shadow: 0 10rpx 22rpx rgba(140, 39, 30, 0.18);
 }
 
 .clear-btn {
@@ -330,7 +360,7 @@
 
 .default-avatar {
   background: #fff4f0;
-  color: #d94335;
+  color: #8c271e;
 }
 
 .user-name,
@@ -391,7 +421,7 @@
 }
 
 .modal-btn.confirm {
-  color: #d94335;
+  color: #8c271e;
 }
 
 /* 统一后台控件的尺寸与圆角 */
@@ -437,8 +467,8 @@
 
 .modal-btn.confirm {
   color: #ffffff;
-  background: #d94335;
-  box-shadow: 0 10rpx 22rpx rgba(217, 67, 53, 0.18);
+  background: #8c271e;
+  box-shadow: 0 10rpx 22rpx rgba(140, 39, 30, 0.18);
 }
 
 /* 原型统一收束：会员列表 */

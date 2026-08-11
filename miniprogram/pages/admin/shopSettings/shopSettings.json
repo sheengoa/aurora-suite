@@ -1,9 +1,9 @@
 {
   "navigationStyle": "custom",
   "navigationBarTitleText": "店铺设置",
-  "navigationBarBackgroundColor": "#c93b32",
+  "navigationBarBackgroundColor": "#8c271e",
   "navigationBarTextStyle": "white",
-  "backgroundColor": "#f5f6f7",
+  "backgroundColor": "#f9f9f9",
   "usingComponents": {
     "aurora-navbar": "/components/aurora-navbar/index"
   }

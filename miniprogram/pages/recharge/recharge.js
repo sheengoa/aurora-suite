@@ -5,6 +5,10 @@ const {
   DEFAULT_SHOP_SETTINGS,
   loadShopSettings
 } = require('../../utils/shopSettings')
+const {
+  isPaymentCancelled,
+  requestOrderPayment
+} = require('../../utils/payment')
 
 function formatMoney(value) {
   const amount = Number(value || 0)
@@ -36,9 +40,13 @@ Page({
 
   onShow() {
     const tabBar = this.getTabBar && this.getTabBar()
-    if (tabBar) tabBar.setData({ selected: 1 })
+    if (tabBar) tabBar.setData({ selected: 1, interactionLocked: false })
     this.loadUserInfo()
     this.loadShopSettings()
+  },
+
+  onHide() {
+    this.setTabBarInteractionLocked(false)
   },
 
   async loadShopSettings() {
@@ -169,11 +177,11 @@ Page({
 
     // 检查用户信息完整性
     const userInfo = this.data.userInfo
-    if (!userInfo || !userInfo.avatarUrl || !userInfo.nickName || !userInfo.phoneNumber) {
+    if (!app.globalData.mockMode && (!userInfo || !userInfo.avatarUrl || !userInfo.nickName || !userInfo.phoneNumber)) {
       this.setData({
         showAuthModal: true,
         pendingRecharge: recharge // 保存待充值的套餐
-      })
+      }, () => this.syncTabBarInteractionLock())
       return
     }
 
@@ -208,40 +216,33 @@ Page({
 
       const outTradeNo = orderRes.result.orderId
 
-      // 生成随机字符串
-      const nonceStr = Math.random().toString(36).substr(2, 15) + Date.now().toString(36)
-
-      // 调用云函数统一下单
-      const payRes = await wx.cloud.callFunction({
-        name: 'pay',
-        data: {
-          outTradeNo: outTradeNo,
-          nonceStr
-        }
+      const paymentResult = await requestOrderPayment({
+        db,
+        orderId: outTradeNo,
+        mockMode: app.globalData.mockMode
       })
 
-      const payment = payRes.result && payRes.result.payment ? payRes.result.payment : payRes.result
-
       wx.hideLoading()
+      if (!paymentResult.confirmed) {
+        wx.showModal({
+          title: '支付结果确认中',
+          content: '充值订单已保留，请稍后到订单页查看结果或继续支付。',
+          showCancel: false,
+          success: () => wx.switchTab({ url: '/pages/myorder/myorder' })
+        })
+        return
+      }
 
-      // 调起微信支付
-      await wx.requestPayment(payment)
-
-      wx.showToast({ title: '支付成功，余额更新中...', icon: 'success' })
-
-      // 支付成功后，pay_success 云函数会更新订单状态并增加余额
-      // 这里稍等一会儿再刷新用户信息
-      setTimeout(() => {
-        this.loadUserInfo()
-      }, 2000)
+      await this.loadUserInfo()
+      wx.showToast({ title: '充值已到账', icon: 'success' })
 
     } catch (err) {
       console.error('充值失败或已取消', err)
       wx.hideLoading()
-      if (err && err.errMsg && err.errMsg.indexOf('cancel') !== -1) {
-        wx.showToast({ title: '已取消支付', icon: 'none' })
+      if (isPaymentCancelled(err)) {
+        wx.showToast({ title: '已取消支付，可在订单页继续', icon: 'none' })
       } else {
-        wx.showToast({ title: '支付失败，请重试', icon: 'none' })
+        wx.showToast({ title: err.message || '支付失败，请重试', icon: 'none' })
       }
     }
   },
@@ -265,6 +266,13 @@ Page({
   },
 
   // 处理用户授权（组件已经保存了用户信息，这里只需要刷新并继续充值）
+  onAuthModalClosed() {
+    this.setData({
+      showAuthModal: false,
+      pendingRecharge: null
+    }, () => this.syncTabBarInteractionLock())
+  },
+
   async handleUserAuth(e) {
     try {
       // 组件已经保存了用户信息，这里只需要重新加载用户信息
@@ -272,7 +280,7 @@ Page({
       
       this.setData({
         showAuthModal: false
-      })
+      }, () => this.syncTabBarInteractionLock())
       
       // 授权成功后，如果有待充值套餐，直接执行充值（不再检查用户信息）
       if (this.data.pendingRecharge) {
@@ -303,5 +311,17 @@ Page({
         icon: 'none'
       })
     }
+  },
+
+  setTabBarInteractionLocked(locked) {
+    const tabBar = this.getTabBar && this.getTabBar()
+    const interactionLocked = Boolean(locked)
+    if (tabBar && tabBar.data.interactionLocked !== interactionLocked) {
+      tabBar.setData({ interactionLocked })
+    }
+  },
+
+  syncTabBarInteractionLock() {
+    this.setTabBarInteractionLocked(this.data.showAuthModal)
   }
 })

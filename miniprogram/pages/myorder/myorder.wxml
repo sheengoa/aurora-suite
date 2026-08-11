@@ -24,7 +24,7 @@
         </view>
 
         <view class="order-products">
-          <image wx:if="{{item.primaryGoodsImage}}" class="order-product-image" src="{{item.primaryGoodsImage}}" mode="aspectFill"></image>
+          <image wx:if="{{item.primaryGoodsImage && !item.imageLoadFailed}}" class="order-product-image" src="{{item.primaryGoodsImage}}" mode="aspectFill" binderror="onOrderImageError" data-index="{{index}}"></image>
           <view wx:else class="order-product-icon {{item.type === 'recharge' ? 'recharge-icon' : ''}}">
             <text class="{{item.type === 'recharge' ? 'cuIcon-rechargefill' : 'cuIcon-shopfill'}}"></text>
           </view>
@@ -39,13 +39,111 @@
             <text>实付 </text>
             <text class="order-total-value">¥{{item.amountText}}</text>
           </view>
-          <view class="mini-btn" bindtap="viewOrderDetail" data-order="{{item}}" hover-class="soft-control-pressed">
+          <view class="mini-btn" bindtap="viewOrderDetail" data-index="{{index}}" hover-class="soft-control-pressed" aria-role="button" aria-label="{{item.type === 'recharge' ? '查看充值记录' : '查看订单详情'}}">
             {{item.type === 'recharge' ? '查看记录' : '查看详情'}}
+          </view>
+        </view>
+        <view class="order-card-actions" wx:if="{{item.canPay}}">
+          <view class="order-pay-btn" bindtap="continuePayment" data-index="{{index}}" hover-class="control-pressed" aria-role="button" aria-label="继续支付">
+            {{payingOrderId === item._id ? '支付处理中' : '继续支付'}}
           </view>
         </view>
       </view>
 
-      <van-empty wx:if="{{orderList.length === 0}}" description="暂无订单" />
+      <view class="orders-state" wx:if="{{orderLoadError && orderList.length === 0}}">
+        <view class="orders-state-icon cuIcon-warn"></view>
+        <view class="orders-state-title">订单加载失败</view>
+        <view class="orders-state-copy">请检查网络后重新加载</view>
+        <view class="orders-retry" bindtap="retryLoadOrders" hover-class="control-pressed" aria-role="button" aria-label="重新加载订单">重新加载</view>
+      </view>
+      <van-empty wx:elif="{{hasLoadedOrders && !loadingOrders && orderList.length === 0}}" description="暂无订单" />
+    </view>
+  </view>
+
+  <view class="detail-mask" wx:if="{{showOrderDetail && selectedOrder}}" catchtap="closeOrderDetail" catchtouchmove="stopTouchMove">
+    <view class="detail-sheet" catchtap="stopPropagation">
+      <view class="detail-header">
+        <view class="detail-heading">
+          <view class="detail-title">{{selectedOrder.type === 'recharge' ? '充值记录' : '订单详情'}}</view>
+          <view class="detail-order-no">{{selectedOrder.displayOrderNo}}</view>
+        </view>
+        <view class="detail-close cuIcon-close" bindtap="closeOrderDetail" hover-class="soft-control-pressed" aria-role="button" aria-label="关闭订单详情"></view>
+      </view>
+
+      <scroll-view class="detail-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+        <view class="detail-status-row">
+          <view class="detail-status-copy">
+            <view class="detail-status-icon {{selectedOrder.statusIcon}} {{selectedOrder.statusClass}}"></view>
+            <view>
+              <view class="detail-status-title">{{selectedOrder.statusText}}</view>
+              <view class="detail-status-time">{{selectedOrder.createTimeText}}</view>
+            </view>
+          </view>
+          <view class="detail-paid">
+            <text>实付</text>
+            <text class="detail-paid-value">¥{{selectedOrder.amountText}}</text>
+          </view>
+        </view>
+
+        <block wx:if="{{selectedOrder.type === 'recharge'}}">
+          <view class="detail-section">
+            <view class="detail-section-title">储值明细</view>
+            <view class="detail-data-row"><text>充值金额</text><text>¥{{selectedOrder.amountText}}</text></view>
+            <view class="detail-data-row"><text>赠送金额</text><text>¥{{selectedOrder.giveAmountText}}</text></view>
+            <view class="detail-data-row total"><text>到账金额</text><text>¥{{selectedOrder.totalGetText}}</text></view>
+          </view>
+        </block>
+
+        <block wx:else>
+          <view class="detail-section">
+            <view class="detail-section-title">商品明细</view>
+            <view class="detail-goods-item" wx:for="{{selectedOrder.detailGoods}}" wx:key="index">
+              <view class="detail-goods-main">
+                <view class="detail-goods-name">{{item.dishName}}</view>
+                <view class="detail-goods-sku" wx:if="{{item.showSkuName}}">{{item.skuName}}</view>
+                <view class="detail-goods-tags" wx:if="{{item.tagsText}}">{{item.tagsText}}</view>
+                <view class="detail-goods-meta">¥{{item.priceText}} × {{item.count}}</view>
+              </view>
+              <view class="detail-goods-subtotal">¥{{item.subtotalText}}</view>
+            </view>
+            <view class="detail-data-row"><text>商品合计</text><text>¥{{selectedOrder.totalPriceText}}</text></view>
+            <view class="detail-data-row total"><text>实付金额</text><text>¥{{selectedOrder.finalPriceText}}</text></view>
+          </view>
+
+          <view class="detail-section">
+            <view class="detail-section-title">订单信息</view>
+            <view class="detail-data-row"><text>用餐方式</text><text>{{selectedOrder.sceneText}}</text></view>
+            <view class="detail-data-row"><text>支付方式</text><text>{{selectedOrder.payText}}</text></view>
+            <view class="detail-remark" wx:if="{{selectedOrder.remark}}">
+              <view class="detail-remark-label">备注</view>
+              <view class="detail-remark-value">{{selectedOrder.remark}}</view>
+            </view>
+            <view class="detail-refund" wx:if="{{selectedOrder.refundText}}">{{selectedOrder.refundText}}</view>
+          </view>
+        </block>
+      </scroll-view>
+
+      <view class="detail-footer">
+        <view
+          class="detail-cancel {{cancellingOrder ? 'disabled' : ''}}"
+          wx:if="{{selectedOrder.canCancel}}"
+          bindtap="cancelSelectedOrder"
+          hover-class="soft-control-pressed"
+          aria-role="button"
+          aria-label="取消订单">
+          {{cancellingOrder ? '处理中' : '取消订单'}}
+        </view>
+        <view
+          class="detail-pay"
+          wx:if="{{selectedOrder.canPay}}"
+          bindtap="continueSelectedPayment"
+          hover-class="control-pressed"
+          aria-role="button"
+          aria-label="继续支付">
+          {{payingOrderId === selectedOrder._id ? '支付处理中' : '继续支付'}}
+        </view>
+        <view class="detail-done" bindtap="closeOrderDetail" hover-class="control-pressed" aria-role="button" aria-label="完成查看">完成</view>
+      </view>
     </view>
   </view>
 </view>

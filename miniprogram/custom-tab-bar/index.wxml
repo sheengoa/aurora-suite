@@ -1,5 +1,4 @@
-<view class="tabbar" role="navigation" aria-label="主要导航">
-  <view class="tab-marker" style="transform: translateX({{selected * 100}}%);"></view>
+<view wx:if="{{!interactionLocked}}" class="tabbar" role="navigation" aria-label="主要导航">
   <view
     class="tab-item {{selected === index ? 'active' : ''}}"
     wx:for="{{list}}"
@@ -11,7 +10,9 @@
     aria-role="button"
     aria-label="{{item.text}}">
     <view class="tab-icon-box">
-      <text class="tab-icon {{item.icon}}" aria-hidden="true"></text>
+      <view class="tab-selection-wave" aria-hidden="true"></view>
+      <image class="tab-icon tab-icon-idle" src="{{item.icon}}" mode="aspectFit" aria-hidden="true" style="width: 36rpx; height: 36rpx;"></image>
+      <image class="tab-icon tab-icon-selected" src="{{item.iconActive}}" mode="aspectFit" aria-hidden="true" style="width: 36rpx; height: 36rpx;"></image>
     </view>
     <text class="tab-label">{{item.text}}</text>
   </view>

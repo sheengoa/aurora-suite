@@ -18,7 +18,7 @@
   <view class="user-list">
     <view class="user-item" wx:for="{{users}}" wx:key="_id">
       <view class="user-avatar">
-        <image wx:if="{{item.avatarUrl}}" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+        <image wx:if="{{item.avatarUrl && !item.avatarLoadFailed}}" src="{{item.avatarUrl}}" mode="aspectFill" binderror="onUserAvatarError" data-index="{{index}}"></image>
         <view wx:else class="default-avatar">会员</view>
       </view>
       <view class="user-info">
@@ -26,7 +26,7 @@
           {{item.nickName || '未知昵称'}}
         </view>
         <view class="user-detail">
-          <text>手机号：{{item.phoneNumber || '未绑定号码'}}</text>
+          <text>手机号：{{item.maskedPhone || '未绑定号码'}}</text>
         </view>
         <view class="user-detail">
           <text>余额：¥{{item.balance || 0}}</text>
@@ -47,7 +47,7 @@
       <view class="modal-content">
         <view class="user-preview">
           <view class="preview-avatar">
-            <image wx:if="{{currentUser.avatarUrl}}" src="{{currentUser.avatarUrl}}" mode="aspectFill"></image>
+            <image wx:if="{{currentUser.avatarUrl && !currentUserAvatarLoadFailed}}" src="{{currentUser.avatarUrl}}" mode="aspectFill" binderror="onCurrentUserAvatarError"></image>
             <view wx:else class="default-avatar">会员</view>
           </view>
           <view class="preview-name">{{currentUser.nickName || '未设置'}}</view>
@@ -63,10 +63,32 @@
             bindinput="onBalanceInput"
           />
         </view>
+        <view class="form-item">
+          <view class="form-label">调账原因</view>
+          <textarea
+            class="form-textarea"
+            placeholder="例如：线下现金充值、纠正误操作"
+            maxlength="80"
+            value="{{balanceReason}}"
+            bindinput="onBalanceReasonInput"
+          ></textarea>
+        </view>
+        <view class="balance-log-section">
+          <view class="balance-log-title">最近余额流水</view>
+          <view class="balance-log-empty" wx:if="{{loadingBalanceLogs}}">加载中</view>
+          <view class="balance-log-empty" wx:elif="{{balanceLogs.length === 0}}">暂无余额流水</view>
+          <view class="balance-log-item" wx:for="{{balanceLogs}}" wx:key="_id">
+            <view class="balance-log-copy">
+              <view class="balance-log-reason">{{item.reason || '余额调整'}}</view>
+              <view class="balance-log-change">{{item.changeText}}</view>
+            </view>
+            <view class="balance-log-amount {{item.amount >= 0 ? 'income' : 'expense'}}">{{item.amountText}}</view>
+          </view>
+        </view>
       </view>
       <view class="modal-footer">
         <view class="modal-btn cancel" bindtap="closeBalanceModal" hover-class="soft-control-pressed">取消</view>
-        <view class="modal-btn confirm" bindtap="saveBalance" hover-class="control-pressed">保存</view>
+        <view class="modal-btn confirm {{savingBalance ? 'disabled' : ''}}" bindtap="saveBalance" hover-class="control-pressed">{{savingBalance ? '保存中' : '保存'}}</view>
       </view>
     </view>
   </view>

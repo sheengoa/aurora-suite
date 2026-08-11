@@ -75,7 +75,7 @@
           <text class="cuIcon-rechargefill"></text>
           <text>{{editMode ? '编辑充值方案' : '添加充值方案'}}</text>
         </view>
-        <view class="modal-close cuIcon-close" bindtap="closeModal" hover-class="control-pressed"></view>
+        <view class="modal-close cuIcon-close" bindtap="closeModal" hover-class="control-pressed" aria-role="button" aria-label="关闭储值方案弹层"></view>
       </view>
 
       <view class="modal-content">
@@ -122,7 +122,7 @@
             <text class="setting-icon cuIcon-like"></text>
             <text>设为推荐</text>
           </view>
-          <switch checked="{{currentOption.isRecommend}}" bindchange="toggleRecommend" color="#d94335"/>
+          <switch checked="{{currentOption.isRecommend}}" bindchange="toggleRecommend" color="#8c271e"/>
         </view>
 
         <view class="setting-row">
@@ -130,7 +130,7 @@
             <text class="setting-icon cuIcon-roundcheck"></text>
             <text>启用方案</text>
           </view>
-          <switch checked="{{currentOption.status === 1}}" bindchange="toggleStatus" color="#d94335"/>
+          <switch checked="{{currentOption.status === 1}}" bindchange="toggleStatus" color="#8c271e"/>
         </view>
       </view>
 

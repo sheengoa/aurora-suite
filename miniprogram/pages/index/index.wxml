@@ -1,19 +1,43 @@
 <!--pages/index/index.wxml-->
 <wxs module="tagHelper" src="../../utils/tagHelper.wxs"></wxs>
-<view class="page">
-  <view class="storefront-header" style="padding-top: {{storefrontTop}}px;">
-    <view class="storefront-card">
-      <view class="storefront-mark cuIcon-shopfill"></view>
-      <view class="storefront-copy">
-        <view class="storefront-name">{{shopName}}</view>
-        <view class="storefront-welcome">
-          <text class="welcome-dot"></text>
-          <text class="welcome-text">{{welcomeText}}</text>
+<view class="page welcome-page {{welcomeState}} {{showCart || showTagModal || showAuthModal ? 'overlay-active' : ''}}" style="--welcome-settle-duration: {{welcomeSettleDuration}}ms;">
+  <view class="welcome-scene">
+    <view class="welcome-hero" style="height: {{heroHeight}}px;">
+      <image class="welcome-hero-image" src="/images/welcome-restaurant.jpg" mode="aspectFill"></image>
+      <view class="welcome-hero-shade"></view>
+      <view class="welcome-copy" style="padding-top: {{storefrontTop}}px; opacity: {{welcomeCopyOpacity}}; transform: translateY({{welcomeCopyY}}px);">
+        <view class="welcome-kicker"><text class="welcome-kicker-line"></text><text>今日欢迎</text></view>
+        <view class="welcome-title">
+          <text class="welcome-title-primary">{{welcomeNamePrimary}}</text>
+          <text class="welcome-title-secondary" wx:if="{{welcomeNameSecondary}}">{{welcomeNameSecondary}}</text>
+        </view>
+        <view class="welcome-subtitle">{{welcomeText}}</view>
+      </view>
+    </view>
+
+    <view class="welcome-info-card" style="top: {{welcomeCollapsedCardTop}}px; right: {{welcomeCardInset}}px; left: {{welcomeCardInset}}px; height: {{welcomeCardHeight}}px; transform: translate3d(0, {{welcomeCardOffsetY}}px, 0);">
+      <view class="welcome-card-surface" style="border-radius: {{welcomeCardRadius}}px;"></view>
+      <view class="welcome-card-expanded" style="opacity: {{welcomeCardContentOpacity}};">
+        <view class="welcome-stat"><text class="welcome-stat-value brand">{{tableNumber ? tableNumber + '号桌' : '未绑定桌码'}}</text><text class="welcome-stat-label">当前桌码</text></view>
+        <view class="welcome-stat-divider"></view>
+        <view class="welcome-stat"><text class="welcome-stat-value">现点现做</text><text class="welcome-stat-label">新鲜出餐</text></view>
+        <view class="welcome-stat-divider"></view>
+        <view class="welcome-stat"><text class="welcome-stat-value">堂食</text><text class="welcome-stat-label">门店取餐</text></view>
+      </view>
+      <view class="welcome-card-compact" style="opacity: {{welcomeCompactOpacity}};">
+        <view class="compact-brand-mark cuIcon-shopfill"></view>
+        <view class="compact-copy">
+          <text class="compact-name">{{shopName}}</text>
+          <view class="compact-caption"><text class="compact-dot {{isOpen ? '' : 'closed'}}"></text><text>{{isOpen ? '招牌点餐 · 现做现取' : '今日已打烊 · 暂停接单'}}</text></view>
         </view>
       </view>
     </view>
-  </view>
 
+    <view class="welcome-stage" style="top: {{welcomeCollapsedStageTop}}px; transform: translate3d(0, {{welcomeStageOffsetY}}px, 0);">
+      <view class="welcome-browse-hint" wx:if="{{!menuLoadError}}" style="opacity: {{welcomeHintOpacity}};">
+        <view class="browse-arrows" aria-hidden="true"><view class="browse-chevron first"></view><view class="browse-chevron second"></view></view>
+        <text class="browse-label">向上浏览菜单</text>
+      </view>
   <!-- 主内容区 -->
   <view class="main-content">
     <view class="menu-error-state" wx:if="{{menuLoadError}}">
@@ -32,7 +56,7 @@
     <!-- 左侧分类菜单 -->
     <scroll-view
       class="menu-sidebar VerticalNav nav"
-      scroll-y
+      scroll-y="{{menuScrollEnabled}}"
       scroll-top="{{verticalNavTop}}"
       scroll-with-animation="{{true}}"
       enhanced="{{true}}"
@@ -57,7 +81,9 @@
     <!-- 右侧菜品列表 -->
     <scroll-view
       class="goods-list VerticalMain"
-      scroll-y
+      data-motion-source="menu"
+      data-menu-at-top="{{menuAtTop}}"
+      scroll-y="{{menuScrollEnabled}}"
       scroll-top="{{goodsScrollTop}}"
       scroll-with-animation="{{goodsScrollAnimation}}"
       enhanced="{{true}}"
@@ -65,6 +91,10 @@
       show-scrollbar="{{false}}"
       scroll-anchoring="{{true}}"
       lower-threshold="80"
+      bindtouchstart="onWelcomeTouchStart"
+      bindtouchmove="onWelcomeTouchMove"
+      bindtouchend="onWelcomeTouchEnd"
+      bindtouchcancel="onWelcomeTouchEnd"
       bindscroll="onGoodsScroll"
       bindscrolltolower="onGoodsScrollToLower">
       <view class="goods-list-inner">
@@ -78,7 +108,8 @@
             id="{{section.anchorId}}"
             wx:if="{{!section.hidden}}">
             <view class="goods-section-title">
-              <text>{{section.categoryName}}</text>
+              <text class="category-title">{{section.categoryName}}</text>
+              <text class="category-subtitle">{{section.categorySubtitle}}</text>
             </view>
 
             <view
@@ -91,10 +122,14 @@
               wx:for-index="goodsIndex"
               wx:key="_id">
               <image
-                wx:if="{{item.image}}"
+                wx:if="{{item.image && !item.imageLoadFailed}}"
                 class="goods-image"
                 src="{{item.image}}"
-                mode="aspectFill"></image>
+                mode="aspectFill"
+                binderror="onDishImageError"
+                data-scope="menu"
+                data-section-index="{{sectionIndex}}"
+                data-goods-index="{{goodsIndex}}"></image>
               <view wx:else class="goods-image goods-image-placeholder">暂无图片</view>
               <view class="goods-info">
                 <view class="goods-name">{{item.name}}</view>
@@ -103,15 +138,27 @@
                   <view class="goods-price">
                     <text class="price-symbol">¥</text>
                     <text class="price-num">{{item.price}}</text>
-                    <text class="price-prefix" wx:if="{{item.hasMultipleSkus}}">起</text>
                   </view>
                   <view class="goods-actions" catchtap="stopPropagation">
-                    <view class="action-btn reduce" wx:if="{{item.cartCount > 0}}" catchtap="reduceDishFromCart" data-goods="{{item}}" hover-class="control-pressed">
-                      <text>-</text>
+                    <view
+                      class="action-btn reduce"
+                      wx:if="{{item.cartCount > 0}}"
+                      catchtap="reduceDishFromCart"
+                      data-goods="{{item}}"
+                      hover-class="control-pressed"
+                      aria-role="button"
+                      aria-label="减少{{item.name}}数量">
+                      <view class="stepper-glyph minus" aria-hidden="true"></view>
                     </view>
                     <view class="goods-count" wx:if="{{item.cartCount > 0}}">{{item.cartCount}}</view>
-                    <view class="action-btn add" catchtap="addDishToCartDirect" data-goods="{{item}}" hover-class="control-pressed">
-                      <text>+</text>
+                    <view
+                      class="action-btn add"
+                      catchtap="addDishToCartDirect"
+                      data-goods="{{item}}"
+                      hover-class="control-pressed"
+                      aria-role="button"
+                      aria-label="增加{{item.name}}数量">
+                      <view class="stepper-glyph plus" aria-hidden="true"></view>
                     </view>
                   </view>
                 </view>
@@ -130,10 +177,25 @@
         <view class="section-end" wx:if="{{goodsSections.length > 0 && !hasMoreGoodsSections && !allGoodsEmpty}}">
           没有更多菜品了
         </view>
-        <van-empty wx:if="{{allGoodsEmpty}}" description="暂无菜品" />
+        <view class="menu-empty-state" wx:if="{{allGoodsEmpty}}">
+          <view class="menu-empty-icon cuIcon-shop" aria-hidden="true"></view>
+          <view class="menu-empty-title">暂无菜品</view>
+          <view class="menu-empty-copy">门店正在准备菜单</view>
+        </view>
       </view>
     </scroll-view>
     </block>
+  </view>
+  </view>
+    <view
+      wx:if="{{!menuScrollEnabled && !menuLoadError}}"
+      class="welcome-gesture-lock"
+      data-motion-source="viewport"
+      catchtouchstart="onWelcomeTouchStart"
+      catchtouchmove="onWelcomeTouchMove"
+      catchtouchend="onWelcomeTouchEnd"
+      catchtouchcancel="onWelcomeTouchEnd"
+      aria-hidden="true"></view>
   </view>
 
   <!-- 悬浮购物车 -->
@@ -155,8 +217,8 @@
         </view>
       </view>
       <view class="cart-right">
-        <view class="settle-btn {{cartCount > 0 ? 'active' : ''}}" bindtap="goToSettle" hover-class="control-pressed">
-          去结算
+        <view class="settle-btn {{cartCount > 0 && isOpen ? 'active' : ''}}" bindtap="goToSettle" hover-class="control-pressed">
+          {{isOpen ? '去结算' : '已打烊'}}
         </view>
       </view>
     </view>
@@ -167,30 +229,50 @@
   <view class="cart-detail {{showCart ? 'show' : ''}}">
     <view class="cart-header">
       <text class="cart-title">购物车</text>
-      <text class="cart-clear" bindtap="clearCart">清空</text>
+      <text class="cart-clear" bindtap="clearCart" hover-class="soft-control-pressed" aria-role="button" aria-label="清空购物车">清空</text>
     </view>
     <scroll-view class="cart-content" scroll-y>
       <view class="cart-goods-item" wx:for="{{cart}}" wx:for-item="item" wx:key="index">
         <view class="cart-goods-info">
-          <image class="cart-goods-image" src="{{item.info.image}}" mode="aspectFill"></image>
+          <image
+            wx:if="{{item.info.image && !cartImageFailures[index]}}"
+            class="cart-goods-image"
+            src="{{item.info.image}}"
+            mode="aspectFill"
+            binderror="onDishImageError"
+            data-scope="cart"
+            data-cart-key="{{index}}"></image>
+          <view wx:else class="cart-goods-image goods-image-placeholder">暂无图片</view>
           <view class="cart-goods-detail">
             <view class="cart-goods-name">{{item.info.name}}</view>
-            <view class="cart-goods-sku" wx:if="{{item.sku && item.sku.name}}">{{item.sku.name}}</view>
-            <view class="cart-goods-tags" wx:if="{{item.tagLabels && item.tagLabels.length > 0}}">
-              <text class="tag-text" wx:for="{{item.tagLabels}}" wx:key="index" wx:for-item="tagVal">
-                {{tagVal}}
-              </text>
+            <view
+              class="cart-goods-options"
+              wx:if="{{(item.info && item.info.skus && item.info.skus.length > 1 && item.sku && item.sku.name) || (item.tagLabels && item.tagLabels.length > 0)}}">
+              <text class="cart-goods-sku" wx:if="{{item.info && item.info.skus && item.info.skus.length > 1 && item.sku && item.sku.name}}">{{item.sku.name}}</text>
+              <text class="tag-text" wx:for="{{item.tagLabels}}" wx:key="index" wx:for-item="tagVal">{{tagVal}}</text>
             </view>
             <view class="cart-goods-price">¥{{item.sku ? item.sku.price : item.info.price}} × {{item.count}}</view>
           </view>
         </view>
         <view class="cart-goods-actions">
-          <view class="action-btn reduce" bindtap="reduceFromCart" data-id="{{index}}" hover-class="control-pressed">
-            <text>-</text>
+          <view
+            class="action-btn reduce"
+            bindtap="reduceFromCart"
+            data-id="{{index}}"
+            hover-class="control-pressed"
+            aria-role="button"
+            aria-label="减少{{item.info.name}}数量">
+            <view class="stepper-glyph minus" aria-hidden="true"></view>
           </view>
           <view class="cart-count">{{item.count}}</view>
-          <view class="action-btn add" bindtap="addToCartFromCart" data-id="{{index}}" hover-class="control-pressed">
-            <text>+</text>
+          <view
+            class="action-btn add"
+            bindtap="addToCartFromCart"
+            data-id="{{index}}"
+            hover-class="control-pressed"
+            aria-role="button"
+            aria-label="增加{{item.info.name}}数量">
+            <view class="stepper-glyph plus" aria-hidden="true"></view>
           </view>
         </view>
       </view>
@@ -214,13 +296,13 @@
   </view>
 
   <!-- 商品详情弹窗 -->
-  <view class="modal-mask" wx:if="{{showTagModal}}" catchtap="closeTagModal">
+  <view class="modal-mask" wx:if="{{showTagModal && currentDish}}" catchtap="closeTagModal">
     <view class="modal-dialog dish-detail-modal" catchtap="stopPropagation">
-      <view class="modal-close" bindtap="closeTagModal">×</view>
+      <view class="modal-close" bindtap="closeTagModal" hover-class="control-pressed" aria-role="button" aria-label="关闭菜品选择">×</view>
       <scroll-view class="modal-content" scroll-y>
         <!-- 商品信息 -->
         <view class="dish-detail-header">
-          <image wx:if="{{currentDish.image}}" class="dish-detail-image" src="{{currentDish.image}}" mode="aspectFill"></image>
+          <image wx:if="{{currentDish.image && !currentDishImageFailed}}" class="dish-detail-image" src="{{currentDish.image}}" mode="aspectFill" binderror="onDishImageError" data-scope="modal"></image>
           <view wx:else class="dish-detail-image dish-detail-placeholder">暂无图片</view>
           <view class="dish-detail-info">
             <view class="dish-detail-name">{{currentDish.name}}</view>
@@ -234,7 +316,7 @@
         </view>
 
         <!-- 规格选择 -->
-        <view class="tag-section" wx:if="{{currentDish.enabledSkus && currentDish.enabledSkus.length > 0}}">
+        <view class="tag-section" wx:if="{{modalSkus.length > 1}}">
           <view class="tag-title">
             规格
             <text class="tag-required-label">必选</text>
@@ -242,11 +324,15 @@
           <view class="sku-options">
             <view
               class="sku-option {{selectedSkuId === sku.id ? 'selected' : ''}}"
-              wx:for="{{currentDish.enabledSkus}}"
+              wx:for="{{modalSkus}}"
               wx:key="id"
               wx:for-item="sku"
               bindtap="selectSkuOption"
-              data-sku-id="{{sku.id}}">
+              data-sku-id="{{sku.id}}"
+              hover-class="soft-control-pressed"
+              aria-role="radio"
+              aria-checked="{{selectedSkuId === sku.id}}"
+              aria-label="{{sku.name}}，{{sku.price}}元">
               <view class="sku-option-name">{{sku.name}}</view>
               <view class="sku-option-price">¥{{sku.price}}</view>
             </view>
@@ -254,7 +340,8 @@
         </view>
 
         <!-- 标签选择 -->
-        <view class="tag-section" wx:if="{{currentDish.tags && currentDish.tags.length > 0}}" wx:for="{{currentDish.tags}}" wx:key="id" wx:for-item="tag">
+        <block wx:for="{{modalTags}}" wx:key="id" wx:for-item="tag">
+        <view class="tag-section">
           <view class="tag-title">
             {{tag.name}}
             <text class="tag-type-label">{{tag.type === 'single' ? '(单选)' : '(多选)'}}</text>
@@ -270,7 +357,10 @@
               wx:for-item="option"
               bindtap="selectTagOption"
               data-tag-id="{{tag.id}}"
-              data-option="{{option}}">
+              data-option="{{option}}"
+              hover-class="soft-control-pressed"
+              aria-role="radio"
+              aria-checked="{{selectedTags[tag.id] === option}}">
               {{option}}
             </view>
           </view>
@@ -284,19 +374,33 @@
               class="tag-option {{tagHelper.isTagOptionSelected(selectedTags, tag.id, option) ? 'selected' : ''}}"
               bindtap="toggleTagOption"
               data-tag-id="{{tag.id}}"
-              data-option="{{option}}">
+              data-option="{{option}}"
+              hover-class="soft-control-pressed"
+              aria-role="checkbox"
+              aria-checked="{{tagHelper.isTagOptionSelected(selectedTags, tag.id, option)}}">
               {{option}}
             </view>
           </view>
         </view>
+        </block>
 
         <!-- 数量选择 -->
         <view class="quantity-section">
           <view class="quantity-label">数量</view>
           <view class="quantity-controls">
-            <view class="quantity-btn {{modalDishCount <= 1 ? 'disabled' : ''}}" bindtap="decreaseModalCount">-</view>
+            <view
+              class="quantity-btn {{modalDishCount <= 1 ? 'disabled' : ''}}"
+              bindtap="decreaseModalCount"
+              hover-class="{{modalDishCount <= 1 ? 'none' : 'control-pressed'}}"
+              aria-role="button"
+              aria-label="减少数量"
+              aria-disabled="{{modalDishCount <= 1}}">
+              <view class="stepper-glyph minus" aria-hidden="true"></view>
+            </view>
             <view class="quantity-num">{{modalDishCount}}</view>
-            <view class="quantity-btn" bindtap="increaseModalCount">+</view>
+            <view class="quantity-btn" bindtap="increaseModalCount" hover-class="control-pressed" aria-role="button" aria-label="增加数量">
+              <view class="stepper-glyph plus" aria-hidden="true"></view>
+            </view>
           </view>
         </view>
       </scroll-view>
@@ -316,6 +420,7 @@
   <!-- 用户授权组件 -->
   <avatar-nickname-modal
     showAvaModal="{{showAuthModal}}"
-    bind:saved="onUserInfoSaved">
+    bind:saved="onUserInfoSaved"
+    bind:close="onAuthModalClosed">
   </avatar-nickname-modal>
 </view>

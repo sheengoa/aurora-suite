@@ -1,4 +1,14 @@
 /* pages/admin/printer/printer.wxss */
+.service-warning {
+  margin-bottom: 20rpx;
+  padding: 22rpx 24rpx;
+  color: #8c271e;
+  background: #f7ebe8;
+  border-radius: 16rpx;
+}
+
+.service-warning-title { font-size: 27rpx; font-weight: 750; }
+.service-warning-copy { margin-top: 8rpx; font-size: 23rpx; line-height: 1.5; }
 .page {
   min-height: 100vh;
   background: #f7f7f7;
@@ -89,12 +99,12 @@
 }
 
 .action-btn.test {
-  background: linear-gradient(135deg, #07c160 0%, #39b54a 100%);
+  background: #287b61;
   color: white;
 }
 
 .action-btn.query {
-  background: linear-gradient(135deg, #1989fa 0%, #2d8cf0 100%);
+  background: #656461;
   color: white;
 }
 
@@ -121,7 +131,7 @@
   height: 140rpx;
   border-radius: 50%;
   background: #fff3f0;
-  color: #d94335;
+  color: #8c271e;
   font-size: 28rpx;
   font-weight: 600;
   margin-bottom: 30rpx;
@@ -136,7 +146,7 @@
 .bind-btn {
   display: inline-block;
   padding: 24rpx 60rpx;
-  background: linear-gradient(135deg, #d94335 0%, #f36a5d 100%);
+  background: #8c271e;
   color: white;
   border-radius: 50rpx;
   font-size: 32rpx;
@@ -191,7 +201,7 @@
 }
 
 .option-btn.active {
-  background: linear-gradient(135deg, #d94335 0%, #f36a5d 100%);
+  background: #8c271e;
   color: white;
   border-color: transparent;
 }
@@ -274,7 +284,7 @@
 }
 
 .modal-btn.confirm {
-  color: #d94335;
+  color: #8c271e;
   font-weight: bold;
 }
 
@@ -310,7 +320,7 @@
 
 /* 高级版视觉覆盖 */
 .page {
-  background: linear-gradient(180deg, #fff7f3 0%, #f6f7f9 240rpx, #f6f7f9 100%);
+  background: #f9f9f9;
   padding: 24rpx;
   padding-bottom: 48rpx;
 }
@@ -352,13 +362,13 @@
 
 .empty-icon {
   background: #fff4f0;
-  color: #d94335;
+  color: #8c271e;
 }
 
 .bind-btn,
 .option-btn.active {
-  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
-  box-shadow: 0 12rpx 26rpx rgba(217, 67, 53, 0.2);
+  background: #8c271e;
+  box-shadow: 0 12rpx 26rpx rgba(140, 39, 30, 0.2);
 }
 
 .action-btn {
@@ -377,8 +387,8 @@
 
 .action-btn.delete {
   background: #fff1ef;
-  color: #d94335;
-  border-color: rgba(217, 67, 53, 0.24);
+  color: #8c271e;
+  border-color: rgba(140, 39, 30, 0.24);
 }
 
 .option-btn {
@@ -422,7 +432,7 @@
 }
 
 .modal-btn.confirm {
-  color: #d94335;
+  color: #8c271e;
 }
 
 /* 原型统一收束：打印机管理 */
@@ -450,8 +460,8 @@
 
 .modal-btn.confirm {
   color: #ffffff;
-  background: linear-gradient(135deg, #b9322a 0%, #d94335 58%, #f36a5d 100%);
-  box-shadow: 0 10rpx 22rpx rgba(217, 67, 53, 0.2);
+  background: #8c271e;
+  box-shadow: 0 10rpx 22rpx rgba(140, 39, 30, 0.2);
 }
 
 .option-btn {

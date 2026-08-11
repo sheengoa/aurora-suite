@@ -36,7 +36,9 @@
     "showES6CompileOption": false,
     "useCompilerPlugins": false,
     "ignoreUploadUnusedFiles": true,
-    "compileWorklet": false,
+    "compileWorklet": true,
+    "skylineRenderEnable": true,
+    "lazyCodeLoading": "requiredComponents",
     "localPlugins": false,
     "condition": false,
     "swc": false,
@@ -73,19 +75,10 @@
     "tabSize": 2
   },
   "packOptions": {
-    "ignore": [
-      {
-        "type": "folder",
-        "value": "images/githubImg"
-      },
-      {
-        "type": "file",
-        "value": "images/bg.png"
-      }
-    ],
+    "ignore": [],
     "include": []
   },
-  "appid": "填写你的小程序AppID",
+  "appid": "wxf559a3c80de6a652",
   "cloud": true,
   "libVersion": "3.12.1",
   "simulatorPluginLibVersion": {}
