@@ -24,7 +24,7 @@
           <view wx:else class="user-avatar-placeholder cuIcon-my" aria-label="未授权头像"></view>
           <view class="user-info-text">
             <view class="user-name">{{item.userNickName || '未设置昵称'}}</view>
-            <view class="user-phone" wx:if="{{item.userPhone}}">{{item.userPhone}}</view>
+            <view class="user-phone" wx:if="{{item.maskedPhone}}">{{item.maskedPhone}}</view>
           </view>
         </view>
         <view class="order-type">

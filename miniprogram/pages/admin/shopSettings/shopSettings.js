@@ -9,6 +9,7 @@ Page({
   data: {
     shopName: DEFAULT_SHOP_SETTINGS.shopName,
     welcomeText: DEFAULT_SHOP_SETTINGS.welcomeText,
+    isOpen: DEFAULT_SHOP_SETTINGS.isOpen,
     loading: false,
     saving: false
   },
@@ -74,7 +75,8 @@ Page({
     try {
       const settings = await saveShopSettings(db, {
         shopName,
-        welcomeText
+        welcomeText,
+        isOpen: this.data.isOpen
       })
 
       this.setData(settings)

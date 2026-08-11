@@ -1,6 +1,5 @@
 // pages/admin/user/user.js
-const db = require('../../../utils/adminDb')
-const { callAdminFunction } = require('../../../utils/adminAuth')
+const { callAdminApi, callAdminFunction } = require('../../../utils/adminAuth')
 
 Page({
   data: {
@@ -9,6 +8,8 @@ Page({
     showBalanceModal: false,
     currentUser: null,
     editBalance: 0,
+    balanceReason: '',
+    savingBalance: false,
     isMember: false,
     // 分页相关
     userPage: 0,
@@ -115,7 +116,8 @@ Page({
     this.setData({
       showBalanceModal: true,
       currentUser: user,
-      editBalance: user.balance || 0
+      editBalance: user.balance || 0,
+      balanceReason: ''
     })
   },
 
@@ -123,7 +125,8 @@ Page({
   closeBalanceModal() {
     this.setData({
       showBalanceModal: false,
-      currentUser: null
+      currentUser: null,
+      balanceReason: ''
     })
   },
 
@@ -137,9 +140,20 @@ Page({
     })
   },
 
+  onBalanceReasonInput(e) {
+    this.setData({
+      balanceReason: e.detail.value
+    })
+  },
+
   // 保存余额
   async saveBalance() {
     const { currentUser, editBalance } = this.data
+    const balanceReason = String(this.data.balanceReason || '').trim()
+
+    if (this.data.savingBalance) {
+      return
+    }
 
     if (editBalance < 0) {
       wx.showToast({
@@ -149,13 +163,22 @@ Page({
       return
     }
 
+    if (!balanceReason) {
+      wx.showToast({
+        title: '请填写调账原因',
+        icon: 'none'
+      })
+      return
+    }
+
     try {
+      this.setData({ savingBalance: true })
       wx.showLoading({ title: '保存中...' })
 
-      await db.collection('user').doc(currentUser._id).update({
-        data: {
-          balance: editBalance
-        }
+      await callAdminApi('adjustBalance', {
+        userId: currentUser._id,
+        balance: Number(editBalance),
+        reason: balanceReason
       })
 
       wx.hideLoading()
@@ -170,9 +193,11 @@ Page({
       wx.hideLoading()
       console.error('保存失败', err)
       wx.showToast({
-        title: '保存失败',
+        title: err.message || '保存失败',
         icon: 'none'
       })
+    } finally {
+      this.setData({ savingBalance: false })
     }
   }
 })

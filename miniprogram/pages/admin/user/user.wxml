@@ -26,7 +26,7 @@
           {{item.nickName || '未知昵称'}}
         </view>
         <view class="user-detail">
-          <text>手机号：{{item.phoneNumber || '未绑定号码'}}</text>
+          <text>手机号：{{item.maskedPhone || '未绑定号码'}}</text>
         </view>
         <view class="user-detail">
           <text>余额：¥{{item.balance || 0}}</text>
@@ -63,10 +63,21 @@
             bindinput="onBalanceInput"
           />
         </view>
+        <view class="form-item">
+          <view class="form-label">调账原因</view>
+          <input
+            class="form-input"
+            maxlength="80"
+            placeholder="请输入本次余额调整原因"
+            value="{{balanceReason}}"
+            bindinput="onBalanceReasonInput"
+            confirm-type="done"
+          />
+        </view>
       </view>
       <view class="modal-footer">
         <view class="modal-btn cancel" bindtap="closeBalanceModal" hover-class="soft-control-pressed">取消</view>
-        <view class="modal-btn confirm" bindtap="saveBalance" hover-class="control-pressed">保存</view>
+        <view class="modal-btn confirm" bindtap="saveBalance" hover-class="control-pressed">{{savingBalance ? '保存中' : '保存'}}</view>
       </view>
     </view>
   </view>

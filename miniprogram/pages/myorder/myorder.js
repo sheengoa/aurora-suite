@@ -1,6 +1,7 @@
 // pages/myorder/myorder.js
 const app = getApp()
 const db = wx.cloud.database()
+const { getStatusText, normalizeStatus } = require('../../utils/orderState')
 Page({
   data: {
     tabs: ['全部', '进行中', '已完成'],
@@ -121,17 +122,14 @@ Page({
       const formatMoney = (value) => Number(value || 0).toFixed(2)
       const list = (res.data || []).map(order => {
         const isRecharge = order.type === 'recharge'
+        const status = normalizeStatus(order)
         const goods = Array.isArray(order.goods) ? order.goods : []
         const firstGoods = goods[0] || {}
         const totalCount = goods.reduce((sum, item) => sum + Number(item.count || 0), 0)
-        const orderCompleted = isRecharge || order.status === 2 || order.status === 3
+        const orderCompleted = isRecharge || status === 2 || status === 3
         const statusText = isRecharge
           ? '已到账'
-          : order.status === 2
-            ? '已完成'
-            : order.status === 3
-              ? '已取消'
-              : '制作中'
+          : getStatusText(status)
         const payText = order.payMethod === 'balance' ? '余额支付' : '微信支付'
         const sceneText = order.orderType === 'takeOut'
           ? '打包/自取'
@@ -142,6 +140,7 @@ Page({
 
         return {
           ...order,
+          status,
           displayOrderLabel: isRecharge ? '充值' : '订单',
           displayOrderNo: order.orderNo || order._id || '',
           statusText,
@@ -193,17 +192,10 @@ Page({
 
   // 获取订单状态文本
   getOrderStatusText(order) {
-    // 简化状态展示：只区分已完成 / 已取消，其它统称处理中
     if (order.type === 'recharge') {
       return '已完成'
     }
-    if (order.status === 2) {
-      return '已完成'
-    }
-    if (order.status === 3) {
-      return '已取消'
-    }
-    return '处理中'
+    return getStatusText(normalizeStatus(order))
   },
 
   // 查看订单详情

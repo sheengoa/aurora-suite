@@ -1,6 +1,11 @@
 // pages/admin/order/order.js
 const db = require('../../../utils/adminDb')
 
+function maskPhone(phone) {
+  const value = String(phone || '')
+  return /^1\d{10}$/.test(value) ? `${value.slice(0, 3)}****${value.slice(7)}` : value
+}
+
 Page({
   data: {
     orders: [],
@@ -83,6 +88,7 @@ Page({
       const list = (res.data || []).map(order => {
         const orderData = {
           ...order,
+          maskedPhone: maskPhone(order.userPhone),
           createTimeText: order.createTime ? formatTime(order.createTime) : ''
         }
 
