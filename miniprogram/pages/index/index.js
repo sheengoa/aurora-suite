@@ -233,6 +233,56 @@ Page({
     })
   },
 
+  getActualGoodsScrollTop(callback) {
+    const fallback = Math.max(0, Number(this.currentGoodsScrollTop) || 0)
+    const query = this.createSelectorQuery()
+    query.select('.goods-list').fields({ scrollOffset: true }, result => {
+      const scrollTop = result && Number.isFinite(Number(result.scrollTop))
+        ? Math.max(0, Number(result.scrollTop))
+        : fallback
+      callback(scrollTop)
+    }).exec()
+  },
+
+  onCompactWelcomeCardTap() {
+    if (
+      this.compactWelcomeTapPending ||
+      this.pendingWelcomeTarget !== null && typeof this.pendingWelcomeTarget !== 'undefined' ||
+      this.data.welcomeState !== 'collapsed' ||
+      !this.welcomeLatched ||
+      this.data.showCart ||
+      this.data.showTagModal ||
+      this.data.showAuthModal
+    ) return
+
+    this.compactWelcomeTapPending = true
+    this.getActualGoodsScrollTop(scrollTop => {
+      this.compactWelcomeTapPending = false
+      if (this.data.welcomeState !== 'collapsed' || !this.welcomeLatched) return
+
+      const menuAtTop = scrollTop <= 1
+      this.preservedMenuContext = {
+        scrollTop,
+        menuAtTop,
+        currentMenuId: this.data.currentMenuId,
+        verticalNavTop: this.data.verticalNavTop
+      }
+      this.menuContextFrozen = true
+      this.currentGoodsScrollTop = scrollTop
+      if (this.goodsScrollTimer) {
+        clearTimeout(this.goodsScrollTimer)
+        this.goodsScrollTimer = null
+      }
+
+      this.setData({
+        goodsScrollAnimation: false,
+        goodsScrollTop: scrollTop,
+        menuScrollEnabled: false,
+        menuAtTop
+      }, () => this.beginWelcomeSettle({ target: 0, duration: 320 }))
+    })
+  },
+
   updateWelcomeMotion(progress = 0, immediate = false, stateOverride = '') {
     const nextProgress = Math.max(0, Math.min(1, Number(progress) || 0))
     const visualProgress = nextProgress
@@ -372,6 +422,7 @@ Page({
 
   commitWelcomePosition(progress) {
     const target = progress >= 1 ? 1 : 0
+    const preservedMenuContext = this.preservedMenuContext
     this.pendingWelcomeTarget = null
     this.welcomeTouchState = null
     if (this.welcomeSettleTimer) {
@@ -379,8 +430,44 @@ Page({
       this.welcomeSettleTimer = null
     }
     this.welcomeLatched = target === 1
-    this.currentGoodsScrollTop = 0
     this.updateWelcomeMotion(target, true)
+
+    if (preservedMenuContext) {
+      const scrollTop = preservedMenuContext.scrollTop
+      const menuAtTop = preservedMenuContext.menuAtTop
+      this.currentGoodsScrollTop = scrollTop
+
+      if (target === 0) {
+        this.setData({
+          goodsScrollAnimation: false,
+          goodsScrollTop: scrollTop,
+          menuScrollEnabled: false,
+          menuAtTop,
+          currentMenuId: preservedMenuContext.currentMenuId,
+          verticalNavTop: preservedMenuContext.verticalNavTop
+        })
+        return
+      }
+
+      this.setData({
+        goodsScrollAnimation: false,
+        goodsScrollTop: scrollTop + 1,
+        menuScrollEnabled: true,
+        menuAtTop,
+        currentMenuId: preservedMenuContext.currentMenuId,
+        verticalNavTop: preservedMenuContext.verticalNavTop
+      }, () => {
+        this.setData({ goodsScrollTop: scrollTop }, () => {
+          this.currentGoodsScrollTop = scrollTop
+          this.menuContextFrozen = false
+          this.preservedMenuContext = null
+          this.setData({ goodsScrollAnimation: true })
+        })
+      })
+      return
+    }
+
+    this.currentGoodsScrollTop = 0
     this.setData({
       goodsScrollAnimation: false,
       goodsScrollTop: 0,
@@ -392,6 +479,7 @@ Page({
   },
 
   onGoodsScroll(event) {
+    if (this.menuContextFrozen) return
     const scrollTop = Math.max(0, Number(event && event.detail && event.detail.scrollTop) || 0)
     const menuAtTop = scrollTop <= 1
     if (menuAtTop !== this.data.menuAtTop) {

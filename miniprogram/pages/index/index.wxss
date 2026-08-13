@@ -405,6 +405,11 @@
 .cart-icon {
   width: 45rpx;
   height: 45rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8c271e;
+  font-size: 42rpx;
 }
 
 .cart-badge {
@@ -1128,6 +1133,8 @@
 .compact-caption text:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .compact-dot { width: 9rpx; height: 9rpx; flex: 0 0 9rpx; background: #8c271e; border-radius: 50%; }
 .compact-dot.closed { background: #9ca3af; }
+.welcome-card-expand-hit { position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 2; border-radius: 24rpx; transition: background 120ms ease, opacity 120ms ease; }
+.welcome-card-expand-hit-pressed { background: rgba(140, 39, 30, 0.07); opacity: 0.88; }
 .welcome-page.collapsed .welcome-card-surface { box-shadow: 0 14rpx 32rpx rgba(26, 28, 28, 0.12); }
 .welcome-page.settling .welcome-info-card { transition: transform var(--welcome-settle-duration) cubic-bezier(0.16, 1, 0.3, 1), height var(--welcome-settle-duration) cubic-bezier(0.16, 1, 0.3, 1), left var(--welcome-settle-duration) cubic-bezier(0.16, 1, 0.3, 1), right var(--welcome-settle-duration) cubic-bezier(0.16, 1, 0.3, 1); }
 .welcome-page.settling .welcome-card-surface { transition: border-radius var(--welcome-settle-duration) cubic-bezier(0.16, 1, 0.3, 1); }

@@ -31,6 +31,15 @@
           <view class="compact-caption"><text class="compact-dot {{isOpen ? '' : 'closed'}}"></text><text>{{isOpen ? '招牌点餐 · 现做现取' : '今日已打烊 · 暂停接单'}}</text></view>
         </view>
       </view>
+      <view
+        wx:if="{{welcomeState === 'collapsed'}}"
+        class="welcome-card-expand-hit"
+        bindtap="onCompactWelcomeCardTap"
+        hover-class="welcome-card-expand-hit-pressed"
+        hover-start-time="20"
+        hover-stay-time="80"
+        aria-role="button"
+        aria-label="展开门店信息"></view>
     </view>
 
     <view class="welcome-stage" style="top: {{welcomeCollapsedStageTop}}px; transform: translate3d(0, {{welcomeStageOffsetY}}px, 0);">
@@ -203,7 +212,7 @@
     <view class="float-cart-card">
       <view class="cart-left" bindtap="toggleCart">
         <view class="cart-icon-wrapper">
-          <image class="cart-icon" src="/images/shopping.png" mode="aspectFit"></image>
+          <view class="cart-icon cuIcon-cart" aria-hidden="true"></view>
           <view class="cart-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>
         </view>
         <view class="cart-info">
